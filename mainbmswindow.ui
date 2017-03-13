@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>480</height>
+    <width>1200</width>
+    <height>700</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>30</y>
+      <y>10</y>
       <width>271</width>
       <height>61</height>
      </rect>
@@ -133,21 +133,22 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>160</y>
-      <width>211</width>
-      <height>71</height>
+      <y>170</y>
+      <width>271</width>
+      <height>51</height>
      </rect>
     </property>
     <property name="title">
-     <string>握手阶段</string>
+     <string>辨识阶段</string>
     </property>
+    <zorder>groupBox_9</zorder>
    </widget>
    <widget class="QGroupBox" name="groupBox_3">
     <property name="geometry">
      <rect>
       <x>320</x>
       <y>30</y>
-      <width>331</width>
+      <width>561</width>
       <height>71</height>
      </rect>
     </property>
@@ -160,8 +161,8 @@
      <rect>
       <x>320</x>
       <y>110</y>
-      <width>331</width>
-      <height>71</height>
+      <width>561</width>
+      <height>121</height>
      </rect>
     </property>
     <property name="title">
@@ -171,10 +172,10 @@
    <widget class="QGroupBox" name="groupBox_5">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>190</y>
-      <width>331</width>
-      <height>71</height>
+      <x>790</x>
+      <y>260</y>
+      <width>371</width>
+      <height>101</height>
      </rect>
     </property>
     <property name="title">
@@ -186,38 +187,150 @@
      <rect>
       <x>30</x>
       <y>240</y>
-      <width>211</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>接收报文</string>
-    </property>
-   </widget>
-   <widget class="QGroupBox" name="groupBox_7">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>320</y>
-      <width>211</width>
-      <height>71</height>
+      <width>651</width>
+      <height>201</height>
      </rect>
     </property>
     <property name="title">
      <string>发送报文</string>
     </property>
+    <widget class="QTableView" name="tableViewSend">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>631</width>
+       <height>171</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Ubuntu Mono</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <attribute name="horizontalHeaderStretchLastSection">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="verticalHeaderVisible">
+      <bool>false</bool>
+     </attribute>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_7">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>460</y>
+      <width>651</width>
+      <height>181</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>接收报文</string>
+    </property>
+    <widget class="QTableView" name="tableViewReceive">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>631</width>
+       <height>151</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Ubuntu Mono</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <attribute name="horizontalHeaderStretchLastSection">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="verticalHeaderVisible">
+      <bool>false</bool>
+     </attribute>
+    </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox_8">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>310</y>
-      <width>331</width>
-      <height>71</height>
+      <x>790</x>
+      <y>390</y>
+      <width>371</width>
+      <height>111</height>
      </rect>
     </property>
     <property name="title">
      <string>警示信息</string>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_9">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>100</y>
+      <width>271</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>握手阶段</string>
+    </property>
+   </widget>
+   <widget class="QToolBox" name="toolBox">
+    <property name="geometry">
+     <rect>
+      <x>970</x>
+      <y>0</y>
+      <width>151</width>
+      <height>211</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="page">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>151</width>
+       <height>159</height>
+      </rect>
+     </property>
+     <attribute name="label">
+      <string>握手阶段</string>
+     </attribute>
+    </widget>
+    <widget class="QWidget" name="page_2">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>151</width>
+       <height>159</height>
+      </rect>
+     </property>
+     <attribute name="label">
+      <string>辨识阶段</string>
+     </attribute>
+    </widget>
+   </widget>
+   <widget class="QCheckBox" name="checkBox">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>80</y>
+      <width>101</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>物理连接完成</string>
     </property>
    </widget>
   </widget>
@@ -226,7 +339,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>1200</width>
      <height>22</height>
     </rect>
    </property>

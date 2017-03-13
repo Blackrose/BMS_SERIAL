@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QTimer>
 
 #ifdef WIN32 // for windows
 #include <windows.h>
@@ -25,6 +26,8 @@
 #define msleep(ms)  usleep((ms)*1000)
 #define min(a,b)  (((a) < (b)) ? (a) : (b))
 #endif
+#include "mythread.h"
+#include "canmessagemodel.h"
 
 namespace Ui {
 class MainBMSWindow;
@@ -47,6 +50,9 @@ public:
     int strtodata(unsigned char *str, unsigned char *data,int len,int flag);
     int chartoint(unsigned char chr, unsigned char *cint);
 
+    QTimer can_timer;
+    mythread mythread_can ;
+
 private slots:
     void on_pushButton_connect_clicked();
 
@@ -54,8 +60,16 @@ private slots:
 
     void on_pushButton_discon_clicked();
 
+    void on_checkBox_clicked(bool checked);
+
+public slots:
+    void slot_cantimer();
+
 private:
     Ui::MainBMSWindow *ui;
+
+    CanMessageModel		*mReceiveModel;
+    CanMessageModel 	*mSendModel;
 };
 
 #endif // MAINBMSWINDOW_H
