@@ -10,6 +10,7 @@
 #include <process.h>
 #include <stdio.h>
 #include <time.h>
+#undef  BMS_C_LANG
 #include "controlcan.h"
 //#pragma comment(lib, "controlcan.lib")
 #define msleep(ms)  Sleep(ms)
@@ -41,9 +42,9 @@ public:
     explicit MainBMSWindow(QWidget *parent = 0);
     ~MainBMSWindow();
 
-    int m_cannum;
-    int m_devtype;
-    int m_devind;
+    int m_cannum = 0;
+    int m_devtype = 4;
+    int m_devind = 0;
 
     //void ShowInfo(CString str,int code);
 

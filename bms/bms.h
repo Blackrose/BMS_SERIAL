@@ -14,8 +14,8 @@ extern "C" {
 #define CAN_ADDR_CHARGER   0x56  // 86
 // BMS地址
 #define CAN_ADDR_BMS       0xF4  // 244
-#define CAN_RCV_ID_MASK    ((CAN_ADDR_CHARGER<<8)|CAN_ADDR_BMS)
-#define CAN_TX_ID_MASK    ((CAN_ADDR_CHARGER)|CAN_ADDR_BMS<<8)
+#define CAN_TX_ID_MASK    ((CAN_ADDR_CHARGER<<8)|CAN_ADDR_BMS)
+#define CAN_RCV_ID_MASK    ((CAN_ADDR_CHARGER)|CAN_ADDR_BMS<<8)
 
 #ifndef u8
 #define u8 unsigned char
@@ -52,6 +52,7 @@ struct can_frame {
     u8    can_dlc; /* frame payload length in byte (0 .. CAN_MAX_DLEN) */
     u8    data[CAN_MAX_DLEN] __attribute__((aligned(8)));
 };
+
 //add end====================================================================
 
 #pragma pack(1)

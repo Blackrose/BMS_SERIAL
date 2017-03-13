@@ -32,7 +32,7 @@ int bms_canbus()
     pthread_t tid = 0;
     pthread_attr_t attr;
     int s;
-    int thread_done[ 8 ] = {0};
+    int thread_done[ 2 ] = {0};
     char buff[32];
     int errcode = 0, ret;
 
@@ -95,10 +95,10 @@ int bms_canbus()
 
     // 启动定时器
    //Hachiko_init();
-#if 0
+#if 1
     // BMS 数据包写线程，从队列中取出要写的数据包并通过CAN总线发送出去
     ret = pthread_create( & tid, &attr, thread_bms_write_service,
-                          &thread_done[1]);
+                          &thread_done[0]);
     if ( 0 != ret ) {
         errcode  = 0x1001;
         log_printf(ERR,
@@ -109,7 +109,7 @@ int bms_canbus()
 
     // BMS读书举报线程，从CAN总线读取数据包后将数据存入读入数据队列等待处理。
     ret = pthread_create( & tid, &attr, thread_bms_read_service,
-                          &thread_done[2]);
+                          &thread_done[1]);
     if ( 0 != ret ) {
         errcode  = 0x1002;
         log_printf(ERR,

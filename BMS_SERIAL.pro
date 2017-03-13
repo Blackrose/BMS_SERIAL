@@ -14,24 +14,24 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainbmswindow.cpp \
+    mythread.cpp \
+    canmessagemodel.cpp \
     bms/bms.c \
     bms/config.c \
     bms/Hachiko.c \
     bms/log.c \
-    bms/tom.c \
-    mythread.cpp \
-    canmessagemodel.cpp
+    bms/tom.c
 
 HEADERS  += mainbmswindow.h \
     ControlCAN.h \
+    mythread.h \
+    canmessagemodel.h \
     bms/bms.h \
     bms/charge.h \
     bms/config.h \
     bms/error.h \
     bms/Hachiko.h \
-    bms/log.h \
-    mythread.h \
-    canmessagemodel.h
+    bms/log.h
 
 FORMS    += mainbmswindow.ui
 

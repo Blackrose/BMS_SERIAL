@@ -9,7 +9,8 @@
 #include <time.h>
 #ifdef WIN32 // for windows
 #include <winsock2.h>
-#pragma  comment(lib,"ws2_32.lib")
+//#pragma  comment(lib,"ws2_32.lib")
+//#pragma comment(lib, "controlcan.lib")
 #else // for linux
 #include <net/if.h>
 #include <sys/socket.h>
@@ -25,6 +26,13 @@
 #include "config.h"
 #include "log.h"
 #include "error.h"
+//#include "controlcan.h"
+#define  BMS_C_LANG
+#include "ControlCAN.h"
+
+int m_cannum1 = 0;
+int m_devtype1 = 4;
+int m_devind1 = 0;
 
 // 数据包生成器信息
 struct can_pack_generator generator[] = {
@@ -410,6 +418,7 @@ static int can_packet_callback(
             param->evt_param = EVT_RET_ERR;
             break;
         case CHARGE_STAGE_HANDSHACKING:
+            gen_packet_PGN256(thiz, param);
             if ( generator[0].heartbeat >= generator[0].period ) {
                 gen_packet_PGN256(thiz, param);
                 generator[0].heartbeat = 0;
@@ -842,7 +851,7 @@ void *thread_bms_write_service(void *arg) ___THREAD_ENTRY___
 {
     int *done = (int *)arg;
     int mydone = 0;
-    int s;
+    int s = 0;
 //    struct sockaddr_can addr;
 //    struct ifreq ifr;
     struct can_frame frame;
@@ -851,15 +860,6 @@ void *thread_bms_write_service(void *arg) ___THREAD_ENTRY___
     unsigned char txbuff[32];
     int nbytes;
     if ( done == NULL ) done = &mydone;
-
-//    s = socket(PF_CAN, SOCK_RAW, CAN_RAW);
-
-//    strcpy(ifr.ifr_name, "can0" );
-//    ioctl(s, SIOCGIFINDEX, &ifr);
-
-//    addr.can_family = PF_CAN;
-//    addr.can_ifindex = ifr.ifr_ifindex;
-//    bind(s, (struct sockaddr *)&addr, sizeof(addr));
 
     log_printf(INF, "%s running...s=%d", __FUNCTION__, s);
 
@@ -999,10 +999,11 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
 {
     int *done = (int *)arg;
     int mydone = 0;
-    int s;
+    int s = 0;
 //    struct sockaddr_can addr;
 //    struct ifreq ifr;
-    struct can_frame frame;
+    //struct can_frame frame;
+    VCI_CAN_OBJ frame;
     int nbytes;
     struct event_struct param;
     // 用于链接管理的数据缓冲
@@ -1023,12 +1024,7 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
     task->can_tp_bomb._private = (void *)&task->can_tp_private;
 
     if ( done == NULL ) done = &mydone;
-//    s = socket(PF_CAN, SOCK_RAW, CAN_RAW);
-//    strcpy(ifr.ifr_name, "can0" );
-//    ioctl(s, SIOCGIFINDEX, &ifr);
-//    addr.can_family = PF_CAN;
-//    addr.can_ifindex = ifr.ifr_ifindex;
-//    bind(s, (struct sockaddr *)&addr, sizeof(addr));
+
     log_printf(INF, "BMS: %s running...s=%d", __FUNCTION__, s);
 
     param.buff.rx_buff = tp_buff;
@@ -1042,10 +1038,11 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
         }
 
         memset(&frame, 0, sizeof(frame));
-        nbytes = read(s, &frame, sizeof(struct can_frame));
-        if ( (frame.can_id & 0xFFFF) != CAN_RCV_ID_MASK ) {
-            #if 0
-            log_printf(DBG_LV0, "BMS: id not accept %x", frame.can_id);
+        //nbytes = read(s, &frame, sizeof(struct can_frame));
+        nbytes = VCI_Receive(m_devtype1, m_devind1, m_cannum1, &frame, sizeof(VCI_CAN_OBJ), 1000/*ms*/);
+        if ( (frame.ID & 0xFFFF) != CAN_RCV_ID_MASK ) {
+            #if 1
+            log_printf(DBG_LV0, "BMS: id not accept %x", frame.ID);
             #endif
             continue;
         }
@@ -1054,7 +1051,7 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
 
         if ( nbytes != sizeof(struct can_frame) ) {
             param.evt_param = EVT_RET_ERR;
-            log_printf(DBG_LV3, "BMS: read frame error %x", frame.can_id);
+            log_printf(DBG_LV3, "BMS: read frame error %x", frame.ID);
             can_packet_callback(task, EVENT_RX_ERROR, &param);
             continue;
         }
@@ -1062,15 +1059,15 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
         debug_log(DBG_LV1,
                    "BMS: get %dst packet %08X:%02X%02X%02X%02X%02X%02X%02X%02X",
                    dbg_packets,
-                   frame.can_id,
-                   frame.data[0],
-                   frame.data[1],
-                   frame.data[2],
-                   frame.data[3],
-                   frame.data[4],
-                   frame.data[5],
-                   frame.data[6],
-                   frame.data[7]);
+                   frame.ID,
+                   frame.Data[0],
+                   frame.Data[1],
+                   frame.Data[2],
+                   frame.Data[3],
+                   frame.Data[4],
+                   frame.Data[5],
+                   frame.Data[6],
+                   frame.Data[7]);
 
         /*
          * CAN通信处于普通模式
@@ -1084,7 +1081,7 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
          * 消息的总长度，需要发送的数据包个数（必须大于1），最大的数据包编号，
          * 这个消息的PGN等
          */
-        if ( ((frame.can_id & 0x00FF0000) >> 16) == 0xEB ) {
+        if ( ((frame.ID & 0x00FF0000) >> 16) == 0xEB ) {
             /* Data transfer
              * byte[1]: 数据包编号
              * byte[2:8]: 数据
@@ -1095,9 +1092,9 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
                 continue;
             }
             Hachiko_feed(&task->can_tp_bomb);
-            memcpy(&tp_buff[ (frame.data[0] - 1) * 7 ], &frame.data[1], 7);
+            memcpy(&tp_buff[ (frame.Data[0] - 1) * 7 ], &frame.Data[1], 7);
             log_printf(DBG_LV1, "BM data tansfer fetch the %dst packet.",
-                       frame.data[0]);
+                       frame.Data[0]);
             task->can_tp_param.tp_rcv_pack_nr ++;
             if ( task->can_tp_param.tp_rcv_pack_nr >=
                  task->can_tp_param.tp_pack_nr ) {
@@ -1114,9 +1111,9 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
                 // 数据链接接受完成
                 task->can_bms_status = CAN_TP_RD | CAN_TP_ACK;
             }
-        } else if ( ((frame.can_id & 0x00FF0000) >> 16 ) == 0xEC ) {
+        } else if ( ((frame.ID & 0x00FF0000) >> 16 ) == 0xEC ) {
             // Connection managment
-            if ( 0x10 == frame.data[0] ) {
+            if ( 0x10 == frame.Data[0] ) {
                 if ( task->can_tp_buff_nr ) {
                     /*
                      * 数据传输太快，还没将缓冲区的数据发送出去
@@ -1132,10 +1129,10 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
                  * byte[6:8]: PGN
                  */
                 tp_cnt = 0;
-                tp_packets_size = frame.data[2] * 256 + frame.data[1];
-                tp_packets_nr = frame.data[3];
-                tp_packet_PGN = frame.data[5] +
-                        (frame.data[6] << 8) + (frame.data[7] << 16);
+                tp_packets_size = frame.Data[2] * 256 + frame.Data[1];
+                tp_packets_nr = frame.Data[3];
+                tp_packet_PGN = frame.Data[5] +
+                        (frame.Data[6] << 8) + (frame.Data[7] << 16);
                 /*
                  * 接收到这个数据包后向BMS发送准备发送数据包
                  *
@@ -1193,26 +1190,26 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
                            "BMS: data connection accepted, rolling..."
                            "PGN: %X, total: %d packets, %d bytes",
                            tp_packet_PGN, tp_packets_nr, tp_packets_size);
-            } else if ( 0xFF == frame.data[0] ) {
+            } else if ( 0xFF == frame.Data[0] ) {
                 /* connection abort.
                  * byte[1]: 0xFF
                  * byte[2:5]: 0xFF
                  * byte[6:8]: PGN
                  */
-                int *d = (int *)&frame.data[0];
+                int *d = (int *)&frame.Data[0];
                 log_printf(DBG_LV2, "BMS: %08X", *d);
             } else {
                 //omited.
-                int *d = (int *)&frame.data[0];
+                int *d = (int *)&frame.Data[0];
                 log_printf(DBG_LV3, "BMS: %08X", *d);
             }
         } else {
-            param.can_id = (frame.can_id & 0x00FF0000) >> 8;
-            param.buff_payload = frame.can_dlc;
+            param.can_id = (frame.ID & 0x00FF0000) >> 8;
+            param.buff_payload = frame.DataLen;
             param.evt_param = EVT_RET_INVALID;
-            memcpy((void * __restrict__)param.buff.rx_buff, frame.data, 8);
+            memcpy((void * __restrict__)param.buff.rx_buff, frame.Data, 8);
             can_packet_callback(task, EVENT_RX_DONE, &param);
-            log_printf(DBG_LV0, "BMS: read a frame done. %08X", frame.can_id);
+            log_printf(DBG_LV0, "BMS: read a frame done. %08X", frame.ID);
         }
 
         if ( task->can_bms_status == CAN_NORMAL ) {
