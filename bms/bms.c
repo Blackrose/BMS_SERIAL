@@ -1003,8 +1003,11 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
 //    struct sockaddr_can addr;
 //    struct ifreq ifr;
     //struct can_frame frame;
-    VCI_CAN_OBJ frame;
+    VCI_CAN_OBJ frame;//[RX_BUFF_SIZE];
+    VCI_CAN_OBJ frameinfo[RX_BUFF_SIZE];
+    VCI_ERR_INFO errinfo;
     int nbytes;
+    int i =0;
     struct event_struct param;
     // 用于链接管理的数据缓冲
     unsigned char tp_buff[2048];
@@ -1033,13 +1036,48 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
     while ( ! *done ) {
         usleep(5000);
 
-        if ( task->can_bms_status  == CAN_INVALID ) {
-            continue;
-        }
+//        if ( task->can_bms_status  == CAN_INVALID ) {
+//            continue;
+//        }
 
         memset(&frame, 0, sizeof(frame));
         //nbytes = read(s, &frame, sizeof(struct can_frame));
-        nbytes = VCI_Receive(m_devtype1, m_devind1, m_cannum1, &frame, sizeof(VCI_CAN_OBJ), 1000/*ms*/);
+        nbytes = VCI_Receive(m_devtype1, m_devind1, m_cannum1, &frame, RX_BUFF_SIZE, RX_WAIT_TIME/*ms*/);
+        if(nbytes<=0){
+            //注意：如果没有读到数据则必须调用此函数来读取出当前的错误码，
+            //千万不能省略这一步（即使你可能不想知道错误码是什么）
+            VCI_ReadErrInfo(m_devtype1,m_devind1,m_cannum1,&errinfo);
+        }
+        else{
+//            for(i=0;i<nbytes;i++){
+//            debug_log(DBG_LV1,
+//                       "BMS: get %dst packet %08X:%02X%02X%02X%02X%02X%02X%02X%02X",
+//                       i,
+//                       frameinfo[i].ID,
+//                       frameinfo[i].Data[0],
+//                       frameinfo[i].Data[1],
+//                       frameinfo[i].Data[2],
+//                       frameinfo[i].Data[3],
+//                       frameinfo[i].Data[4],
+//                       frameinfo[i].Data[5],
+//                       frameinfo[i].Data[6],
+//                       frameinfo[i].Data[7]);
+//            }
+            debug_log(DBG_LV1,
+                       "BMS: get %dst packet %08X:%02X%02X%02X%02X%02X%02X%02X%02X",
+                       dbg_packets,
+                       frame.ID,
+                       frame.Data[0],
+                       frame.Data[1],
+                       frame.Data[2],
+                       frame.Data[3],
+                       frame.Data[4],
+                       frame.Data[5],
+                       frame.Data[6],
+                       frame.Data[7]);
+
+        }
+#if 0
         if ( (frame.ID & 0xFFFF) != CAN_RCV_ID_MASK ) {
             #if 1
             log_printf(DBG_LV0, "BMS: id not accept %x", frame.ID);
@@ -1211,7 +1249,7 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
             can_packet_callback(task, EVENT_RX_DONE, &param);
             log_printf(DBG_LV0, "BMS: read a frame done. %08X", frame.ID);
         }
-
+#endif
         if ( task->can_bms_status == CAN_NORMAL ) {
         } else if ( task->can_bms_status == CAN_TP_RD ) {
             // CAN通信处于连接管理模式

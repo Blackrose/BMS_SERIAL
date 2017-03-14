@@ -95,7 +95,7 @@ int bms_canbus()
 
     // 启动定时器
    //Hachiko_init();
-#if 1
+#if 0
     // BMS 数据包写线程，从队列中取出要写的数据包并通过CAN总线发送出去
     ret = pthread_create( & tid, &attr, thread_bms_write_service,
                           &thread_done[0]);
@@ -106,7 +106,7 @@ int bms_canbus()
         goto die;
     }
     log_printf(INF, "CAN-BUS reader start up.                           DONE.");
-
+#else
     // BMS读书举报线程，从CAN总线读取数据包后将数据存入读入数据队列等待处理。
     ret = pthread_create( & tid, &attr, thread_bms_read_service,
                           &thread_done[1]);

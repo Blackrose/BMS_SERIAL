@@ -53,6 +53,10 @@ struct can_frame {
     u8    data[CAN_MAX_DLEN] __attribute__((aligned(8)));
 };
 
+
+#define RX_WAIT_TIME  100
+#define RX_BUFF_SIZE  1
+
 //add end====================================================================
 
 #pragma pack(1)

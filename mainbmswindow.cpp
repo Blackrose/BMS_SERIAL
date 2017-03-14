@@ -49,8 +49,8 @@ void MainBMSWindow::on_pushButton_connect_clicked()
     init_config.AccMask=0xffffffff;
     init_config.Filter=0x00;
     init_config.Mode=0x00;
-    init_config.Timing0=0x00;
-    init_config.Timing1=0x14;
+    init_config.Timing0=0x01;
+    init_config.Timing1=0x1c;
 #if 1
     if(VCI_OpenDevice(m_devtype,m_devind,0)!=STATUS_OK)
     {
