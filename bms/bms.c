@@ -374,6 +374,7 @@ static int can_packet_callback(
             log_printf(INF,
               "BMS: CHARGER change stage to "RED("CHARGE_STAGE_CHARGING"));
         }
+        thiz->charge_stage = CHARGE_STAGE_CONFIGURE;//add by debug
         break;
     case EVENT_TX_PRE:
         // 决定是否要发送刚刚准备发送的数据包
@@ -854,8 +855,8 @@ void *thread_bms_write_service(void *arg) ___THREAD_ENTRY___
     int s = 0;
 //    struct sockaddr_can addr;
 //    struct ifreq ifr;
-    struct can_frame frame;
-
+    //struct can_frame frame;
+    VCI_CAN_OBJ frame;//[RX_BUFF_SIZE];
     struct event_struct param;
     unsigned char txbuff[32];
     int nbytes;
@@ -933,22 +934,30 @@ void *thread_bms_write_service(void *arg) ___THREAD_ENTRY___
                 // confirm to send.
             }
         }
+        frame.ExternFlag = 0x01;
+        frame.RemoteFlag = 0x00;
+        frame.SendType = 0x00;
+
 
         /* 根据GB/T 27930-2011 中相关规定，充电机向BMS发送数据包都没有超过
          * 8字节限制，因此这里不用进行连接管理通信。
          */
         if ( param.buff_payload <= 8 && param.buff_payload > 0 ) {
-            frame.can_id = param.can_id;
-            frame.can_dlc= param.buff_payload;
-            memcpy(frame.data, param.buff.tx_buff, 8);
-            nbytes = write(s, &frame, sizeof(struct can_frame));
-            if ( (unsigned int)nbytes < param.buff_payload ) {
-                param.evt_param = EVT_RET_ERR;
-                can_packet_callback(task, EVENT_TX_FAILS, &param);
-            } else {
-                param.evt_param = EVT_RET_OK;
-                can_packet_callback(task, EVENT_TX_DONE, &param);
-            }
+            frame.ID = param.can_id;
+            frame.DataLen= param.buff_payload;
+            memcpy(frame.Data, param.buff.tx_buff, 8);
+            //nbytes = write(s, &frame, sizeof(struct can_frame));
+            nbytes = VCI_Transmit(m_devtype1,m_devind1,m_cannum1,&frame,TX_BUFF_SIZE);
+//            if ( (unsigned int)nbytes < param.buff_payload ) {
+//                param.evt_param = EVT_RET_ERR;
+//                can_packet_callback(task, EVENT_TX_FAILS, &param);
+//            } else {
+//                param.evt_param = EVT_RET_OK;
+//                can_packet_callback(task, EVENT_TX_DONE, &param);
+//            }
+            param.evt_param = EVT_RET_OK;
+            can_packet_callback(task, EVENT_TX_DONE, &param);
+
         } else if ( param.buff_payload > 8 ) {
             // 大于8字节的数据包在这里处理，程序向后兼容
             static unsigned int notimplement = 0;
@@ -1077,9 +1086,9 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
                        frame.Data[7]);
 
         }
-#if 0
+#if 1
         if ( (frame.ID & 0xFFFF) != CAN_RCV_ID_MASK ) {
-            #if 1
+            #if 0
             log_printf(DBG_LV0, "BMS: id not accept %x", frame.ID);
             #endif
             continue;
@@ -1087,13 +1096,14 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
 
         dbg_packets ++;
 
-        if ( nbytes != sizeof(struct can_frame) ) {
+#if 0
+        if ( nbytes != sizeof(frame) ) {
             param.evt_param = EVT_RET_ERR;
             log_printf(DBG_LV3, "BMS: read frame error %x", frame.ID);
             can_packet_callback(task, EVENT_RX_ERROR, &param);
             continue;
         }
-
+#endif
         debug_log(DBG_LV1,
                    "BMS: get %dst packet %08X:%02X%02X%02X%02X%02X%02X%02X%02X",
                    dbg_packets,

@@ -95,7 +95,7 @@ int bms_canbus()
 
     // 启动定时器
    //Hachiko_init();
-#if 0
+#if 1
     // BMS 数据包写线程，从队列中取出要写的数据包并通过CAN总线发送出去
     ret = pthread_create( & tid, &attr, thread_bms_write_service,
                           &thread_done[0]);

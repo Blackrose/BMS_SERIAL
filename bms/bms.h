@@ -56,7 +56,7 @@ struct can_frame {
 
 #define RX_WAIT_TIME  100
 #define RX_BUFF_SIZE  1
-
+#define TX_BUFF_SIZE  1
 //add end====================================================================
 
 #pragma pack(1)
