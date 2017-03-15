@@ -1,10 +1,6 @@
 #ifndef CONFIG_INCLUDED_H_
 #define CONFIG_INCLUDED_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 //{{{{{{{{{{{{{
 #define _DEBUG  0
 
@@ -34,14 +30,15 @@ extern "C" {
 #define CONFIG_SUPPORT_CHARGE_JOBS     8
 //}}}}}}}}}}}}}
 
-#ifndef bool
-	#define bool unsigned char
+#if 1
+#ifndef mybool
+    #define mybool unsigned char
 #endif
 #ifndef true
-	#define true (bool)(1)
+    #define true (mybool)(1)
 #endif
 #ifndef false
-	#define false (bool)(0)
+    #define false (mybool)(0)
 #endif
 #ifndef yes
 	#define yes true
@@ -49,6 +46,8 @@ extern "C" {
 #ifndef no
 	#define no false
 #endif
+#endif
+
 
 // 配置项数值最大长度为127
 #define CONFIG_MAX_VALUE   128
@@ -69,7 +68,7 @@ struct config_struct {
 
 	// 数据是否来自配置文件
     // 有些用户配置项，默认不需要进行配置
-    bool config_user;
+    mybool config_user;
 
 	// 配置数据状态,
 	// 0 -- 初始状态，无效
@@ -131,7 +130,7 @@ struct socket_config_ack {
     char config_type;
     // 数据是否来自配置文件
     // 有些用户配置项，默认不需要进行配置
-    bool config_user;
+    mybool config_user;
     // 配置数据状态,
     char config_status;
     // 配置项值，统一使用字符存储，使用时按类型转换
@@ -149,7 +148,3 @@ void config_print();
 #define CONFIG_DOMAIN_END {"", 0,   0,     0,  .cuv.i=0,    {""}} };
 
 #endif /*CONFIG_INCLUDED_H_*/
-
-#ifdef __cplusplus
-}
-#endif

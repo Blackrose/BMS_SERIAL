@@ -14,10 +14,12 @@
 #include <signal.h>
 #include <string.h>
 #include <time.h>
+
 #include "Hachiko.h"
 #include "log.h"
 #include "config.h"
 #include "error.h"
+
 #define CLOCKID CLOCK_REALTIME
 //#define SIG SIGRTMIN
 #define NR_POOL 32

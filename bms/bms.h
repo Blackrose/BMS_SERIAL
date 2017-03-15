@@ -6,10 +6,6 @@
 #ifndef _BMS_PACKAGE_INCLUDED_H_
 #define _BMS_PACKAGE_INCLUDED_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // 充电机地址
 #define CAN_ADDR_CHARGER   0x56  // 86
 // BMS地址
@@ -57,6 +53,7 @@ struct can_frame {
 #define RX_WAIT_TIME  100
 #define RX_BUFF_SIZE  1
 #define TX_BUFF_SIZE  1
+
 //add end====================================================================
 
 #pragma pack(1)
@@ -550,10 +547,12 @@ int gen_packet_PGN7424(struct charge_task * thiz,
 int gen_packet_PGN7936(struct charge_task * thiz,
                         struct event_struct* param);
 
-int bms_canbus();
+#ifdef BMS_CC_LANG
+#define EXTERNC		extern "C"
+#else
+#define EXTERNC
+#endif
+
+EXTERNC int bms_canbus();
 
 #endif /*_BMS_PACKAGE_INCLUDED_H_*/
-
-#ifdef __cplusplus
-}
-#endif

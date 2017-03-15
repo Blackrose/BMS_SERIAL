@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     bms/config.c \
     bms/Hachiko.c \
     bms/log.c \
-    bms/tom.c
+    bms/tom.c \
+    global.cpp
 
 HEADERS  += mainbmswindow.h \
     ControlCAN.h \
@@ -31,7 +32,8 @@ HEADERS  += mainbmswindow.h \
     bms/config.h \
     bms/error.h \
     bms/Hachiko.h \
-    bms/log.h
+    bms/log.h \
+    global.h
 
 FORMS    += mainbmswindow.ui
 

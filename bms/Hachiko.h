@@ -3,10 +3,6 @@
 #ifndef _HACHIKO_INCLUDED_H_
 #define _HACHIKO_INCLUDED_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "log.h"
 struct Hachiko_food;
 
@@ -70,6 +66,7 @@ struct Hachiko_CNA_TP_private {
     PRIVATE_STATUS status;
 };
 
+
 void Hachiko_init();
 int _Hachiko_new(struct Hachiko_food *thiz, Hachiko_Type type,
                  unsigned int ttl, Hachiko_status status, void *_private);
@@ -99,7 +96,3 @@ static inline void Hachiko_feed(struct Hachiko_food *dog)
 }
 
 #endif // _HACHIKO_INCLUDED_H_
-
-#ifdef __cplusplus
-}
-#endif

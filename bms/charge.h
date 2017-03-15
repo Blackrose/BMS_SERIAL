@@ -9,10 +9,6 @@
 #ifndef _CHARGE_INCLUDED_H_
 #define _CHARGE_INCLUDED_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 struct charge_task;
 
 #include "Hachiko.h"
@@ -305,8 +301,8 @@ struct charge_task {
     struct pgn4864_BSM bms_battery_status;
 };
 
-struct charge_task tom;
-struct charge_task *task = &tom;
+//struct charge_task tom;
+//struct charge_task *task = &tom;
 
 
 
@@ -457,13 +453,7 @@ typedef enum {
     // }}}
 }ONTOM_FLAG_SINGLE;
 
-/* 遥信定义
- * 系统共计支持512个遥信量
- * remote_single[0:511]
- */
-// 遥信位,遥测偏移定义
-//#include "rsrvdefine.h"
-// 位设置
+
 static inline void bit_set(struct charge_task *tsk, ONTOM_FLAG_SINGLE single)
 {
     volatile unsigned char *byte = tsk->single;
@@ -528,7 +518,3 @@ static inline unsigned short swap_hi_lo_bytes(unsigned short b)
 #define l2b swap_hi_lo_bytes
 
 #endif /*_CHARGE_INCLUDED_H_*/
-
-#ifdef __cplusplus
-}
-#endif

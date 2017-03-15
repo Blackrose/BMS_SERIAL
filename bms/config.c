@@ -50,7 +50,6 @@
 #include "config.h"
 #include "error.h"
 #include "log.h"
-//#include "ajax.h"
 
 static char *value_type[] = {"STRING", "INT", "FLOAT", "BOOL", "N/A"};
 //static char *value_system[] = {"NO", "YES", "N/A"};

@@ -42,7 +42,8 @@ public:
 
 	CanMessageModel(Type type = Receive, QObject *parent = 0);
 	virtual ~CanMessageModel();
-#if 0
+
+#if 1
 	void setData(const CanMessages & data);
 	void addMessage(const QCanMessage& msg, bool count = true);
 	void replaceMessage(const QCanMessage& msg, const QCanMessage& newMsg);

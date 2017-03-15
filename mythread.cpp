@@ -1,4 +1,5 @@
 #include "mythread.h"
+#define BMS_CC_LANG
 #include "bms/bms.h"
 mythread::mythread(QObject *parent) : QThread(parent)
 {

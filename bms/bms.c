@@ -20,19 +20,21 @@
 #endif
 #include <sys/types.h>
 
+
 #include "charge.h"
 #include "Hachiko.h"
 #include "bms.h"
 #include "config.h"
 #include "log.h"
 #include "error.h"
-//#include "controlcan.h"
-#define  BMS_C_LANG
-#include "ControlCAN.h"
+
+#undef BMS_CC_LANG //不使用C++语言
+#include "global.h"
 
 int m_cannum1 = 0;
 int m_devtype1 = 4;
 int m_devind1 = 0;
+//VCI_CAN_OBJ receive_frame;
 
 // 数据包生成器信息
 struct can_pack_generator generator[] = {
@@ -955,6 +957,14 @@ void *thread_bms_write_service(void *arg) ___THREAD_ENTRY___
 //                param.evt_param = EVT_RET_OK;
 //                can_packet_callback(task, EVENT_TX_DONE, &param);
 //            }
+            send_frame.ID = frame.ID;
+            send_frame.DataLen = frame.DataLen;
+            send_frame.ExternFlag = frame.ExternFlag;
+            send_frame.RemoteFlag = frame.RemoteFlag;
+            send_frame.SendType = frame.SendType;
+            memcpy(send_frame.Data,frame.Data,frame.DataLen);
+
+
             param.evt_param = EVT_RET_OK;
             can_packet_callback(task, EVENT_TX_DONE, &param);
 
@@ -1013,7 +1023,7 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
 //    struct ifreq ifr;
     //struct can_frame frame;
     VCI_CAN_OBJ frame;//[RX_BUFF_SIZE];
-    VCI_CAN_OBJ frameinfo[RX_BUFF_SIZE];
+    //VCI_CAN_OBJ frameinfo[RX_BUFF_SIZE];
     VCI_ERR_INFO errinfo;
     int nbytes;
     int i =0;
@@ -1084,8 +1094,14 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
                        frame.Data[5],
                        frame.Data[6],
                        frame.Data[7]);
-
+            receive_frame.ID = frame.ID;
+            receive_frame.DataLen = frame.DataLen;
+            receive_frame.ExternFlag = frame.ExternFlag;
+            receive_frame.RemoteFlag = frame.RemoteFlag;
+            receive_frame.SendType = frame.SendType;
+            memcpy(receive_frame.Data,frame.Data,frame.DataLen);
         }
+
 #if 1
         if ( (frame.ID & 0xFFFF) != CAN_RCV_ID_MASK ) {
             #if 0

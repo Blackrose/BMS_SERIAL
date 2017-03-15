@@ -160,11 +160,18 @@ typedef struct _VCI_AUTO_SEND_OBJ{
 	VCI_CAN_OBJ obj;//报文
 }VCI_AUTO_SEND_OBJ,*PVCI_AUTO_SEND_OBJ;
 
-#ifndef BMS_C_LANG
+//#ifndef BMS_C_LANG
+//#define EXTERNC		extern "C"
+//#else
+//#define EXTERNC
+//#endif
+
+#ifdef BMS_CC_LANG
 #define EXTERNC		extern "C"
 #else
 #define EXTERNC
 #endif
+
 
 EXTERNC DWORD __stdcall VCI_OpenDevice(DWORD DeviceType,DWORD DeviceInd,DWORD Reserved);
 EXTERNC DWORD __stdcall VCI_CloseDevice(DWORD DeviceType,DWORD DeviceInd);

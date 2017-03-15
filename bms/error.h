@@ -1,10 +1,6 @@
 #ifndef _ERROR_H_
 #define _ERROR_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // 没有错误
 #define ERR_OK    0x00000000
 // 有错误
@@ -31,7 +27,3 @@ extern "C" {
 #define ERR_NEED_ECHO   (ERR_ERR|0x01000000)
 
 #endif /*_ERROR_H_*/
-
-#ifdef __cplusplus
-}
-#endif

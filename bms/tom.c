@@ -22,6 +22,7 @@
 #include "error.h"
 #include "log.h"
 #include "Hachiko.h"
+#include "bms.h"
 
 extern void * thread_bms_write_service(void *) ___THREAD_ENTRY___;
 extern void * thread_bms_read_service(void *) ___THREAD_ENTRY___;
@@ -106,7 +107,7 @@ int bms_canbus()
         goto die;
     }
     log_printf(INF, "CAN-BUS reader start up.                           DONE.");
-#else
+//#else
     // BMS读书举报线程，从CAN总线读取数据包后将数据存入读入数据队列等待处理。
     ret = pthread_create( & tid, &attr, thread_bms_read_service,
                           &thread_done[1]);

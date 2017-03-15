@@ -24,7 +24,7 @@ CanMessageModel::~CanMessageModel()
 	// TODO Auto-generated destructor stub
 }
 
-#if 0
+#if 1
 void CanMessageModel::setData(const CanMessages & data)
 {
 	mMessages = data;
@@ -33,35 +33,40 @@ void CanMessageModel::setData(const CanMessages & data)
 void CanMessageModel::addMessage(const QCanMessage& msg, bool count)
 {
 	QCanMessage nmsg = msg;
-	bool isNew = false;
-	if (mMessages.contains(msg.frame.id())) {
-		nmsg.sinceLast = msg.time - mMessages.value(msg.frame.id()).time;
+    bool isNew = false;
+    if (mMessages.contains(msg.frame.ID)) {
+        nmsg.sinceLast = msg.time - mMessages.value(msg.frame.ID).time;
 		if (count)
-			nmsg.count = mMessages.value(msg.frame.id()).count + 1;
+            nmsg.count = mMessages.value(msg.frame.ID).count + 1;
 	} else {
 		nmsg.sinceLast = 0;
 		if (count)
 			nmsg.count = 1;
 		isNew = true;
 	}
-	mMessages.insert(msg.frame.id(), nmsg);
-	int idx = mMessages.keys().indexOf(msg.frame.id());
+    mMessages.insert(msg.frame.ID, nmsg);
+    int idx = mMessages.keys().indexOf(msg.frame.ID);
 	if (isNew) {
-		reset();
+        //reset();
+        beginResetModel();
+        endResetModel();
 	}
 	emit dataChanged(index(idx, 1), index(idx, 4));
 }
 
 void CanMessageModel::replaceMessage(const QCanMessage& oldMsg, const QCanMessage& newMsg)
 {
-	mMessages.remove(oldMsg.frame.id());
+    mMessages.remove(oldMsg.frame.ID);
 	addMessage(newMsg);
 }
 
 void CanMessageModel::deleteMessage(const QCanMessage& msg)
 {
-	if (mMessages.remove(msg.frame.id()) > 0)
-		reset();
+    if (mMessages.remove(msg.frame.ID) > 0){
+        //reset();
+        beginResetModel();
+        endResetModel();
+    }
 }
 #endif
 
@@ -69,6 +74,8 @@ void CanMessageModel::deleteAll()
 {
 	mMessages.clear();
 //	reset();
+    beginResetModel();
+    endResetModel();
 }
 
 
@@ -76,6 +83,8 @@ void CanMessageModel::setShowTrigger(bool show)
 {
 	mShowTrigger = show;
 //	reset();
+    beginResetModel();
+    endResetModel();
 }
 
 
@@ -93,7 +102,7 @@ int CanMessageModel::columnCount(const QModelIndex &) const
 
 QVariant CanMessageModel::data(const QModelIndex &index, int role) const
 {
-#if 0
+#if 1
 	if ((role != Qt::DisplayRole) && (role != Qt::UserRole))
         return QVariant();
 
@@ -105,19 +114,19 @@ QVariant CanMessageModel::data(const QModelIndex &index, int role) const
 
 	switch (index.column()) {
 	case 0:
-		if (msg.frame.isExtendedId()) {
-			return QString("0x%1").arg(msg.frame.id(), 8, 16, QLatin1Char('0'));
+        if (msg.frame.ExternFlag) {
+            return QString("0x%1").arg(msg.frame.ID, 8, 16, QLatin1Char('0'));
 		}
-		return QString("0x%1").arg(msg.frame.id(), 3, 16, QLatin1Char('0'));
+        return QString("0x%1").arg(msg.frame.ID, 3, 16, QLatin1Char('0'));
 	case 1:
-		return msg.frame.dlc();
+        return msg.frame.DataLen;
 	case 2:
-		if (msg.frame.isRtr()) {
+        if (msg.frame.RemoteFlag) {
 			return tr("Remote Request");
 		} else {
 			QString s;
-			for (int i = 0; i < msg.frame.dlc(); i++) {
-				s += QString("%1 ").arg(msg.frame[i], 2, 16, QLatin1Char('0'));
+            for (int i = 0; i < msg.frame.DataLen; i++) {
+                s += QString("%1 ").arg(msg.frame.Data[i], 2, 16, QLatin1Char('0'));
 			}
 			return s;
 		}

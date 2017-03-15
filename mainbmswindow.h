@@ -10,8 +10,9 @@
 #include <process.h>
 #include <stdio.h>
 #include <time.h>
-#undef  BMS_C_LANG
-#include "controlcan.h"
+#define BMS_CC_LANG //使用C++语言
+#include "global.h"
+//#include "controlcan.h"
 //#pragma comment(lib, "controlcan.lib")
 #define msleep(ms)  Sleep(ms)
 //typedef HANDLE pthread_t;

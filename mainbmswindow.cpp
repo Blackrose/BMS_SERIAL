@@ -1,5 +1,6 @@
 #include "mainbmswindow.h"
 #include "ui_mainbmswindow.h"
+#include <QDateTime>
 
 //int MainBMSWindow::m_cannum=0;
 //int MainBMSWindow::m_devtype=4;
@@ -12,8 +13,8 @@ MainBMSWindow::MainBMSWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->pushButton_discon->setVisible(false);
 
-//    connect(&can_timer,SIGNAL(timeout()),this,SLOT(slot_cantimer()));//版本校验下发参数
-//    can_timer.start(100);
+    connect(&can_timer,SIGNAL(timeout()),this,SLOT(slot_cantimer()));//版本校验下发参数
+    can_timer.start(100);
 
 
     mReceiveModel = new CanMessageModel(CanMessageModel::Receive, this);
@@ -102,6 +103,23 @@ void MainBMSWindow::on_checkBox_clicked(bool checked)
 
 void MainBMSWindow::slot_cantimer()
 {
-    can_timer.stop();
-    mythread_can.start(); //bms_canbus();
+    //can_timer.stop();
+    //mythread_can.start(); //bms_canbus();
+    //struct can_frame frame;
+    //VCI_CAN_OBJ frame;
+    CanMessageModel::QCanMessage msg;
+
+    QDateTime now = QDateTime::currentDateTimeUtc();
+    msg.time = now.toMSecsSinceEpoch();
+
+    msg.frame = receive_frame;
+    mReceiveModel->addMessage(msg);
+
+    QString trace = QString("%1.%2      %3    %4    ").arg(msg.time / 1000, 16, 10, QLatin1Char(' ')).arg(msg.time % 1000, 3, 10, QLatin1Char('0')).arg(msg.frame.ID, 8, 16).arg(msg.frame.DataLen);
+    for (int i = 0; i < msg.frame.DataLen; i++) {
+        trace += QString("%1  ").arg(msg.frame.Data[i], 2, 16, QLatin1Char('0'));
+    }
+
+    msg.frame = send_frame;
+    mSendModel->addMessage(msg);
 }
