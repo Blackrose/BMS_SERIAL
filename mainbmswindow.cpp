@@ -1,6 +1,6 @@
 #include "mainbmswindow.h"
 #include "ui_mainbmswindow.h"
-#include <QDateTime>
+
 
 //int MainBMSWindow::m_cannum=0;
 //int MainBMSWindow::m_devtype=4;
@@ -35,11 +35,42 @@ MainBMSWindow::MainBMSWindow(QWidget *parent) :
     ui->tableViewSend->horizontalHeader()->resizeSection(3, 60);
     ui->tableViewSend->horizontalHeader()->resizeSection(4, 60);
     ui->tableViewSend->horizontalHeader()->resizeSection(5, 60);
+    my_tooltip();
 }
 
 MainBMSWindow::~MainBMSWindow()
 {
     delete ui;
+}
+
+#if 0 //可设置为全部显示注释
+bool MainBMSWindow::event(QEvent *event)
+ {
+    //QGraphicsScene scene;
+    //QTransform transform;
+    //transform.rotate(+0.0);
+
+     if (event->type() == QEvent::ToolTip) {
+         QHelpEvent *helpEvent = static_cast<QHelpEvent *>(event);
+         //int index = itemAt(helpEvent->pos());
+         //if (index != -1) {
+         ui->groupBox_28->setToolTip("333333");
+             QToolTip::showText(helpEvent->globalPos(),ui->groupBox_28->toolTip());
+//         } else {
+//             QToolTip::hideText();
+//             event->ignore();
+//         }
+
+         return true;
+     }
+     return QWidget::event(event);
+ }
+#endif
+
+void MainBMSWindow::my_tooltip()
+{
+    ui->groupBox_CML_V->setToolTip("最高/低输出电压");
+    QToolTip::showText(ui->groupBox_CML_V->pos(),ui->groupBox_CML_V->toolTip());
 }
 
 void MainBMSWindow::on_pushButton_connect_clicked()
@@ -105,8 +136,7 @@ void MainBMSWindow::slot_cantimer()
 {
     //can_timer.stop();
     //mythread_can.start(); //bms_canbus();
-    //struct can_frame frame;
-    //VCI_CAN_OBJ frame;
+
     CanMessageModel::QCanMessage msg;
 
     QDateTime now = QDateTime::currentDateTimeUtc();

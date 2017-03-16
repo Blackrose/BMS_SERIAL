@@ -1,11 +1,10 @@
 /*
  *  file:		canmessagemodel.h
- *  author:		jrenken
+ *  author:		andy
  *
- *  $Rev: 74 $
- *  $Author: jrenken $
- *  $Date: 2012-08-30 15:50:09 +0200 (Do, 30 Aug 2012) $
- *  $Id: canmessagemodel.h 74 2012-08-30 13:50:09Z jrenken $
+ *  $Author: andy $
+ *  $Date: 2017-03-15 15:50:09 $
+ *  $Id: canmessagemodel.h 2017-03-15 13:50:09Z andy $
  */
 
 #ifndef CANMESSAGEMODEL_H_

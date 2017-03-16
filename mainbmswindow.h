@@ -4,6 +4,15 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QTimer>
+#include <QEvent>
+#include <QDateTime>
+#include <QToolTip>
+//#include <QGraphicsItem>
+//#include <QGraphicsScene>
+//#include <QGraphicsRectItem>
+//#include <QGraphicsView>
+//#include <QHelpEvent>
+
 
 #ifdef WIN32 // for windows
 #include <windows.h>
@@ -42,6 +51,8 @@ class MainBMSWindow : public QMainWindow
 public:
     explicit MainBMSWindow(QWidget *parent = 0);
     ~MainBMSWindow();
+    //bool event(QEvent *event);
+    void my_tooltip();
 
     int m_cannum = 0;
     int m_devtype = 4;
