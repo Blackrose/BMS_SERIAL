@@ -70,7 +70,9 @@ bool MainBMSWindow::event(QEvent *event)
 void MainBMSWindow::my_tooltip()
 {
     ui->groupBox_CML_V->setToolTip("最高/低输出电压");
+    ui->groupBox_CML_A->setToolTip("最大/小输出电流");
     QToolTip::showText(ui->groupBox_CML_V->pos(),ui->groupBox_CML_V->toolTip());
+    QToolTip::showText(ui->groupBox_CML_A->pos(),ui->groupBox_CML_A->toolTip());
 }
 
 void MainBMSWindow::on_pushButton_connect_clicked()

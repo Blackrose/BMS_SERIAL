@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1300</width>
+    <width>1600</width>
     <height>700</height>
    </rect>
   </property>
@@ -157,7 +157,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>充电机</string>
+      <string>充电机_CRM</string>
      </property>
      <widget class="QGroupBox" name="groupBox_SPN2560">
       <property name="geometry">
@@ -239,7 +239,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>BMS</string>
+      <string>BMS_BRM</string>
      </property>
      <widget class="QGroupBox" name="groupBox_SPN2565">
       <property name="geometry">
@@ -314,6 +314,46 @@
        <item>
         <property name="text">
          <string>01H:铅酸电池</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>02H:镍氢电池</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>03H:磷酸铁锂电池</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>04H:锰酸锂电池</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>05H:钴酸锂电池</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>06H:三元材料电池</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>07H:聚合物锂离子电池</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>08H:钛酸锂电池</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>FFH:其他电池</string>
         </property>
        </item>
       </widget>
@@ -414,7 +454,7 @@
      </layout>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="groupBox_3">
+   <widget class="QGroupBox" name="groupBox_CP">
     <property name="geometry">
      <rect>
       <x>600</x>
@@ -436,9 +476,9 @@
       </rect>
      </property>
      <property name="title">
-      <string>BMS</string>
+      <string>BMS_BRO</string>
      </property>
-     <widget class="QGroupBox" name="groupBox_25">
+     <widget class="QGroupBox" name="groupBox_BCP">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -651,7 +691,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>充电机</string>
+      <string>充电机_CRO</string>
      </property>
      <widget class="QGroupBox" name="groupBox_SPN2830">
       <property name="geometry">
@@ -801,38 +841,12 @@
      </widget>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="groupBox_5">
-    <property name="geometry">
-     <rect>
-      <x>790</x>
-      <y>260</y>
-      <width>371</width>
-      <height>101</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>充电结束阶段</string>
-    </property>
-    <widget class="QGroupBox" name="groupBox_4">
-     <property name="geometry">
-      <rect>
-       <x>190</x>
-       <y>30</y>
-       <width>281</width>
-       <height>121</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>充电阶段</string>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QGroupBox" name="groupBox_6">
+   <widget class="QGroupBox" name="groupBox_send">
     <property name="geometry">
      <rect>
       <x>30</x>
       <y>280</y>
-      <width>651</width>
+      <width>221</width>
       <height>171</height>
      </rect>
     </property>
@@ -844,8 +858,8 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>631</width>
-       <height>171</height>
+       <width>181</width>
+       <height>141</height>
       </rect>
      </property>
      <property name="font">
@@ -865,12 +879,12 @@
      </attribute>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="groupBox_7">
+   <widget class="QGroupBox" name="groupBox_receive">
     <property name="geometry">
      <rect>
       <x>30</x>
       <y>470</y>
-      <width>651</width>
+      <width>211</width>
       <height>161</height>
      </rect>
     </property>
@@ -882,7 +896,7 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>631</width>
+       <width>191</width>
        <height>131</height>
       </rect>
      </property>
@@ -900,13 +914,13 @@
      </attribute>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="groupBox_8">
+   <widget class="QGroupBox" name="groupBox_warning">
     <property name="geometry">
      <rect>
-      <x>790</x>
-      <y>390</y>
-      <width>371</width>
-      <height>111</height>
+      <x>60</x>
+      <y>590</y>
+      <width>111</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="title">
@@ -935,7 +949,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>充电机</string>
+      <string>充电机_CHM</string>
      </property>
      <widget class="QGroupBox" name="groupBox_C_SPN">
       <property name="geometry">
@@ -982,7 +996,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>BMS</string>
+      <string>BMS_BHM</string>
      </property>
      <widget class="QGroupBox" name="groupBox_B_SPN">
       <property name="geometry">
@@ -1063,10 +1077,10 @@
    <widget class="QToolBox" name="toolBox">
     <property name="geometry">
      <rect>
-      <x>1180</x>
-      <y>20</y>
+      <x>90</x>
+      <y>450</y>
       <width>111</width>
-      <height>211</height>
+      <height>81</height>
      </rect>
     </property>
     <property name="toolTip">
@@ -1081,7 +1095,7 @@
        <x>0</x>
        <y>0</y>
        <width>111</width>
-       <height>159</height>
+       <height>29</height>
       </rect>
      </property>
      <attribute name="label">
@@ -1093,7 +1107,7 @@
         <x>10</x>
         <y>20</y>
         <width>81</width>
-        <height>121</height>
+        <height>41</height>
        </rect>
       </property>
      </widget>
@@ -1104,7 +1118,7 @@
        <x>0</x>
        <y>0</y>
        <width>111</width>
-       <height>159</height>
+       <height>29</height>
       </rect>
      </property>
      <attribute name="label">
@@ -1125,13 +1139,3405 @@
      <string>物理连接完成</string>
     </property>
    </widget>
+   <widget class="QGroupBox" name="groupBox_Charging">
+    <property name="geometry">
+     <rect>
+      <x>1000</x>
+      <y>10</y>
+      <width>291</width>
+      <height>621</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>充电阶段</string>
+    </property>
+    <widget class="QGroupBox" name="groupBox_CCS">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>131</width>
+       <height>211</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>充电机_CCS</string>
+     </property>
+     <widget class="QGroupBox" name="groupBox_SPN3081">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>111</width>
+        <height>81</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>SPN3081/SPN3082</string>
+      </property>
+      <widget class="QWidget" name="layoutWidget_11">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>91</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_19">
+        <item>
+         <widget class="QLabel" name="label_14">
+          <property name="text">
+           <string>电压</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_spn3081"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_26">
+          <property name="minimumSize">
+           <size>
+            <width>10</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>V</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="layoutWidget_14">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>50</y>
+         <width>91</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_22">
+        <item>
+         <widget class="QLabel" name="label_25">
+          <property name="text">
+           <string>电流</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_spn3082"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_27">
+          <property name="minimumSize">
+           <size>
+            <width>10</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>A</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_SPN3083">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>100</y>
+        <width>111</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string extracomment="最高/低输出电压"/>
+      </property>
+      <property name="toolTipDuration">
+       <number>-1</number>
+      </property>
+      <property name="title">
+       <string>SPN3083</string>
+      </property>
+      <widget class="QWidget" name="layoutWidget_12">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>91</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_20">
+        <item>
+         <widget class="QLabel" name="label_18">
+          <property name="text">
+           <string>时间</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_spn3083"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_22">
+          <property name="minimumSize">
+           <size>
+            <width>20</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>min</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_SPN3929">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>150</y>
+        <width>111</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string extracomment="最高/低输出电流"/>
+      </property>
+      <property name="title">
+       <string>SPN3929</string>
+      </property>
+      <widget class="QWidget" name="layoutWidget_13">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>93</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_21">
+        <item>
+         <widget class="QLabel" name="label_23">
+          <property name="text">
+           <string>状态</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_spn3929"/>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboBox_spn3929">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <item>
+           <property name="text">
+            <string>00</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>01</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_BCL">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>20</y>
+       <width>131</width>
+       <height>211</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>BMS_BCL</string>
+     </property>
+     <widget class="QGroupBox" name="groupBox_SPN3072">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>111</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>SPN3072</string>
+      </property>
+      <widget class="QWidget" name="layoutWidget_20">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>91</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_30">
+        <item>
+         <widget class="QLabel" name="label_34">
+          <property name="minimumSize">
+           <size>
+            <width>50</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>需求电压</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_spn3072"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_SPN3073">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>70</y>
+        <width>111</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>SPN3073</string>
+      </property>
+      <widget class="QWidget" name="layoutWidget_21">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>91</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_31">
+        <item>
+         <widget class="QLabel" name="label_36">
+          <property name="minimumSize">
+           <size>
+            <width>50</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>需求电流</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_spn3073"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_SPN3074">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>120</y>
+        <width>111</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>SPN3074</string>
+      </property>
+      <widget class="QWidget" name="layoutWidget_22">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>91</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_32">
+        <item>
+         <widget class="QComboBox" name="comboBox_spn3074">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <item>
+           <property name="text">
+            <string>0x01:恒压充电</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>0x02:恒流充电</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_23">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>180</y>
+        <width>91</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_33">
+       <item>
+        <widget class="QLabel" name="label_38">
+         <property name="text">
+          <string>周期</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_T_BCL">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>250ms</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_BSM">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>230</y>
+       <width>131</width>
+       <height>381</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>BMS_BSM</string>
+     </property>
+     <widget class="QWidget" name="layoutWidget_5">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>21</y>
+        <width>111</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_23">
+       <item>
+        <widget class="QLabel" name="label_24">
+         <property name="text">
+          <string>SPN3085</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEdit_spn3085"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_6">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>50</y>
+        <width>111</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_24">
+       <item>
+        <widget class="QLabel" name="label_28">
+         <property name="text">
+          <string>SPN3086</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEdit_spn3086"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_15">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>80</y>
+        <width>111</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_25">
+       <item>
+        <widget class="QLabel" name="label_29">
+         <property name="text">
+          <string>SPN3087</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEdit_spn3087"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_16">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>110</y>
+        <width>111</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_26">
+       <item>
+        <widget class="QLabel" name="label_30">
+         <property name="text">
+          <string>SPN3088</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEdit_spn3088"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_17">
+      <property name="geometry">
+       <rect>
+        <x>9</x>
+        <y>140</y>
+        <width>111</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_27">
+       <item>
+        <widget class="QLabel" name="label_31">
+         <property name="text">
+          <string>SPN3089</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEdit_spn3089"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_18">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>170</y>
+        <width>121</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_28">
+       <item>
+        <widget class="QLabel" name="label_32">
+         <property name="text">
+          <string>SPN3090</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_spn3090">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>00:正常</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>01:过高</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>10:过低</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_19">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>200</y>
+        <width>120</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_29">
+       <item>
+        <widget class="QLabel" name="label_33">
+         <property name="text">
+          <string>SPN3091</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_spn3091">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>00:正常</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>01:过高</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>10:过低</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_29">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>230</y>
+        <width>120</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_39">
+       <item>
+        <widget class="QLabel" name="label_35">
+         <property name="text">
+          <string>SPN3092</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_spn3092">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>00:正常</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>01:过流</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>10:不可信</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_30">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>260</y>
+        <width>120</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_40">
+       <item>
+        <widget class="QLabel" name="label_43">
+         <property name="text">
+          <string>SPN3093</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_spn3093">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>00:正常</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>01:过高</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>10:不可信</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_31">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>290</y>
+        <width>120</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_41">
+       <item>
+        <widget class="QLabel" name="label_44">
+         <property name="text">
+          <string>SPN3094</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_spn3094">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>00:正常</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>01:不正常</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>10:不可信</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_32">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>320</y>
+        <width>120</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_42">
+       <item>
+        <widget class="QLabel" name="label_45">
+         <property name="text">
+          <string>SPN3095</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_spn3095">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>00:正常</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>01:不正常</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>10:不可信</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_33">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>350</y>
+        <width>120</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_43">
+       <item>
+        <widget class="QLabel" name="label_46">
+         <property name="text">
+          <string>SPN3096</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_spn3096">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>01:允许</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>00:禁止</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_BCS">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>230</y>
+       <width>131</width>
+       <height>261</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>BMS_BCS</string>
+     </property>
+     <widget class="QGroupBox" name="groupBox_SPN3077">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>70</y>
+        <width>111</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>SPN3077</string>
+      </property>
+      <widget class="QWidget" name="layoutWidget_24">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>92</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_34">
+        <item>
+         <widget class="QLineEdit" name="lineEdit_spn3077_1"/>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_spn3077_2"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_SPN3078">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>120</y>
+        <width>111</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>SPN3078</string>
+      </property>
+      <widget class="QWidget" name="layoutWidget_25">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>91</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_35">
+        <item>
+         <widget class="QLabel" name="label_37">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>SOC</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_spn3078"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_27">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>230</y>
+        <width>91</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_37">
+       <item>
+        <widget class="QLabel" name="label_39">
+         <property name="text">
+          <string>周期</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_T_BCS">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>250ms</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_SPN3075">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>111</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string extracomment="最高/低输出电压"/>
+      </property>
+      <property name="toolTipDuration">
+       <number>-1</number>
+      </property>
+      <property name="title">
+       <string>SPN3075/SPN3076</string>
+      </property>
+      <widget class="QWidget" name="layoutWidget_26">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>91</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_36">
+        <item>
+         <widget class="QLineEdit" name="lineEdit_spn3075"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_40">
+          <property name="text">
+           <string>V</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_spn3076"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_41">
+          <property name="minimumSize">
+           <size>
+            <width>10</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>A</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_SPN3079">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>170</y>
+        <width>111</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>SPN3079</string>
+      </property>
+      <widget class="QWidget" name="layoutWidget_28">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>91</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_38">
+        <item>
+         <widget class="QLabel" name="label_42">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>剩余时间</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_spn3079"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_Charging_2">
+    <property name="geometry">
+     <rect>
+      <x>630</x>
+      <y>260</y>
+      <width>371</width>
+      <height>371</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string/>
+    </property>
+    <widget class="QGroupBox" name="groupBox_BST">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>20</y>
+       <width>371</width>
+       <height>351</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>BMS_BST</string>
+     </property>
+     <widget class="QGroupBox" name="groupBox_SPN3511">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>191</width>
+        <height>141</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string extracomment="最高/低输出电流"/>
+      </property>
+      <property name="title">
+       <string>SPN3511</string>
+      </property>
+      <widget class="QComboBox" name="comboBox_spn3511_2">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>50</y>
+         <width>171</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>00:未达到总电压设定值</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>01:达到总电压设定值</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10:不可信</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QComboBox" name="comboBox_spn3511_3">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>80</y>
+         <width>171</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>00:未达到单体电压设定值</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>01:达到单体电压设定值</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10:不可信</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QComboBox" name="comboBox_spn3511_4">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>110</y>
+         <width>171</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>00:正常</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>01:充电机中止</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10:不可信</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QComboBox" name="comboBox_spn3511_1">
+       <property name="geometry">
+        <rect>
+         <x>11</x>
+         <y>21</y>
+         <width>171</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>00:未达到所需SOC值</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>01:达到所需SOC值</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10:不可信</string>
+        </property>
+       </item>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_SPN3512">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>190</y>
+        <width>351</width>
+        <height>141</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string extracomment="最高/低输出电流"/>
+      </property>
+      <property name="title">
+       <string>SPN3512</string>
+      </property>
+      <widget class="QComboBox" name="comboBox_spn3512_2">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>50</y>
+         <width>171</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>00:输出连接器正常</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>01:输出连接器故障</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10:不可信</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QComboBox" name="comboBox_spn3512_3">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>80</y>
+         <width>171</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>00:BMS元件输出连接器正常</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>01:BMS元件输出连接器故障</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10:不可信</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QComboBox" name="comboBox_spn3512_4">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>110</y>
+         <width>171</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>00:充电连接器正常</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>01:充电连接器故障</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10:不可信</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QComboBox" name="comboBox_spn3512_1">
+       <property name="geometry">
+        <rect>
+         <x>11</x>
+         <y>21</y>
+         <width>171</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>00:绝缘正常</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>01:绝缘故障</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10:不可信</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QComboBox" name="comboBox_spn3512_5">
+       <property name="geometry">
+        <rect>
+         <x>190</x>
+         <y>20</y>
+         <width>151</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>00:电池组温度正常</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>01:电池组温度过高</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10:不可信</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QComboBox" name="comboBox_spn3512_6">
+       <property name="geometry">
+        <rect>
+         <x>190</x>
+         <y>50</y>
+         <width>151</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>00:高压继电器正常</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>01:高压继电器故障</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10:不可信</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QComboBox" name="comboBox_spn3512_7">
+       <property name="geometry">
+        <rect>
+         <x>190</x>
+         <y>80</y>
+         <width>151</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>00:检测点2电压检测正常</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>01:检测点2电压检测故障</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10:不可信</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QComboBox" name="comboBox_spn3512_8">
+       <property name="geometry">
+        <rect>
+         <x>190</x>
+         <y>110</y>
+         <width>151</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>00:其他正常</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>01:其他故障</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10:不可信</string>
+        </property>
+       </item>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_SPN3513">
+      <property name="geometry">
+       <rect>
+        <x>210</x>
+        <y>20</y>
+        <width>151</width>
+        <height>141</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string extracomment="最高/低输出电流"/>
+      </property>
+      <property name="title">
+       <string>SPN3513</string>
+      </property>
+      <widget class="QComboBox" name="comboBox_spn3513_2">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>50</y>
+         <width>131</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>00:电压正常</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>01:电压异常</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10:不可信</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QComboBox" name="comboBox_spn3513_1">
+       <property name="geometry">
+        <rect>
+         <x>11</x>
+         <y>21</y>
+         <width>131</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>00:电流正常</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>01:电流过大</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10:不可信</string>
+        </property>
+       </item>
+      </widget>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_Charging_3">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>260</y>
+      <width>371</width>
+      <height>371</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string/>
+    </property>
+    <widget class="QGroupBox" name="groupBox_CST">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>20</y>
+       <width>371</width>
+       <height>351</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>充电机_CST</string>
+     </property>
+     <widget class="QGroupBox" name="groupBox_SPN3521">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>191</width>
+        <height>141</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string extracomment="最高/低输出电流"/>
+      </property>
+      <property name="title">
+       <string>SPN3521</string>
+      </property>
+      <widget class="QComboBox" name="comboBox_spn3521_2">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>50</y>
+         <width>171</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>00:正常</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>01:人工中止</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10:不可信</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QComboBox" name="comboBox_spn3521_3">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>80</y>
+         <width>171</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>00:正常</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>01:故障中止</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10:不可信</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QComboBox" name="comboBox_spn3521_4">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>110</y>
+         <width>171</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>00:正常</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>01:BMS中止</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10:不可信</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QComboBox" name="comboBox_spn3521_1">
+       <property name="geometry">
+        <rect>
+         <x>11</x>
+         <y>21</y>
+         <width>171</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>00:正常</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>01:达到充电机设定条件中止</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10:不可信</string>
+        </property>
+       </item>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_SPN3522">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>190</y>
+        <width>351</width>
+        <height>141</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string extracomment="最高/低输出电流"/>
+      </property>
+      <property name="title">
+       <string>SPN3522</string>
+      </property>
+      <widget class="QComboBox" name="comboBox_spn3522_2">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>50</y>
+         <width>171</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>00:充电连接器正常</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>01:充电连接器故障</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10:不可信</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QComboBox" name="comboBox_spn3522_3">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>80</y>
+         <width>171</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>00:充电机内部温度正常</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>01:充电机内部过温</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10:不可信</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QComboBox" name="comboBox_spn3522_1">
+       <property name="geometry">
+        <rect>
+         <x>11</x>
+         <y>21</y>
+         <width>171</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>00:充电机温度正常</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>01:充电机过温</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10:不可信</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QComboBox" name="comboBox_spn3522_4">
+       <property name="geometry">
+        <rect>
+         <x>190</x>
+         <y>20</y>
+         <width>151</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>00:电量传送正常</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>01:电量不能传送</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10:不可信</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QComboBox" name="comboBox_spn3522_5">
+       <property name="geometry">
+        <rect>
+         <x>190</x>
+         <y>50</y>
+         <width>151</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>00:正常</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>01:充电机急停</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10:不可信</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QComboBox" name="comboBox_spn3522_6">
+       <property name="geometry">
+        <rect>
+         <x>190</x>
+         <y>80</y>
+         <width>151</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>00:其他正常</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>01:其他故障</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10:不可信</string>
+        </property>
+       </item>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_SPN3523">
+      <property name="geometry">
+       <rect>
+        <x>210</x>
+        <y>20</y>
+        <width>151</width>
+        <height>141</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string extracomment="最高/低输出电流"/>
+      </property>
+      <property name="title">
+       <string>SPN3523</string>
+      </property>
+      <widget class="QComboBox" name="comboBox_spn3523_2">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>50</y>
+         <width>131</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>00:电压正常</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>01:电压异常</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10:不可信</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QComboBox" name="comboBox_spn3523_1">
+       <property name="geometry">
+        <rect>
+         <x>11</x>
+         <y>21</y>
+         <width>131</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>00:电流匹配</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>01:电流不匹配</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10:不可信</string>
+        </property>
+       </item>
+      </widget>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_end">
+    <property name="geometry">
+     <rect>
+      <x>1300</x>
+      <y>10</y>
+      <width>281</width>
+      <height>471</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>充电结束阶段</string>
+    </property>
+    <widget class="QGroupBox" name="groupBox_BSD">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>121</width>
+       <height>191</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>BMS_BSD</string>
+     </property>
+     <widget class="QGroupBox" name="groupBox_SPN3601">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>20</y>
+        <width>111</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>SPN3601</string>
+      </property>
+      <widget class="QWidget" name="layoutWidget_41">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>91</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_52">
+        <item>
+         <widget class="QLabel" name="label_55">
+          <property name="text">
+           <string>SOC</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_spn3601"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_SPN3604">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>130</y>
+        <width>111</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string extracomment="最高/低输出电流"/>
+      </property>
+      <property name="title">
+       <string>SPN3604/SPN3605</string>
+      </property>
+      <widget class="QWidget" name="layoutWidget_34">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>91</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_45">
+        <item>
+         <widget class="QLineEdit" name="lineEdit_spn3604"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_48">
+          <property name="text">
+           <string>C</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_spn3605"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_49">
+          <property name="minimumSize">
+           <size>
+            <width>10</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>C</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_SPN3602">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>70</y>
+        <width>111</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string extracomment="最高/低输出电压"/>
+      </property>
+      <property name="toolTipDuration">
+       <number>-1</number>
+      </property>
+      <property name="title">
+       <string>SPN3602/SPN3603</string>
+      </property>
+      <widget class="QWidget" name="layoutWidget_35">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>91</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_46">
+        <item>
+         <widget class="QLineEdit" name="lineEdit_spn3602"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_50">
+          <property name="text">
+           <string>V</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_spn3603"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_51">
+          <property name="minimumSize">
+           <size>
+            <width>10</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>V</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_CSD">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>20</y>
+       <width>131</width>
+       <height>191</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>充电机_CSD</string>
+     </property>
+     <widget class="QGroupBox" name="groupBox_SPN3611">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>111</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>SPN3611</string>
+      </property>
+      <widget class="QWidget" name="layoutWidget_42">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>91</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_53">
+        <item>
+         <widget class="QLabel" name="label_56">
+          <property name="text">
+           <string>时间</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_spn3611"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_SPN3612">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>70</y>
+        <width>111</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string extracomment="最高/低输出电压"/>
+      </property>
+      <property name="toolTipDuration">
+       <number>-1</number>
+      </property>
+      <property name="title">
+       <string>SPN3612</string>
+      </property>
+      <widget class="QWidget" name="layoutWidget_43">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>91</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_54">
+        <item>
+         <widget class="QLabel" name="label_57">
+          <property name="text">
+           <string>输出能量</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_spn3612"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_SPN3613">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>130</y>
+        <width>111</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string extracomment="最高/低输出电流"/>
+      </property>
+      <property name="title">
+       <string>SPN3613</string>
+      </property>
+      <widget class="QWidget" name="layoutWidget_44">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>91</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_55">
+        <item>
+         <widget class="QLabel" name="label_59">
+          <property name="text">
+           <string>编号</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_spn3613"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_BEM">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>220</y>
+       <width>131</width>
+       <height>241</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>BMS_BEM</string>
+     </property>
+     <widget class="QWidget" name="layoutWidget_45">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>30</y>
+        <width>121</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_56">
+       <item>
+        <widget class="QLabel" name="label_61">
+         <property name="text">
+          <string>SPN3901</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_spn3901">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>00:正常</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>01:超时</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>10:不可信</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_46">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>60</y>
+        <width>120</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_57">
+       <item>
+        <widget class="QLabel" name="label_62">
+         <property name="text">
+          <string>SPN3902</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_spn3902">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>00:正常</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>01:超时</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>10:不可信</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_47">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>90</y>
+        <width>120</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_58">
+       <item>
+        <widget class="QLabel" name="label_63">
+         <property name="text">
+          <string>SPN3903</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_spn3903">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>00:正常</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>01:超时</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>10:不可信</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_48">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>120</y>
+        <width>120</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_59">
+       <item>
+        <widget class="QLabel" name="label_64">
+         <property name="text">
+          <string>SPN3904</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_spn3904">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>00:正常</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>01:超时</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>10:不可信</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_49">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>150</y>
+        <width>120</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_60">
+       <item>
+        <widget class="QLabel" name="label_65">
+         <property name="text">
+          <string>SPN3905</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_spn3905">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>00:正常</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>01:超时</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>10:不可信</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_50">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>180</y>
+        <width>120</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_61">
+       <item>
+        <widget class="QLabel" name="label_66">
+         <property name="text">
+          <string>SPN3906</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_spn3906">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>00:正常</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>01:超时</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>10:不可信</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_51">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>210</y>
+        <width>120</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_62">
+       <item>
+        <widget class="QLabel" name="label_67">
+         <property name="text">
+          <string>SPN3907</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_spn3907">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>00:正常</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>01:超时</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>10:不可信</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_CEM">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>220</y>
+       <width>131</width>
+       <height>241</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>充电机_CEM</string>
+     </property>
+     <widget class="QWidget" name="layoutWidget_52">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>30</y>
+        <width>121</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_63">
+       <item>
+        <widget class="QLabel" name="label_68">
+         <property name="text">
+          <string>SPN3921</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_spn3921">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>00:正常</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>01:超时</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>10:不可信</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_53">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>60</y>
+        <width>120</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_64">
+       <item>
+        <widget class="QLabel" name="label_69">
+         <property name="text">
+          <string>SPN3922</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_spn3922">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>00:正常</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>01:超时</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>10:不可信</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_54">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>90</y>
+        <width>120</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_65">
+       <item>
+        <widget class="QLabel" name="label_70">
+         <property name="text">
+          <string>SPN3923</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_spn3923">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>00:正常</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>01:超时</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>10:不可信</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_55">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>120</y>
+        <width>120</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_66">
+       <item>
+        <widget class="QLabel" name="label_71">
+         <property name="text">
+          <string>SPN3924</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_spn3924">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>00:正常</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>01:超时</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>10:不可信</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_56">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>150</y>
+        <width>120</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_67">
+       <item>
+        <widget class="QLabel" name="label_72">
+         <property name="text">
+          <string>SPN3925</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_spn3925">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>00:正常</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>01:超时</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>10:不可信</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_57">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>180</y>
+        <width>120</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_68">
+       <item>
+        <widget class="QLabel" name="label_73">
+         <property name="text">
+          <string>SPN3926</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_spn3926">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>00:正常</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>01:超时</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>10:不可信</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_58">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>210</y>
+        <width>120</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_69">
+       <item>
+        <widget class="QLabel" name="label_74">
+         <property name="text">
+          <string>SPN3927</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_spn3927">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>00:正常</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>01:超时</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>10:不可信</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1300</width>
+     <width>1600</width>
      <height>22</height>
     </rect>
    </property>
