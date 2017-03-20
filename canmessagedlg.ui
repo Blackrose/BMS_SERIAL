@@ -49,10 +49,10 @@
      <item row="1" column="0">
       <widget class="QLineEdit" name="lineEditId">
        <property name="inputMask">
-        <string>HHH</string>
+        <string>HHHHHHHH</string>
        </property>
        <property name="text">
-        <string>000</string>
+        <string>00000000</string>
        </property>
        <property name="cursorMoveStyle">
         <enum>Qt::VisualMoveStyle</enum>
@@ -235,6 +235,12 @@
       <widget class="QCheckBox" name="checkBoxExtended">
        <property name="text">
         <string>Extended Frame</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+       <property name="tristate">
+        <bool>false</bool>
        </property>
       </widget>
      </item>

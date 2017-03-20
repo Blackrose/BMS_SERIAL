@@ -12,6 +12,7 @@ MainBMSWindow::MainBMSWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->pushButton_discon->setVisible(false);
+    connect(ui->actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
     connect(&can_timer,SIGNAL(timeout()),this,SLOT(slot_cantimer()));//版本校验下发参数
     can_timer.start(100);
@@ -35,7 +36,17 @@ MainBMSWindow::MainBMSWindow(QWidget *parent) :
     ui->tableViewSend->horizontalHeader()->resizeSection(3, 60);
     ui->tableViewSend->horizontalHeader()->resizeSection(4, 60);
     ui->tableViewSend->horizontalHeader()->resizeSection(5, 60);
+
+    QItemSelectionModel *selectionModel = new QItemSelectionModel(mSendModel);
+    ui->tableViewSend->setSelectionModel(selectionModel);
+
+
     my_tooltip();
+
+    mScheduler = new CanSendScheduler(this);
+    connect(mScheduler, SIGNAL(jobScheduled(QCanMessage&)), this, SLOT(sendMessage(QCanMessage&)));
+
+
 }
 
 MainBMSWindow::~MainBMSWindow()
@@ -176,6 +187,177 @@ void MainBMSWindow::on_checkBox_clicked(bool checked)
     }
 }
 
+void MainBMSWindow::on_actionConnect_triggered()
+{
+#if 0
+    ConnectDlg	dlg;
+
+    if (!mConnection.device.isEmpty()) {
+        dlg.setInterface(mConnection.device);
+    }
+    if (mConnection.appFilter) {
+        dlg.setFilter(mConnection.filter);
+    }
+    if (mConnection.errorMask) {
+        dlg.setErrorFrameMask(mConnection.errorMask);
+    }
+    if (dlg.exec() == QDialog::Accepted) {
+        QString iface = dlg.interface();
+        if (!iface.isEmpty()) {
+            mSocket.close();
+            if (mSocket.bind(iface, QIODevice::ReadWrite)) {
+                ui.actionDisconnect->setEnabled(true);
+                ui.labelBusError->setText("Ok");
+                mConnection.device = iface;
+                ui.labelDevice->setText(iface);
+                if (dlg.filterMessages()) {
+                    QPair<quint32, quint32> filter = dlg.filter();
+                    mSocket.setMessageFilter(filter);
+                    mConnection.filter = filter;
+                    mConnection.appFilter = true;
+                } else {
+                    mConnection.filter = QPair<quint32, quint32>(0, 0);
+                    mConnection.appFilter = false;
+                }
+                if (dlg.generateErrorFrames()) {
+                    mSocket.setErrorFilter(dlg.errorFrameMask());
+                    mConnection.errorMask = dlg.errorFrameMask();
+                } else {
+                    mConnection.errorMask = 0;
+                }
+
+            }
+        }
+
+    }
+#endif
+}
+
+void MainBMSWindow::on_actionDisconnect_triggered()
+{
+    //mSocket.close();
+    //ui.labelBusError->setText("offline");
+    ui->actionDisconnect->setEnabled(false);
+}
+
+void MainBMSWindow::sendMessage(QCanMessage& msg)
+{
+//    mSocket.write(msg.frame.frame(), msg.frame.size());
+    msg.count++;
+    mSendModel->addMessage(msg);
+}
+
+void MainBMSWindow::on_actionSend_triggered()
+{
+    QModelIndex idx = ui->tableViewSend->selectionModel()->currentIndex();
+    if (!idx.isValid()) return;
+
+    QByteArray ba = idx.data(Qt::UserRole).toByteArray();
+    QCanMessage *msg = reinterpret_cast<QCanMessage*>(ba.data());
+    sendMessage(*msg);
+}
+
+void MainBMSWindow::on_actionNew_triggered()
+{
+    CanMessageDlg dlg;
+    if (dlg.exec() == QDialog::Accepted) {
+        QCanMessage msg = dlg.getMessage();
+        mSendModel->addMessage(msg, false);
+        mScheduler->addJob(msg);
+    }
+}
+
+void MainBMSWindow::on_actionDelete_triggered()
+{
+    QModelIndex idx = ui->tableViewSend->selectionModel()->currentIndex();
+    if (!idx.isValid()) return;
+
+    QByteArray ba = idx.data(Qt::UserRole).toByteArray();
+    QCanMessage *msg = reinterpret_cast<QCanMessage*>(ba.data());
+    mSendModel->deleteMessage(*msg);
+    mScheduler->removeJob(*msg);
+}
+
+void MainBMSWindow::on_actionClearAll_triggered()
+{
+    mSendModel->deleteAll();
+    mScheduler->clearAll();
+}
+
+void MainBMSWindow::on_actionEdit_triggered()
+{
+    QModelIndex idx = ui->tableViewSend->selectionModel()->currentIndex();
+
+    on_tableViewSend_doubleClicked(idx);
+}
+
+void MainBMSWindow::on_actionClear_triggered()
+{
+    mReceiveModel->deleteAll();
+}
+
+void MainBMSWindow::onCanbusError(quint32 error)
+{
+//    QString s;
+//    if (error) {
+//        if (error & CAN_ERR_TX_TIMEOUT)
+//            s += "TX timeout ";
+//        if (error & CAN_ERR_LOSTARB )
+//            s += "| lost arb. ";
+//        if (error & CAN_ERR_CRTL)
+//            s += "| ctrl err. ";
+//        if (error & CAN_ERR_PROT)
+//            s += "| proto. viol. ";
+//        if (error & CAN_ERR_TRX)
+//            s += "| transceiver status ";
+//        if (error & CAN_ERR_ACK)
+//            s += "| no ACK ";
+//        if (error & CAN_ERR_BUSOFF)
+//            s += "| bus off ";
+//        if (error & CAN_ERR_BUSERROR)
+//            s += "| bus error ";
+//        if (error & CAN_ERR_RESTARTED)
+//            s += "| contrl. restarted";
+//        if (s.startsWith('|'))
+//            ui.labelBusError->setText(s.mid(2));
+//        else
+//            ui.labelBusError->setText(s);
+//    } else {
+//        ui.statusbar->showMessage(mSocket.errorString(), 3000);
+//    }
+}
+
+void MainBMSWindow::on_tableViewSend_doubleClicked(const QModelIndex& index)
+{
+
+    if (index.isValid()) {
+        QByteArray ba = index.data(Qt::UserRole).toByteArray();
+        QCanMessage *msg = reinterpret_cast<QCanMessage*>(ba.data());
+        if (index.column() == 0) {
+            sendMessage(*msg);
+        } else {
+            CanMessageDlg dlg(*msg);
+            if (dlg.exec() == QDialog::Accepted) {
+                QCanMessage msg1 = dlg.getMessage();
+                mSendModel->addMessage(msg1, false);
+                mScheduler->addJob(msg1);
+            }
+        }
+    }
+}
+
+void MainBMSWindow::on_actionAbout_triggered()
+{
+    QString versionInfo =   "<B>BMS_SERIAL</B><p>"
+                            "Author: andy   <a href=mailto:andy.zhao@serialsystem.com>andy.zhao@serialsystem.com</a><p>";
+#ifdef GITHASH
+    versionInfo += "<p>Commit: <b>" XSTR(GITHASH) "</b>";
+#endif
+    QMessageBox::about ( this,
+                    "About BMS_SERIAL", versionInfo);
+
+
+}
 
 void MainBMSWindow::slot_cantimer()
 {

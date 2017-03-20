@@ -13,7 +13,7 @@
 #include <QDialog>
 #include "ui_canmessagedlg.h"
 #include "qcanmessage.h"
-
+#include "bms/bms.h"
 
 class CanMessageDlg : public QDialog
 {

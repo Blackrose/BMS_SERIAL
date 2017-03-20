@@ -7,6 +7,7 @@
 #include <QEvent>
 #include <QDateTime>
 #include <QToolTip>
+#include <QItemSelectionModel>
 //#include <QGraphicsItem>
 //#include <QGraphicsScene>
 //#include <QGraphicsRectItem>
@@ -40,6 +41,8 @@
 #include "mythread.h"
 #include "canmessagemodel.h"
 #include "qcanmessage.h"
+#include "cansendscheduler.h"
+#include "canmessagedlg.h"
 
 namespace Ui {
 class MainBMSWindow;
@@ -76,14 +79,29 @@ private slots:
 
     void on_checkBox_clicked(bool checked);
 
+
+    void on_actionConnect_triggered();
+    void on_actionDisconnect_triggered();
+    void on_actionSend_triggered();
+    void on_actionDelete_triggered();
+    void on_actionEdit_triggered();
+    void on_actionClearAll_triggered();
+    void on_actionClear_triggered();
+    void on_tableViewSend_doubleClicked(const QModelIndex& index);
+    void on_actionNew_triggered();
+    void on_actionAbout_triggered();
+    void onCanbusError(quint32 error);
+
 public slots:
     void slot_cantimer();
+    void sendMessage(QCanMessage& msg);
 
 private:
     Ui::MainBMSWindow *ui;
 
     CanMessageModel		*mReceiveModel;
     CanMessageModel 	*mSendModel;
+    CanSendScheduler	*mScheduler;
 };
 
 #endif // MAINBMSWINDOW_H

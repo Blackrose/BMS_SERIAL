@@ -13,6 +13,7 @@ CanMessageDlg::CanMessageDlg(QWidget *parent)
     : QDialog(parent)
 {
 	ui.setupUi(this);
+    setExtendedId(TRUE);
 	connect(ui.checkBoxExtended, SIGNAL(toggled(bool)), this, SLOT(setExtendedId(bool)));
 	ui.lineEditId->setFocus();
 //	ui.lineEditId->setCursorPosition(0);
@@ -22,6 +23,7 @@ CanMessageDlg::CanMessageDlg(const QCanMessage& msg, QWidget *parent)
     : QDialog(parent)
 {
 	ui.setupUi(this);
+    setExtendedId(TRUE);
 	connect(ui.checkBoxExtended, SIGNAL(toggled(bool)), this, SLOT(setExtendedId(bool)));
 	setMessage(msg);
 }
@@ -60,6 +62,27 @@ QCanMessage CanMessageDlg::getMessage() const
 	int	dlc = ui.spinBoxDlc->value();
     //CanFrame frame(id, ui.checkBoxExtended->isChecked(), ui.checkBoxRtr->isChecked(), dlc);
     VCI_CAN_OBJ	frame;
+
+    Q_ASSERT_X(dlc <= 8, "set dlc", "dlc > 8");
+    if (ui.checkBoxExtended->isChecked()) {
+        frame.ID = id & CAN_EFF_MASK;
+        frame.ID |= CAN_EFF_FLAG;
+        frame.ExternFlag = TRUE;
+    } else {
+        frame.ID = id & CAN_SFF_MASK;
+    }
+
+    if (ui.checkBoxRtr->isChecked()){
+            frame.ID |= CAN_RTR_FLAG;
+            frame.RemoteFlag = TRUE;
+    }else{
+        frame.RemoteFlag = FALSE;
+    }
+
+    frame.DataLen = dlc;
+    ::memset((void*) frame.Data, 0, sizeof(frame.Data));
+
+
     if (!frame.RemoteFlag) {
         frame.Data[0] = ui.lineEditData0->text().toInt(&ok, 16);
         frame.Data[1] = ui.lineEditData1->text().toInt(&ok, 16);
@@ -85,10 +108,18 @@ void CanMessageDlg::setExtendedId(bool ext)
 {
 	if (ext) {
 		ui.lineEditId->setInputMask("HHHHHHHH");
+        ui.lineEditId->setText("00000000");
 	} else {
 		ui.lineEditId->setInputMask("HHH");
+        ui.lineEditId->setText("000");
 	}
 }
+
+//void CanMessageDlg::setRtr(bool rtr)
+//{
+
+//}
+
 
 void CanMessageDlg::showEvent(QShowEvent *)
 {
