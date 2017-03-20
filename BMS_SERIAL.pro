@@ -21,7 +21,9 @@ SOURCES += main.cpp\
     bms/Hachiko.c \
     bms/log.c \
     bms/tom.c \
-    global.cpp
+    global.cpp \
+    canmessagedlg.cpp \
+    cansendscheduler.cpp
 
 HEADERS  += mainbmswindow.h \
     ControlCAN.h \
@@ -33,8 +35,15 @@ HEADERS  += mainbmswindow.h \
     bms/error.h \
     bms/Hachiko.h \
     bms/log.h \
-    global.h
+    global.h \
+    canmessagedlg.h \
+    cansendscheduler.h \
+    qcanmessage.h
 
-FORMS    += mainbmswindow.ui
+FORMS    += mainbmswindow.ui \
+    canmessagedlg.ui
 
 LIBS += $$PWD/ControlCAN.lib
+
+RESOURCES += \
+    bms_serial.qrc

@@ -11,7 +11,7 @@
 #define CANMESSAGEMODEL_H_
 
 #include <QAbstractItemModel>
-//#include <qcanmessage.h>
+#include <qcanmessage.h>
 #ifdef WIN32 // for windows
 #include <winsock2.h>
 #endif // for linux
@@ -20,22 +20,22 @@
 class CanMessageModel: public QAbstractTableModel
 {
 public:
-    struct QCanMessage {
-        VCI_CAN_OBJ	frame;
-        qint64		time;
-        qint64		sinceLast;
-        qint64		period;
-        bool		autoTrigger;
-        int			count;
-        QCanMessage()
-            :	time(0),
-                sinceLast(0),
-                period(0),
-                autoTrigger(false),
-                count(0) {}
-    };
+//    struct QCanMessage {
+//        VCI_CAN_OBJ	frame;
+//        qint64		time;
+//        qint64		sinceLast;
+//        qint64		period;
+//        bool		autoTrigger;
+//        int			count;
+//        QCanMessage()
+//            :	time(0),
+//                sinceLast(0),
+//                period(0),
+//                autoTrigger(false),
+//                count(0) {}
+//    };
 
-    typedef QMap<quint32, QCanMessage> CanMessages;
+//    typedef QMap<quint32, QCanMessage> CanMessages;
 
 	enum Type { Receive, Transmit } ;
 

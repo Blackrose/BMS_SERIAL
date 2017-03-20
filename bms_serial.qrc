@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>images/exit.png</file>
+        <file>images/fileopen.png</file>
+        <file>images/filesave.png</file>
+        <file>images/logo.png</file>
+        <file>images/network-connect.png</file>
+        <file>images/network-disconnect.png</file>
+        <file>images/newmsg.png</file>
+        <file>images/SocketCAN-logo.svg</file>
+    </qresource>
+</RCC>

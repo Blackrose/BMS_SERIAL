@@ -69,10 +69,53 @@ bool MainBMSWindow::event(QEvent *event)
 
 void MainBMSWindow::my_tooltip()
 {
+    //辨识阶段
+    ui->groupBox_SPN2560->setToolTip("辨识结果");
+    ui->groupBox_SPN2561->setToolTip("充电机编号");
+
+    ui->groupBox_SPN2565->setToolTip("BMS通讯协议版本号");
+    ui->groupBox_SPN2566->setToolTip("电池类型");
+    ui->groupBox_SPN2567->setToolTip("蓄电池系统额定容量/蓄电池系统额定总电压");
+
+    //参数配置阶段
+    ui->lineEdit_spn2816->setToolTip("单体动力蓄电池最高允许充电电压");
+    ui->lineEdit_spn2817->setToolTip("最高允许充电电流");
+    ui->lineEdit_spn2818->setToolTip("动力蓄电池标称总能量");
+    ui->lineEdit_spn2819->setToolTip("最高允许充电总电压");
+    ui->lineEdit_spn2820->setToolTip("最高允许温度");
+    ui->lineEdit_spn2821->setToolTip("整车动力蓄电池荷电状态");
+    ui->lineEdit_spn2822->setToolTip("整车动力蓄电池当前电池电压");
+
     ui->groupBox_CML_V->setToolTip("最高/低输出电压");
     ui->groupBox_CML_A->setToolTip("最大/小输出电流");
-    QToolTip::showText(ui->groupBox_CML_V->pos(),ui->groupBox_CML_V->toolTip());
-    QToolTip::showText(ui->groupBox_CML_A->pos(),ui->groupBox_CML_A->toolTip());
+
+    //充电阶段
+    ui->groupBox_SPN3072->setToolTip("需求电压");
+    ui->groupBox_SPN3073->setToolTip("需求电流");
+    ui->groupBox_SPN3074->setToolTip("充电模式");
+    ui->groupBox_SPN3081->setToolTip("电压/电流输出");
+    ui->groupBox_SPN3083->setToolTip("累计充电时间");
+    ui->groupBox_SPN3929->setToolTip("充电允许/暂停");
+
+    ui->groupBox_SPN3075->setToolTip("充电电压/电流测量值");
+    ui->groupBox_SPN3077->setToolTip("最高单体动力蓄电池电压及组号");
+    ui->groupBox_SPN3078->setToolTip("当前荷电状态");
+    ui->groupBox_SPN3079->setToolTip("剩余充电时间");
+
+    ui->lineEdit_spn3085->setToolTip("最高单体动力蓄电池电压所在编号");
+    ui->lineEdit_spn3086->setToolTip("最高动力蓄电池温度");
+    ui->lineEdit_spn3087->setToolTip("最高温度检测点编号");
+    ui->lineEdit_spn3088->setToolTip("最低动力蓄电池温度");
+    ui->lineEdit_spn3089->setToolTip("最低动力蓄电池温度检测点编号");
+
+    ui->comboBox_spn3090->setToolTip("单体动力蓄电池电压过高/过低");
+    ui->comboBox_spn3091->setToolTip("整车动力蓄电池荷电状态SOC过高/过低");
+    ui->comboBox_spn3092->setToolTip("动力蓄电池充电过电流");
+    ui->comboBox_spn3093->setToolTip("动力蓄电池温度过高");
+    ui->comboBox_spn3094->setToolTip("动力蓄电池绝缘状态");
+    ui->comboBox_spn3095->setToolTip("动力蓄电池输出连接器连接状态");
+    ui->comboBox_spn3096->setToolTip("充电允许/禁止");
+
 }
 
 void MainBMSWindow::on_pushButton_connect_clicked()
@@ -139,7 +182,7 @@ void MainBMSWindow::slot_cantimer()
     //can_timer.stop();
     //mythread_can.start(); //bms_canbus();
 
-    CanMessageModel::QCanMessage msg;
+    QCanMessage msg;
 
     QDateTime now = QDateTime::currentDateTimeUtc();
     msg.time = now.toMSecsSinceEpoch();

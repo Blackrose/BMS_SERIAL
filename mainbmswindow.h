@@ -39,6 +39,7 @@
 #endif
 #include "mythread.h"
 #include "canmessagemodel.h"
+#include "qcanmessage.h"
 
 namespace Ui {
 class MainBMSWindow;
