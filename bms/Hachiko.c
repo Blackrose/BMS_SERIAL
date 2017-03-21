@@ -14,11 +14,14 @@
 #include <signal.h>
 #include <string.h>
 #include <time.h>
-
+#ifdef WIN32 // for windows
+#include <winsock2.h>
+#endif // for linux
 #include "Hachiko.h"
 #include "log.h"
 #include "config.h"
 #include "error.h"
+
 
 #define CLOCKID CLOCK_REALTIME
 //#define SIG SIGRTMIN
@@ -27,20 +30,19 @@
 #define errExit(msg)    do { perror(msg); exit(EXIT_FAILURE); \
                        } while (0)
 struct Hachiko_food *pool[NR_POOL] = {NULL};
-#if 0
+//struct Hachiko_food *pool[NR_POOL] = {0};
 
 /*
  * 定时器处理过程
  *
  * 按照设定的分辨率，定时进入该过程完成，相应条件的判定和处理
  */
-static void Hachiko_wangwang(int sig, siginfo_t *si, void *uc)
+static void Hachiko_wangwang()//int sig, siginfo_t *si, void *uc
 {
     int i, refresh = 0;
-
-    for ( i = 0; (unsigned int)i < (sizeof(pool)/sizeof(struct Hachiko_food *)); i ++ ) {
+    //log_printf(INF, "Hachiko_wangwang");
+    for ( i = 0; (unsigned int)i < (sizeof(pool)/sizeof(struct Hachiko_food *)); i ++ ) {        
         if ( pool[i] == NULL ) continue;
-
         // 下面的逻辑判定顺序不可更改，详情请参考README文件
         if ( pool[i]->status == HACHIKO_INVALID ) continue;
         if ( pool[i]->status == HACHIKO_KILLED ) {
@@ -63,16 +65,16 @@ static void Hachiko_wangwang(int sig, siginfo_t *si, void *uc)
 
         if ( pool[i]->remain == 0 ) {
             pool[i]->Hachiko_notify_proc(HACHIKO_TIMEOUT,
-                                         pool[i]->private, pool[i]);
+                                         pool[i]->_private, pool[i]);
             if ( pool[i]->type == HACHIKO_AUTO_FEED ) {
                 pool[i]->remain = pool[i]->ttl;
                 pool[i]->Hachiko_notify_proc(HACHIKO_FEEDED,
-                                             pool[i]->private, pool[i]);
+                                             pool[i]->_private, pool[i]);
                 continue;
             }
             if ( pool[i]->type == HACHIKO_ONECE ) {
                 pool[i]->Hachiko_notify_proc(HACHIKO_DIE,
-                                             pool[i]->private, pool[i]);
+                                             pool[i]->_private, pool[i]);
                 pool[i] = NULL;
                 refresh ++;
                 log_printf(DBG_LV3, "HACHIKO: watch dog die.");
@@ -80,14 +82,14 @@ static void Hachiko_wangwang(int sig, siginfo_t *si, void *uc)
             }
         }
         pool[i]->Hachiko_notify_proc(HACHIKO_ROLLING,
-                                     pool[i]->private, pool[i]);
+                                     pool[i]->_private, pool[i]);
     }
     if ( 0 == refresh ) return;
 }
 
 // 设定内部功能性定时器
 int _Hachiko_new(struct Hachiko_food *thiz, Hachiko_Type type,
-                 unsigned int ttl, Hachiko_status status, void *private)
+                 unsigned int ttl, Hachiko_status status, void *_private)
 {
     int err = ERR_TIMER_BEMAX;
     int i = 0;
@@ -102,7 +104,7 @@ int _Hachiko_new(struct Hachiko_food *thiz, Hachiko_Type type,
         thiz->type = type;
         thiz->ttl = ttl;
         thiz->remain = ttl;
-        thiz->private = private;
+        thiz->_private = _private;
         thiz->status = status;
         err = ERR_OK;
         pool[i] = thiz;
@@ -113,6 +115,50 @@ die:
     return err;
 }
 
+
+void CALLBACK TimerAPCProc(
+  LPVOID lpArgToCompletionRoutine,   // data value
+  DWORD dwTimerLowValue,            // timer low value
+  DWORD dwTimerHighValue            // timer high value
+)
+{
+    //log_printf(INF, "enter TimerAPCProc");
+    Hachiko_wangwang();
+}
+
+void *thread_hachiko_init(void *arg) ___THREAD_ENTRY___
+{
+    int *done = (int *)arg;
+    int mydone = 0;
+    int s = 0;
+    memset(pool, 0, sizeof(pool));
+
+    if ( done == NULL ) done = &mydone;
+
+    log_printf(INF, "%s running...s=%d", __FUNCTION__, s);
+
+    HANDLE hTime = CreateWaitableTimer(NULL, FALSE, NULL );
+    if ( NULL == hTime )
+    {
+        log_printf(INF, "hTime is NULL");
+        return -1;
+    }
+
+    LARGE_INTEGER liDueTime;
+    liDueTime.QuadPart=-10000000;
+    if ( !SetWaitableTimer(hTime, &liDueTime, 1, TimerAPCProc, NULL, FALSE))//1ms 超时
+    {
+        log_printf(INF, "SetWaitableTimer error");
+        return -1;
+    }
+
+    while ( ! *done ) {
+        SleepEx(INFINITE, TRUE);
+    }
+    CloseHandle(hTime);
+}
+
+#if 0
 // 定时器初始化
 void Hachiko_init()
 {

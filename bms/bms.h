@@ -10,8 +10,10 @@
 #define CAN_ADDR_CHARGER   0x56  // 86
 // BMS地址
 #define CAN_ADDR_BMS       0xF4  // 244
-#define CAN_TX_ID_MASK    ((CAN_ADDR_CHARGER<<8)|CAN_ADDR_BMS)
-#define CAN_RCV_ID_MASK    ((CAN_ADDR_CHARGER)|CAN_ADDR_BMS<<8)
+#define CAN_RCV_ID_MASK    ((CAN_ADDR_CHARGER<<8)|CAN_ADDR_BMS)
+#define CAN_TX_ID_MASK    ((CAN_ADDR_CHARGER)|CAN_ADDR_BMS<<8)
+//#define CAN_TX_ID_MASK    ((CAN_ADDR_CHARGER<<8)|CAN_ADDR_BMS)
+//#define CAN_RCV_ID_MASK    ((CAN_ADDR_CHARGER)|CAN_ADDR_BMS<<8)
 
 #ifndef u8
 #define u8 unsigned char

@@ -4,6 +4,7 @@
 #include <string.h>
 #include <pthread.h>
 #include <sys/types.h>
+#include <sys/time.h>
 
 #include "log.h"
 #include "config.h"
@@ -33,6 +34,16 @@ int log_printf(unsigned int level, const char *fmt, ...)
                p->tm_min,
                p->tm_sec,
                buff);
+
+
+        struct timeval    tv;
+        struct timezone tz;
+        //gettimeofday(&tv, &tz);
+        gettimeofday(&tv, NULL);
+        printf("tv_sec:%ld tv_usec:%ld tv_msec:%ld\n",tv.tv_sec,tv.tv_usec,tv.tv_usec/1000);
+        //printf("tz_minuteswest:%d\n",tz.tz_minuteswest);
+        //printf("tz_dsttime:%d\n",tz.tz_dsttime);
+        printf("ms===%d\n",p->tm_sec*1000 + tv.tv_usec/1000);
         break;
     case WRN:
         time(&timep);

@@ -336,7 +336,7 @@ static int can_packet_callback(
         thiz->can_bms_status = CAN_NORMAL;
         thiz->can_heart_beat.Hachiko_notify_proc=
                 Hachiko_packet_heart_beart_notify_proc;
-        //Hachiko_new(&thiz->can_heart_beat, HACHIKO_AUTO_FEED, 4, NULL);
+        Hachiko_new(&thiz->can_heart_beat, HACHIKO_AUTO_FEED, 4, NULL);
         log_printf(INF, "BMS: CHARGER change stage to "RED("CHARGE_STAGE_HANDSHACKING"));
         thiz->charge_stage = CHARGE_STAGE_HANDSHACKING;
         //thiz->charge_stage = CHARGE_STAGE_CONFIGURE;
@@ -421,7 +421,7 @@ static int can_packet_callback(
             param->evt_param = EVT_RET_ERR;
             break;
         case CHARGE_STAGE_HANDSHACKING:
-            gen_packet_PGN256(thiz, param);
+            //gen_packet_PGN256(thiz, param);
             if ( generator[0].heartbeat >= generator[0].period ) {
                 gen_packet_PGN256(thiz, param);
                 generator[0].heartbeat = 0;
@@ -576,7 +576,7 @@ int about_packet_reciev_done(struct charge_task *thiz,
         } else {
             log_printf(WRN,
                   "BMS not recognized due to invalid BMS VERSION(SPN2565).");
-            bit_clr(thiz, F_BMS_RECOGNIZED);
+            //bit_clr(thiz, F_BMS_RECOGNIZED);
             //break;
         }
 
@@ -1226,10 +1226,9 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
                             Hachiko_CAN_TP_notify_proc;
                     // 根据SAE J1939-21中关于CAN总线数据传输链接的说明，中间传输
                     // 过程最大不超过1250ms
-//                    int ret = Hachiko_new( & task->can_tp_bomb,
-//                                           HACHIKO_ONECE, 1250,
-//                                           &task->can_tp_private);
-                    int ret = 0;
+                    int ret = Hachiko_new( & task->can_tp_bomb,
+                                           HACHIKO_ONECE, 1250,
+                                           &task->can_tp_private);
                     if ( ret == (int)ERR_WRONG_PARAM ) {
                         log_printf(ERR,
                                    "BMS: set new timer error, with code:%d",

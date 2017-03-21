@@ -70,8 +70,8 @@ struct Hachiko_CNA_TP_private {
 void Hachiko_init();
 int _Hachiko_new(struct Hachiko_food *thiz, Hachiko_Type type,
                  unsigned int ttl, Hachiko_status status, void *_private);
-#define Hachiko_new(food, type, ttl, private) \
-    _Hachiko_new(food, type, ttl, HACHIKO_NORMAL, private)
+#define Hachiko_new(food, type, ttl, _private) \
+    _Hachiko_new(food, type, ttl, HACHIKO_NORMAL, _private)
 
 static inline void Hachiko_kill(struct Hachiko_food *dog)
 {

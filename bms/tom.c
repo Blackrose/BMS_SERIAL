@@ -24,6 +24,7 @@
 #include "Hachiko.h"
 #include "bms.h"
 
+extern void * thread_hachiko_init(void *) ___THREAD_ENTRY___;
 extern void * thread_bms_write_service(void *) ___THREAD_ENTRY___;
 extern void * thread_bms_read_service(void *) ___THREAD_ENTRY___;
 
@@ -96,10 +97,20 @@ int bms_canbus()
 
     // 启动定时器
    //Hachiko_init();
+   ret = pthread_create( & tid, &attr, thread_hachiko_init,
+                         &thread_done[0]);
+   if ( 0 != ret ) {
+       errcode  = 0x1001;
+       log_printf(ERR,
+                  "CAN-BUS reader start up.                       FAILE!!!!");
+       goto die;
+   }
+   log_printf(INF, "CAN-BUS reader start up.                           DONE.");
+
 #if 1
     // BMS 数据包写线程，从队列中取出要写的数据包并通过CAN总线发送出去
     ret = pthread_create( & tid, &attr, thread_bms_write_service,
-                          &thread_done[0]);
+                          &thread_done[1]);
     if ( 0 != ret ) {
         errcode  = 0x1001;
         log_printf(ERR,
@@ -110,7 +121,7 @@ int bms_canbus()
 //#else
     // BMS读书举报线程，从CAN总线读取数据包后将数据存入读入数据队列等待处理。
     ret = pthread_create( & tid, &attr, thread_bms_read_service,
-                          &thread_done[1]);
+                          &thread_done[2]);
     if ( 0 != ret ) {
         errcode  = 0x1002;
         log_printf(ERR,
