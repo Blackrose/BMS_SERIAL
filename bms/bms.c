@@ -376,7 +376,7 @@ static int can_packet_callback(
             log_printf(INF,
               "BMS: CHARGER change stage to "RED("CHARGE_STAGE_CHARGING"));
         }
-        thiz->charge_stage = CHARGE_STAGE_CONFIGURE;//add by debug
+        //thiz->charge_stage = CHARGE_STAGE_CONFIGURE;//add by debug
         break;
     case EVENT_TX_PRE:
         // 决定是否要发送刚刚准备发送的数据包
@@ -1055,9 +1055,9 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
     while ( ! *done ) {
         usleep(5000);
 
-//        if ( task->can_bms_status  == CAN_INVALID ) {
-//            continue;
-//        }
+        if ( task->can_bms_status  == CAN_INVALID ) {
+            continue;
+        }
 
         memset(&frame, 0, sizeof(frame));
         //nbytes = read(s, &frame, sizeof(struct can_frame));

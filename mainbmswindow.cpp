@@ -12,6 +12,10 @@ MainBMSWindow::MainBMSWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->pushButton_discon->setVisible(false);
+    ui->groupBox_Charging_2->setVisible(false);
+    ui->groupBox_Charging_3->setVisible(false);
+
+
     connect(ui->actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
     connect(&can_timer,SIGNAL(timeout()),this,SLOT(slot_cantimer()));//版本校验下发参数

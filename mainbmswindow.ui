@@ -961,7 +961,7 @@
      <rect>
       <x>30</x>
       <y>280</y>
-      <width>221</width>
+      <width>601</width>
       <height>171</height>
      </rect>
     </property>
@@ -973,7 +973,7 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>181</width>
+       <width>581</width>
        <height>141</height>
       </rect>
      </property>
@@ -999,7 +999,7 @@
      <rect>
       <x>30</x>
       <y>470</y>
-      <width>211</width>
+      <width>601</width>
       <height>161</height>
      </rect>
     </property>
@@ -1011,7 +1011,7 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>191</width>
+       <width>581</width>
        <height>131</height>
       </rect>
      </property>
@@ -1032,7 +1032,7 @@
    <widget class="QGroupBox" name="groupBox_warning">
     <property name="geometry">
      <rect>
-      <x>160</x>
+      <x>870</x>
       <y>250</y>
       <width>111</width>
       <height>41</height>
@@ -1192,8 +1192,8 @@
    <widget class="QToolBox" name="toolBox">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>360</y>
+      <x>890</x>
+      <y>260</y>
       <width>111</width>
       <height>81</height>
      </rect>
