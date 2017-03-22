@@ -31,11 +31,6 @@
 #undef BMS_CC_LANG //不使用C++语言
 #include "global.h"
 
-int m_cannum1 = 0;
-int m_devtype1 = 4;
-int m_devind1 = 0;
-//VCI_CAN_OBJ receive_frame;
-
 // 数据包生成器信息
 struct can_pack_generator generator[] = {
     {
@@ -949,7 +944,7 @@ void *thread_bms_write_service(void *arg) ___THREAD_ENTRY___
             frame.DataLen= param.buff_payload;
             memcpy(frame.Data, param.buff.tx_buff, 8);
             //nbytes = write(s, &frame, sizeof(struct can_frame));
-            nbytes = VCI_Transmit(m_devtype1,m_devind1,m_cannum1,&frame,TX_BUFF_SIZE);
+            nbytes = VCI_Transmit(m_devtype,m_devind,m_cannum,&frame,TX_BUFF_SIZE);
 //            if ( (unsigned int)nbytes < param.buff_payload ) {
 //                param.evt_param = EVT_RET_ERR;
 //                can_packet_callback(task, EVENT_TX_FAILS, &param);
@@ -1061,11 +1056,11 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
 
         memset(&frame, 0, sizeof(frame));
         //nbytes = read(s, &frame, sizeof(struct can_frame));
-        nbytes = VCI_Receive(m_devtype1, m_devind1, m_cannum1, &frame, RX_BUFF_SIZE, RX_WAIT_TIME/*ms*/);
+        nbytes = VCI_Receive(m_devtype, m_devind, m_cannum, &frame, RX_BUFF_SIZE, RX_WAIT_TIME/*ms*/);
         if(nbytes<=0){
             //注意：如果没有读到数据则必须调用此函数来读取出当前的错误码，
             //千万不能省略这一步（即使你可能不想知道错误码是什么）
-            VCI_ReadErrInfo(m_devtype1,m_devind1,m_cannum1,&errinfo);
+            VCI_ReadErrInfo(m_devtype,m_devind,m_cannum,&errinfo);
         }
         else{
 //            for(i=0;i<nbytes;i++){

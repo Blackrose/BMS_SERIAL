@@ -14,3 +14,6 @@ extern VCI_CAN_OBJ receive_frame;
 extern VCI_CAN_OBJ send_frame;
 #endif // GLOBAL_H
 
+extern  int m_cannum;
+extern  int m_devtype;
+extern  int m_devind;

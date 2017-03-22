@@ -58,10 +58,6 @@ public:
     //bool event(QEvent *event);
     void my_tooltip();
 
-    int m_cannum = 0;
-    int m_devtype = 4;
-    int m_devind = 0;
-
     //void ShowInfo(CString str,int code);
 
     int strtodata(unsigned char *str, unsigned char *data,int len,int flag);

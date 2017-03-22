@@ -1,11 +1,6 @@
 #include "mainbmswindow.h"
 #include "ui_mainbmswindow.h"
 
-
-//int MainBMSWindow::m_cannum=0;
-//int MainBMSWindow::m_devtype=4;
-//int MainBMSWindow::m_devind=0;
-
 MainBMSWindow::MainBMSWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainBMSWindow)
