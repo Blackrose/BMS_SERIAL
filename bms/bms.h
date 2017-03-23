@@ -369,6 +369,8 @@ struct pgn7936 {
 #pragma pack()
 
 typedef enum {
+    PGN_CHM = 0x002600,
+    PGN_BHM = 0x002700,
     PGN_CRM = 0x000100,
     PGN_BRM = 0x000200,
     PGN_BCP = 0x000600,
@@ -514,26 +516,28 @@ struct bms_statistics {
     unsigned int can_counter;
 };
 typedef enum {
-    I_CRM = 0,
-    I_BRM = 1,
-    I_BCP = 2,
-    I_CTS = 3,
-    I_CML = 4,
-    I_BRO = 5,
-    I_CRO = 6,
-    I_BCL = 7,
-    I_BCS = 8,
-    I_CCS = 9,
-    I_BSM = 10,
-    I_BMV = 11,
-    I_BMT = 12,
-    I_BSP = 13,
-    I_BST = 14,
-    I_CST = 15,
-    I_BSD = 16,
-    I_CSD = 17,
-    I_BEM = 18,
-    I_CEM = 19
+    I_CHM = 0,
+    I_BHM = 1,
+    I_CRM = 2,
+    I_BRM = 3,
+    I_BCP = 4,
+    I_CTS = 5,
+    I_CML = 6,
+    I_BRO = 7,
+    I_CRO = 8,
+    I_BCL = 9,
+    I_BCS = 10,
+    I_CCS = 11,
+    I_BSM = 12,
+    I_BMV = 13,
+    I_BMT = 14,
+    I_BSP = 15,
+    I_BST = 16,
+    I_CST = 17,
+    I_BSD = 18,
+    I_CSD = 19,
+    I_BEM = 20,
+    I_CEM = 21
 }CAN_PGN_STATISTICS;
 
 

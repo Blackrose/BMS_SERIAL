@@ -184,6 +184,12 @@ struct can_pack_generator {
     unsigned int heartbeat;
     // 数据包名称
     const char *mnemonic;
+    // 数据包静默时间，只针对接受数据包有效
+    unsigned int can_silence;
+    // 接受数据包容忍的沉默时常，针对接收数据有效
+    unsigned int can_tolerate_silence;
+    // 计数器，接收或发送的次数
+    unsigned int can_counter;
 };
 
 // 充电作业状态
