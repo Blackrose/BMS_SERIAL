@@ -1222,14 +1222,11 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
     int *done = (int *)arg;
     int mydone = 0;
     int s = 0;
-//    struct sockaddr_can addr;
-//    struct ifreq ifr;
-    //struct can_frame frame;
-    VCI_CAN_OBJ frame;//[RX_BUFF_SIZE];
-    //VCI_CAN_OBJ frameinfo[RX_BUFF_SIZE];
+
+    VCI_CAN_OBJ frame;//[RX_BUFF_SIZE];//VCI_CAN_OBJ frameinfo[RX_BUFF_SIZE];
     VCI_ERR_INFO errinfo;
     int nbytes;
-    int i =0;
+
     struct event_struct param;
     // 用于链接管理的数据缓冲
     unsigned char tp_buff[2048];

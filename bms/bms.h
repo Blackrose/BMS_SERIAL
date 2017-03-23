@@ -67,15 +67,25 @@ struct can_frame {
 
 #pragma pack(1)
 // 握手阶段
+//充电机握手报文
+struct pgn9728_CHM {
+    unsigned char spn2600_charger_version[3];//000101 V1.1
+};
+
+//BMS握手报文
+struct pgn9984_BHM {
+    u16 spn2601_bms_max_vol;
+};
+
 // 充电机辨识报文
 struct pgn256_CRM {
     // 充电机辨识结果 @ enum recognize_result
     u8 spn2560_recognize;
 
-    // 充电机编号， 范围1-100
-    u8 spn2561_charger_sn;
+    // 充电机编号， 范围0-0xFFFFFFFF
+    u8 spn2561_charger_sn[4];
     // 充电机/充电站所在区域编码
-    unsigned char spn2562_charger_region_code[6];
+    unsigned char spn2562_charger_region_code[3];
 };
 enum recognize_result {
     BMS_RECOGNIZED     =  0xAA, // 充电机能识别BMS
@@ -120,6 +130,8 @@ struct pgn512_BRM {
     u8 spn2574_reserved; // 保留
     // 车辆识别码
     unsigned char spn2575_vin[17];
+    // BMS软件版本号
+    unsigned char spn2576_bmssoftware_ver[17];
 };
 enum battery_property {
     BATTERY_LEASE  = 0x00, // 租赁
@@ -166,6 +178,8 @@ struct pgn2048_CML {
     u16 spn2825_min_output_voltage;
     // 最大输出电流，0.1A 每位，-400A偏移，范围-400-0 A
     u16 spn2826_max_output_current;
+    // 最小输出电流，0.1A 每位，-400A偏移，范围-400-0 A
+    u16 spn2826_min_output_current;//add for GBT 27930-2015
 };
 
 // 电池充电准备就绪状态
@@ -228,6 +242,13 @@ struct pgn4608_CCS {
     u16 spn3082_outpu_current;
     // 充电持续时间，1min/位，0偏移，0-600min
     u16 spn3083_charge_time;
+    // 充电允许 @ enum charger_status
+    u8  spn3929_charger_status;//add for GBT 27930-2015
+};
+
+enum charger_status {
+    CHARGER_ALLOW = 0x00, // 充电允许
+    CHARGER_PAUSE = 0x01 // 充电暂停
 };
 
 // 动力蓄电池状态信息
@@ -315,11 +336,11 @@ struct pgn5888_BSP {
 // BMS终止充电
 struct pgn6400_BST {
     // BMS 中止充电原因 @ enum REASON_PGN6400
-    u8 reason;
+    u8 reason;//spn3511
     // BMS 中止充电故障原因 enum ERROR_PGN6400
-    u16 error;
+    u16 error;//spn3512
     // BMS 中止充电错误原因 enum FAULT_PGN6400
-    u16 fault;
+    u16 fault;//spn3513
 };
 enum REASON_PGN6400 {
     // 达到所需SOC值 bit[0:1]
@@ -331,13 +352,55 @@ enum REASON_PGN6400 {
     REASON_UN_REACH_VOL_VAL  = 0x00,
     REASON_REACH_VOL_VAL     = 0x04,
     REASON_VOL_UNRELIABLE        = 0x08,
-    //                bit[4:5]
+    // 充电机主动中止 bit[4:5]
     REASON_UN_REACH_SINGLE_BAT_VOL = 0x00,
     REASON_REACH_SINGLE_BAT_VOL    = 0x10,
     REASON_SINGLE_VOL_UNRELIABLE   = 0x20
 };
-//enum ERROR_PGN6400 {};
-//enum FAULT_PGN6400 {};
+enum ERROR_PGN6400 {
+    // 绝缘故障 bit[0:1]
+    ERROR_INSULATION_NORMAL  = 0x00,
+    ERROR_INSULATION         = 0x01,
+    ERROR_INSULATION_UNRELIABLE    = 0x02,
+    // 输出连接器过温 bit[2:3]
+    ERROR_OUTPUTCONNECTOR_NORMAL = 0x00,
+    ERROR_OUTPUTCONNECTOR        = 0x04,
+    ERROR_OUTPUTCONNECTOR_UNRELIABLE = 0x08,
+    // BMS元件输出连接器过温 bit[4:5]
+    ERROR_BMS_OUTPUTCONNECTOR_NORMAL = 0x00,
+    ERROR_BMS_OUTPUTCONNECTOR        = 0x10,
+    ERROR_BMS_OUTPUTCONNECTOR_UNRELIABLE = 0x20,
+    // 充电连接器故障 bit[6:7]
+    ERROR_CHARGINGCONNECTOR_NORMAL = 0x00,
+    ERROR_CHARGINGCONNECTOR        = 0x40,
+    ERROR_CHARGINGCONNECTOR_UNRELIABLE = 0x80,
+    // 电池组过温故障 bit[8:9]
+    ERROR_BATTERY_TEMP_NORMAL = 0x00,
+    ERROR_BATTERY_TEMP        = 0x100,
+    ERROR_BATTERY_TEMP_UNRELIABLE = 0x200,
+    // 高压继电器故障 bit[10:11]
+    ERROR_HIGH_VOL_RELAY_NORMAL = 0x00,
+    ERROR_HIGH_VOL_RELAY        = 0x400,
+    ERROR_HIGH_VOL_RELAY_UNRELIABLE = 0x800,
+    //检测点2电压检测故障 bit[12:13]
+    ERROR_POINT2_VOL_DETECTED_NORMAL = 0x00,
+    ERROR_POINT2_VOL_DETECTED = 0x1000,
+    ERROR_POINT2_VOL_DETECTED_UNRELIABLE = 0x2000,
+    //其他故障 bit[14:15]
+    ERROR_OTHER_NORMAL = 0x00,
+    ERROR_OTHER = 0x4000,
+    ERROR_OTHER_UNRELIABLE = 0x8000
+};
+enum FAULT_PGN6400 {
+    //电流过大 bit[0:1]
+    FAULT_CURRENT_NORMAL = 0x00,
+    FAULT_CURRENT_EXCEEDS_DEMAND = 0x01,
+    FAULT_CURRENT_UNRELIABLE     = 0x02,
+    //电压异常 bit[2:3]
+    FAULT_VOL_NORMAL        = 0x00,
+    FAULT_VOL_UN_NORMAL     = 0x04,
+    FAULT_VOL_UNRELIABLE    = 0x08,
+};
 
 // 充电机终止充电
 struct pgn6656 {
