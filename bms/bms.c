@@ -31,82 +31,289 @@
 #undef BMS_CC_LANG //不使用C++语言
 #include "global.h"
 
+#define ANALYSIS_ON
+//#undef ANALYSIS_ON
+
+#define SET_DATA
+//#undef SET_DATA
+
+#define  TIMEOUT_ON
+//#undef TIMEOUT_ON
+#define TIMEOUT 5000
+
+#define INIT 0xFF
+
+
+
 // 数据包生成器信息
 struct can_pack_generator generator[] = {
     {
     .stage      =  CHARGE_STAGE_HANDSHACKING,
-    .pgn        =  0x000100,
+    .pgn        =  PGN_CHM,//0x002600,
+    .prioriy    =  6,
+    .datalen    =  3,
+    .period     =  250,
+    .heartbeat   =  0,
+    .mnemonic   =  "CHM",
+    .can_silence = 0,
+    .can_tolerate_silence = TIMEOUT,
+    .can_counter = 0
+    },
+    {
+    .stage      =  CHARGE_STAGE_HANDSHACKING,
+    .pgn        =  PGN_BHM,//0x000100,
+    .prioriy    =  6,
+    .datalen    =  2,
+    .period     =  250,
+    .heartbeat   =  0,
+    .mnemonic   =  "BHM",
+    .can_silence = 0,
+    .can_tolerate_silence = TIMEOUT,
+    .can_counter = 0
+    },
+    {
+    .stage      =  CHARGE_STAGE_HANDSHACKING,
+    .pgn        =  PGN_CRM,//0x000100,
     .prioriy    =  6,
     .datalen    =  8,
     .period     =  250,
     .heartbeat   =  0,
-    .mnemonic   =  "CRM"
+    .mnemonic   =  "CRM",
+    .can_silence = 0,
+    .can_tolerate_silence = TIMEOUT,
+    .can_counter = 0
+    },
+    {
+    .stage      =  CHARGE_STAGE_HANDSHACKING,
+    .pgn        =  PGN_BRM,//0x000200,
+    .prioriy    =  6,
+    .datalen    =  8,
+    .period     =  250,
+    .heartbeat   =  0,
+    .mnemonic   =  "BRM",
+    .can_silence = 0,
+    .can_tolerate_silence = TIMEOUT,
+    .can_counter = 0
     },
     {
     .stage      =  CHARGE_STAGE_CONFIGURE,
-    .pgn        =  0x000700,
+    .pgn        =  PGN_BCP,//0x000600,
+    .prioriy    =  6,
+    .datalen    =  13,
+    .period     =  500,
+    .heartbeat   =  0,
+    .mnemonic   =  "BCP",
+    .can_silence = 0,
+    .can_tolerate_silence = TIMEOUT,
+    .can_counter = 0
+    },
+    {
+    .stage      =  CHARGE_STAGE_CONFIGURE,
+    .pgn        =  PGN_CTS,//0x000700,
     .prioriy    =  6,
     .datalen    =  7,
     .period     =  500,
     .heartbeat   =  0,
-    .mnemonic   =  "CTS"
+    .mnemonic   =  "CTS",
+    .can_silence = 0,
+    .can_tolerate_silence = TIMEOUT,
+    .can_counter = 0
     },
     {
     .stage      =  CHARGE_STAGE_CONFIGURE,
-    .pgn        =  0x000800,
+    .pgn        =  PGN_CML,//0x000800,
     .prioriy    =  6,
-    .datalen    =  6,
+    .datalen    =  8,//6
     .period     =  250,
     .heartbeat   =  0,
-    .mnemonic   =  "CML"
+    .mnemonic   =  "CML",
+    .can_silence = 0,
+    .can_tolerate_silence = TIMEOUT,
+    .can_counter = 0
     },
     {
     .stage      =  CHARGE_STAGE_CONFIGURE,
-    .pgn        =  0x00A00,
+    .pgn        =  PGN_BRO,//0x00900,
     .prioriy    =  4,
     .datalen    =  1,
     .period     =  250,
     .heartbeat   =  0,
-    .mnemonic   =  "CRO"
+    .mnemonic   =  "BRO",
+    .can_silence = 0,
+    .can_tolerate_silence = TIMEOUT,
+    .can_counter = 0
+    },
+    {
+    .stage      =  CHARGE_STAGE_CONFIGURE,
+    .pgn        =  PGN_CRO,//0x00A00,
+    .prioriy    =  4,
+    .datalen    =  1,
+    .period     =  250,
+    .heartbeat   =  0,
+    .mnemonic   =  "CRO",
+    .can_silence = 0,
+    .can_tolerate_silence = TIMEOUT,
+    .can_counter = 0
     },
     {
     .stage      =  CHARGE_STAGE_CHARGING,
-    .pgn        =  0x001200,
+    .pgn        =  PGN_BCL,//0x001000,
+    .prioriy    =  6,
+    .datalen    =  5,
+    .period     =  50,
+    .heartbeat   =  0,
+    .mnemonic   =  "BCL",
+    .can_silence = 0,
+    .can_tolerate_silence = TIMEOUT,
+    .can_counter = 0
+    },
+    {
+    .stage      =  CHARGE_STAGE_CHARGING,
+    .pgn        =  PGN_BCS,//0x001100,
+    .prioriy    =  7,
+    .datalen    =  9,
+    .period     =  250,
+    .heartbeat   =  0,
+    .mnemonic   =  "BCS",
+    .can_silence = 0,
+    .can_tolerate_silence = TIMEOUT,
+    .can_counter = 0
+    },
+    {
+    .stage      =  CHARGE_STAGE_CHARGING,
+    .pgn        =  PGN_CCS,//0x001200,
     .prioriy    =  6,
     .datalen    =  6,
     .period     =  50,
     .heartbeat   =  0,
-    .mnemonic   =  "CCS"
+    .mnemonic   =  "CCS",
+    .can_silence = 0,
+    .can_tolerate_silence = TIMEOUT,
+    .can_counter = 0
     },
     {
     .stage      =  CHARGE_STAGE_CHARGING,
-    .pgn        =  0x001A00,
+    .pgn        =  PGN_BSM,//0x001300,
+    .prioriy    =  6,
+    .datalen    =  7,
+    .period     =  250,
+    .heartbeat   =  0,
+    .mnemonic   =  "BSM",
+    .can_silence = 0,
+    .can_tolerate_silence = TIMEOUT,
+    .can_counter = 0
+    },
+    {
+    .stage      =  CHARGE_STAGE_CHARGING,
+    .pgn        =  PGN_BMV,//0x001500,
+    .prioriy    =  7,
+    .datalen    =  8,
+    .period     =  10,
+    .heartbeat   =  0,
+    .mnemonic   =  "BMV",
+    .can_silence = 0,
+    .can_tolerate_silence = TIMEOUT,
+    .can_counter = 0
+    },
+    {
+    .stage      =  CHARGE_STAGE_CHARGING,
+    .pgn        =  PGN_BMT,//0x001600,
+    .prioriy    =  7,
+    .datalen    =  8,
+    .period     =  10,
+    .heartbeat   =  0,
+    .mnemonic   =  "BMT",
+    .can_silence = 0,
+    .can_tolerate_silence = TIMEOUT,
+    .can_counter = 0
+    },
+    {
+    .stage      =  CHARGE_STAGE_CHARGING,
+    .pgn        =  PGN_BSP,//0x001700,
+    .prioriy    =  7,
+    .datalen    =  8,
+    .period     =  10,
+    .heartbeat   =  0,
+    .mnemonic   =  "BSP",
+    .can_silence = 0,
+    .can_tolerate_silence = TIMEOUT,
+    .can_counter = 0
+    },
+    {
+    .stage      =  CHARGE_STAGE_CHARGING,
+    .pgn        =  PGN_BST,//0x001900,
     .prioriy    =  4,
     .datalen    =  4,
     .period     =  10,
     .heartbeat   =  0,
-    .mnemonic   =  "CST"
+    .mnemonic   =  "BST",
+    .can_silence = 0,
+    .can_tolerate_silence = TIMEOUT,
+    .can_counter = 0
+    },
+    {
+    .stage      =  CHARGE_STAGE_CHARGING,
+    .pgn        =  PGN_CST,//0x001A00,
+    .prioriy    =  4,
+    .datalen    =  4,
+    .period     =  10,
+    .heartbeat   =  0,
+    .mnemonic   =  "CST",
+    .can_silence = 0,
+    .can_tolerate_silence = TIMEOUT,
+    .can_counter = 0
     },
     {
     .stage      =  CHARGE_STAGE_DONE,
-    .pgn        =  0x001D00,
+    .pgn        =  PGN_BSD,//0x001C00,
     .prioriy    =  6,
-    .datalen    =  5,
+    .datalen    =  7,
     .period     =  250,
     .heartbeat   =  0,
-    .mnemonic   =  "CSD"
+    .mnemonic   =  "BSD",
+    .can_silence = 0,
+    .can_tolerate_silence = TIMEOUT,
+    .can_counter = 0
+    },
+    {
+    .stage      =  CHARGE_STAGE_DONE,
+    .pgn        =  PGN_CSD,//0x001D00,
+    .prioriy    =  6,
+    .datalen    =  8,//5,
+    .period     =  250,
+    .heartbeat   =  0,
+    .mnemonic   =  "CSD",
+    .can_silence = 0,
+    .can_tolerate_silence = TIMEOUT,
+    .can_counter = 0
     },
     {
     .stage      =  CHARGE_STAGE_ANY,
-    .pgn        =  0x001F00,
+    .pgn        =  PGN_BEM,//0x001E00,
     .prioriy    =  2,
     .datalen    =  4,
     .period     =  250,
     .heartbeat   =  0,
-    .mnemonic   =  "CEM"
+    .mnemonic   =  "BEM",
+    .can_silence = 0,
+    .can_tolerate_silence = TIMEOUT,
+    .can_counter = 0
+    },
+    {
+    .stage      =  CHARGE_STAGE_ANY,
+    .pgn        =  PGN_CEM,//0x001F00,
+    .prioriy    =  2,
+    .datalen    =  4,
+    .period     =  250,
+    .heartbeat   =  0,
+    .mnemonic   =  "CEM",
+    .can_silence = 0,
+    .can_tolerate_silence = TIMEOUT,
+    .can_counter = 0
     }
 };
 
+#if 0
 // CAN 数据包统计结构
 struct bms_statistics statistics[] = {
     {
@@ -230,6 +437,7 @@ struct bms_statistics statistics[] = {
     .can_counter = 0
     }
 };
+#endif
 
 // 数据包超时心跳包, 定时器自动复位, 一个单位时间一次
 void Hachiko_packet_heart_beart_notify_proc(Hachiko_EVT evt, void *private,
@@ -238,7 +446,7 @@ void Hachiko_packet_heart_beart_notify_proc(Hachiko_EVT evt, void *private,
     if (evt == HACHIKO_TIMEOUT ) {
         int i = 0;
         struct can_pack_generator *thiz;
-        struct bms_statistics *me;
+        struct can_pack_generator *me;
         for ( i = 0;
               (unsigned int)i < sizeof(generator) / sizeof(struct can_pack_generator); i++ ) {
             thiz = &generator[i];
@@ -262,13 +470,13 @@ void Hachiko_packet_heart_beart_notify_proc(Hachiko_EVT evt, void *private,
          * BEM和CEM不在超时统计范围内
          */
         for ( i = 0;
-              (unsigned int)i < (sizeof(statistics) / sizeof(struct bms_statistics) ) - 2; i++ ) {
-            me = &statistics[i];
+              (unsigned int)i < (sizeof(generator) / sizeof(struct can_pack_generator) ) - 2; i++ ) {
+            me = &generator[i];
             me->can_silence ++;
             if ( me->can_tolerate_silence < me->can_silence ) {
                 switch (task->charge_stage) {
                 case CHARGE_STAGE_HANDSHACKING:
-                    if (me->can_pgn != PGN_BRM) break;
+                    if (me->pgn != PGN_BRM) break;
                     if (bit_read(task, F_GUN_1_PHY_CONN_STATUS)) {
                         if ( !bit_read(task, S_BMS_COMM_DOWN) ) {
                             bit_set(task, S_BMS_COMM_DOWN);
@@ -278,7 +486,7 @@ void Hachiko_packet_heart_beart_notify_proc(Hachiko_EVT evt, void *private,
                     }
                     break;
                 case CHARGE_STAGE_CONFIGURE:
-                    if (me->can_pgn != PGN_BCP) break;
+                    if (me->pgn != PGN_BCP) break;
                     if (bit_read(task, F_GUN_1_PHY_CONN_STATUS)) {
                         if ( !bit_read(task, S_BMS_COMM_DOWN) ) {
                             bit_set(task, S_BMS_COMM_DOWN);
@@ -288,7 +496,7 @@ void Hachiko_packet_heart_beart_notify_proc(Hachiko_EVT evt, void *private,
                     }
                     break;
                 case CHARGE_STAGE_CHARGING:
-                    if (me->can_pgn != PGN_BCL) break;
+                    if (me->pgn != PGN_BCL) break;
                     if (bit_read(task, F_GUN_1_PHY_CONN_STATUS)) {
                         if ( !bit_read(task, S_BMS_COMM_DOWN) ) {
                             bit_set(task, S_BMS_COMM_DOWN);
@@ -298,7 +506,7 @@ void Hachiko_packet_heart_beart_notify_proc(Hachiko_EVT evt, void *private,
                     }
                     break;
                 case CHARGE_STAGE_DONE:
-                    if (me->can_pgn != PGN_BSD) break;
+                    if (me->pgn != PGN_BSD) break;
                     if (bit_read(task, F_GUN_1_PHY_CONN_STATUS)) {
                         if ( !bit_read(task, S_BMS_COMM_DOWN) ) {
                             bit_set(task, S_BMS_COMM_DOWN);
@@ -417,55 +625,55 @@ static int can_packet_callback(
             break;
         case CHARGE_STAGE_HANDSHACKING:
             //gen_packet_PGN256(thiz, param);
-            if ( generator[0].heartbeat >= generator[0].period ) {
+            if ( generator[I_CRM].heartbeat >= generator[I_CRM].period ) {
                 gen_packet_PGN256(thiz, param);
-                generator[0].heartbeat = 0;
+                generator[I_CRM].heartbeat = 0;
             }
-            if ( generator[7].heartbeat >= generator[7].period ) {
+            if ( generator[I_CEM].heartbeat >= generator[I_CEM].period ) {
                 gen_packet_PGN7936(thiz, param);
-                generator[7].heartbeat = 0;
+                generator[I_CEM].heartbeat = 0;
             }
             break;
         case CHARGE_STAGE_CONFIGURE:
-            if ( generator[1].heartbeat >= generator[1].period ) {
+            if ( generator[I_CTS].heartbeat >= generator[I_CTS].period ) {
                 gen_packet_PGN1792(thiz, param);
-                generator[1].heartbeat = 0;
+                generator[I_CTS].heartbeat = 0;
             }
-            else if ( generator[2].heartbeat >= generator[2].period ) {
+            else if ( generator[I_CML].heartbeat >= generator[I_CML].period ) {
                 gen_packet_PGN2048(thiz, param);
-                generator[2].heartbeat = 0;
+                generator[I_CML].heartbeat = 0;
             }
-            else if ( generator[3].heartbeat >= generator[3].period ) {
+            else if ( generator[I_CRO].heartbeat >= generator[I_CRO].period ) {
                 gen_packet_PGN2560(thiz, param);
-                generator[3].heartbeat = 0;
+                generator[I_CRO].heartbeat = 0;
             }
-            if ( generator[7].heartbeat >= generator[7].period ) {
+            if ( generator[I_CEM].heartbeat >= generator[I_CEM].period ) {
                 gen_packet_PGN7936(thiz, param);
-                generator[7].heartbeat = 0;
+                generator[I_CEM].heartbeat = 0;
             }
             break;
         case CHARGE_STAGE_CHARGING:
-            if ( generator[4].heartbeat >= generator[4].period ) {
+            if ( generator[I_CCS].heartbeat >= generator[I_CCS].period ) {
                 gen_packet_PGN4608(thiz, param);
-                generator[4].heartbeat = 0;
+                generator[I_CCS].heartbeat = 0;
             }
-            else if ( generator[5].heartbeat >= generator[5].period ) {
+            else if ( generator[I_CST].heartbeat >= generator[I_CST].period ) {
                 gen_packet_PGN6656(thiz, param);
-                generator[5].heartbeat = 0;
+                generator[I_CST].heartbeat = 0;
             }
-            if ( generator[7].heartbeat >= generator[7].period ) {
+            if ( generator[I_CEM].heartbeat >= generator[I_CEM].period ) {
                 gen_packet_PGN7936(thiz, param);
-                generator[7].heartbeat = 0;
+                generator[I_CEM].heartbeat = 0;
             }
             break;
         case CHARGE_STAGE_DONE:
-            if ( generator[6].heartbeat >= generator[6].period ) {
+            if ( generator[I_CSD].heartbeat >= generator[I_CSD].period ) {
                 gen_packet_PGN7424(thiz, param);
-                generator[6].heartbeat = 0;
+                generator[I_CSD].heartbeat = 0;
             }
-            if ( generator[7].heartbeat >= generator[7].period ) {
+            if ( generator[I_CEM].heartbeat >= generator[I_CEM].period ) {
                 gen_packet_PGN7936(thiz, param);
-                generator[7].heartbeat = 0;
+                generator[I_CEM].heartbeat = 0;
             }
             break;
         default:
@@ -550,8 +758,8 @@ int about_packet_reciev_done(struct charge_task *thiz,
     case PGN_CEM :// 0x001F00
         break;
     case PGN_BRM :// 0x000200, BMS 车辆辨识报文
-        statistics[I_BRM].can_counter ++;
-        statistics[I_BRM].can_silence = 0;
+        generator[I_BRM].can_counter ++;
+        generator[I_BRM].can_silence = 0;
         if ( bit_read(task, S_BMS_COMM_DOWN) ) {
             log_printf(INF, "BMS: BMS 通信"GRN("恢复"));
         }
@@ -606,8 +814,8 @@ int about_packet_reciev_done(struct charge_task *thiz,
         bit_set(thiz, F_BMS_RECOGNIZED);
         break;
     case PGN_BCP :// 0x000600, BMS 配置报文
-        statistics[I_BCP].can_counter ++;
-        statistics[I_BCP].can_silence = 0;
+        generator[I_BCP].can_counter ++;
+        generator[I_BCP].can_silence = 0;
         if ( bit_read(task, S_BMS_COMM_DOWN) ) {
             log_printf(INF, "BMS: BMS 通信"GRN("恢复"));
         }
@@ -666,8 +874,8 @@ int about_packet_reciev_done(struct charge_task *thiz,
                    thiz->bms_config_info.spn2822_total_voltage);
         break;
     case PGN_BRO :// 0x000900, BMS 充电准备就绪报文
-        statistics[I_BRO].can_counter ++;
-        statistics[I_BRO].can_silence = 0;
+        generator[I_BRO].can_counter ++;
+        generator[I_BRO].can_silence = 0;
 
         log_printf(INF, "BMS is %s for charge.",
                    param->buff.rx_buff[0] == 0x00 ?
@@ -685,8 +893,8 @@ int about_packet_reciev_done(struct charge_task *thiz,
         }
         break;
     case PGN_BCL :// 0x001000, BMS 电池充电需求报文
-        statistics[I_BCL].can_counter ++;
-        statistics[I_BCL].can_silence = 0;
+        generator[I_BCL].can_counter ++;
+        generator[I_BCL].can_silence = 0;
         if ( bit_read(task, S_BMS_COMM_DOWN) ) {
             log_printf(INF, "BMS: BMS 通信"GRN("恢复"));
         }
@@ -712,8 +920,8 @@ int about_packet_reciev_done(struct charge_task *thiz,
                         CHARGE_WITH_CONST_CURRENT ? "恒流充电" : "无效模式");
         break;
     case PGN_BCS :// 0x001100, BMS 电池充电总状态报文
-        statistics[I_BCS].can_counter ++;
-        statistics[I_BCS].can_silence = 0;
+        generator[I_BCS].can_counter ++;
+        generator[I_BCS].can_silence = 0;
 
         log_printf(INF, "PGN_BCS fetched.");
         memcpy(&thiz->bms_all_battery_status, param->buff.rx_buff,
@@ -736,8 +944,8 @@ int about_packet_reciev_done(struct charge_task *thiz,
         }
         break;
     case PGN_BSM :// 0x001300, 动力蓄电池状态信息报文
-        statistics[I_BSM].can_counter ++;
-        statistics[I_BSM].can_silence = 0;
+        generator[I_BSM].can_counter ++;
+        generator[I_BSM].can_silence = 0;
 
         log_printf(INF, "BMS: PGN_BSM fetched.");
         memcpy(&thiz->bms_battery_status, param->buff.rx_buff,
@@ -796,32 +1004,32 @@ int about_packet_reciev_done(struct charge_task *thiz,
         }
         break;
     case PGN_BMV :// 0x001500, 单体动力蓄电池电压报文
-        statistics[I_BMV].can_counter ++;
-        statistics[I_BMV].can_silence = 0;
+        generator[I_BMV].can_counter ++;
+        generator[I_BMV].can_silence = 0;
 
         log_printf(INF, "BMS: PGN_BMV fetched.");
         break;
     case PGN_BMT :// 0x001600, 单体动力蓄电池温度报文
-        statistics[I_BMT].can_counter ++;
-        statistics[I_BMT].can_silence = 0;
+        generator[I_BMT].can_counter ++;
+        generator[I_BMT].can_silence = 0;
 
         log_printf(INF, "BMS: PGN_BMT fetched.");
         break;
     case PGN_BSP :// 0x001700, 动力蓄电池预留报文
-        statistics[I_BSP].can_counter ++;
-        statistics[I_BSP].can_silence = 0;
+        generator[I_BSP].can_counter ++;
+        generator[I_BSP].can_silence = 0;
 
         log_printf(INF, "BMS: PGN_BSP fetched.");
         break;
     case PGN_BST :// 0x001900, BMS 中止充电报文
-        statistics[I_BST].can_counter ++;
-        statistics[I_BST].can_silence = 0;
+        generator[I_BST].can_counter ++;
+        generator[I_BST].can_silence = 0;
 
         log_printf(INF, "BMS: PGN_BST fetched.");
         break;
     case PGN_BSD :// 0x001C00, BMS 统计数据报文
-        statistics[I_BSD].can_counter ++;
-        statistics[I_BSD].can_silence = 0;
+        generator[I_BSD].can_counter ++;
+        generator[I_BSD].can_silence = 0;
         if ( bit_read(task, S_BMS_COMM_DOWN) ) {
             log_printf(INF, "BMS: BMS 通信"GRN("恢复"));
         }
@@ -830,8 +1038,8 @@ int about_packet_reciev_done(struct charge_task *thiz,
         log_printf(INF, "BMS: PGN_BSD fetched.");
         break;
     case PGN_BEM :// 0x001E00, BMS 错误报文
-        statistics[I_BEM].can_counter ++;
-        statistics[I_BEM].can_silence = 0;
+        generator[I_BEM].can_counter ++;
+        generator[I_BEM].can_silence = 0;
 
         log_printf(INF, "BMS: PGN_BEM fetched.");
         break;
@@ -1310,7 +1518,7 @@ void on_charge_stage_change(CHARGE_STAGE_CHANGE_EVENT evt,
 // 握手-CRM-充电机辨识报文
 int gen_packet_PGN256(struct charge_task * thiz, struct event_struct* param)
 {
-    struct can_pack_generator *gen = &generator[0];
+    struct can_pack_generator *gen = &generator[I_CRM];
 
     if ( 0 == bit_read(thiz, F_BMS_RECOGNIZED) ) {
         param->buff.tx_buff[0] = BMS_NOT_RECOGNIZED;
@@ -1327,7 +1535,7 @@ int gen_packet_PGN256(struct charge_task * thiz, struct event_struct* param)
 
     param->evt_param = EVT_RET_OK;
 
-    statistics[I_BRM].can_counter ++;
+    generator[I_BRM].can_counter ++;//I_CRM
 
     return 0;
 }
@@ -1335,7 +1543,7 @@ int gen_packet_PGN256(struct charge_task * thiz, struct event_struct* param)
 // 配置-CTS-充电机发送时间同步信息
 int gen_packet_PGN1792(struct charge_task * thiz, struct event_struct* param)
 {
-    struct can_pack_generator *gen = &generator[1];
+    struct can_pack_generator *gen = &generator[I_CTS];
     struct pgn1792_CTS cts;
     time_t timep;
     struct tm *p;
@@ -1369,7 +1577,7 @@ int gen_packet_PGN1792(struct charge_task * thiz, struct event_struct* param)
 
     param->evt_param = EVT_RET_OK;
 
-    statistics[I_CTS].can_counter ++;
+    generator[I_CTS].can_counter ++;
 
     return 0;
 }
@@ -1377,7 +1585,7 @@ int gen_packet_PGN1792(struct charge_task * thiz, struct event_struct* param)
 // 配置-CML-充电机最大输出能力
 int gen_packet_PGN2048(struct charge_task * thiz, struct event_struct* param)
 {
-    struct can_pack_generator *gen = &generator[2];
+    struct can_pack_generator *gen = &generator[I_CML];
     struct pgn2048_CML cml;
 
     cml.spn2824_max_output_voltage = 7500;
@@ -1391,7 +1599,7 @@ int gen_packet_PGN2048(struct charge_task * thiz, struct event_struct* param)
 
     param->evt_param = EVT_RET_OK;
 
-    statistics[I_CML].can_counter ++;
+    generator[I_CML].can_counter ++;
 
     return 0;
 }
@@ -1399,7 +1607,7 @@ int gen_packet_PGN2048(struct charge_task * thiz, struct event_struct* param)
 // 配置-CRO-充电机输出准备就绪状态
 int gen_packet_PGN2560(struct charge_task * thiz, struct event_struct* param)
 {
-    struct can_pack_generator *gen = &generator[3];
+    struct can_pack_generator *gen = &generator[I_CRO];
     struct pgn2560_CRO cro;
 
     cro.spn2830_charger_ready_for_charge = CHARGER_READY_FOR_CHARGE;
@@ -1412,7 +1620,7 @@ int gen_packet_PGN2560(struct charge_task * thiz, struct event_struct* param)
 
     param->evt_param = EVT_RET_OK;
 
-    statistics[I_CRO].can_counter ++;
+    generator[I_CRO].can_counter ++;
 
     return 0;
 }
@@ -1420,7 +1628,7 @@ int gen_packet_PGN2560(struct charge_task * thiz, struct event_struct* param)
 // 充电-CCS-充电机充电状态
 int gen_packet_PGN4608(struct charge_task * thiz, struct event_struct* param)
 {
-    struct can_pack_generator *gen = &generator[4];
+    struct can_pack_generator *gen = &generator[I_CCS];
     struct pgn4608_CCS ccs;
 
     ccs.spn3081_output_voltage = 7500;
@@ -1435,7 +1643,7 @@ int gen_packet_PGN4608(struct charge_task * thiz, struct event_struct* param)
 
     param->evt_param = EVT_RET_OK;
 
-    statistics[I_CCS].can_counter ++;
+    generator[I_CCS].can_counter ++;
 
     return 0;
 }
@@ -1443,7 +1651,7 @@ int gen_packet_PGN4608(struct charge_task * thiz, struct event_struct* param)
 // 充电-CST-充电机中止充电
 int gen_packet_PGN6656(struct charge_task * thiz, struct event_struct* param)
 {
-    struct can_pack_generator *gen = &generator[5];
+    struct can_pack_generator *gen = &generator[I_CST];
     (void)thiz;
     (void)param;
     (void)gen;
@@ -1454,7 +1662,7 @@ int gen_packet_PGN6656(struct charge_task * thiz, struct event_struct* param)
 // 结束-CSD-充电机统计数据
 int gen_packet_PGN7424(struct charge_task * thiz, struct event_struct* param)
 {
-    struct can_pack_generator *gen = &generator[6];
+    struct can_pack_generator *gen = &generator[I_CSD];
     (void)thiz;
     (void)param;
     (void)gen;
@@ -1465,7 +1673,7 @@ int gen_packet_PGN7424(struct charge_task * thiz, struct event_struct* param)
 // 错误-CEM-充电机错误报文
 int gen_packet_PGN7936(struct charge_task * thiz, struct event_struct* param)
 {
-    struct can_pack_generator *gen = &generator[7];
+    struct can_pack_generator *gen = &generator[I_CEM];
     (void)thiz;
     (void)param;
     (void)gen;
