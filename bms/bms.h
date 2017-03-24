@@ -81,7 +81,6 @@ struct pgn9984_BHM {
 struct pgn256_CRM {
     // 充电机辨识结果 @ enum recognize_result
     u8 spn2560_recognize;
-
     // 充电机编号， 范围0-0xFFFFFFFF
     u8 spn2561_charger_sn[4];
     // 充电机/充电站所在区域编码
@@ -340,7 +339,7 @@ struct pgn6400_BST {
     // BMS 中止充电故障原因 enum ERROR_PGN6400
     u16 error;//spn3512
     // BMS 中止充电错误原因 enum FAULT_PGN6400
-    u16 fault;//spn3513
+    u8 fault;//spn3513
 };
 enum REASON_PGN6400 {
     // 达到所需SOC值 bit[0:1]
@@ -399,35 +398,191 @@ enum FAULT_PGN6400 {
     //电压异常 bit[2:3]
     FAULT_VOL_NORMAL        = 0x00,
     FAULT_VOL_UN_NORMAL     = 0x04,
-    FAULT_VOL_UNRELIABLE    = 0x08,
+    FAULT_VOL_UNRELIABLE    = 0x08
 };
 
 // 充电机终止充电
 struct pgn6656 {
+    // charger 中止充电原因 @ enum REASON_PGN6656
+    u8 spn3521_reason;
+    // charger 中止充电故障原因 enum ERROR_PGN6656
+    u16 spn3521_error;
+    // charger 中止充电错误原因 enum FAULT_PGN6656
+    u8 spn3521_fault;
+};
 
+enum REASON_PGN6656 {
+    // 达到charger设定条件中止 bit[0:1]
+    REASON_CHARGER_NORMAL  = 0x00,
+    REASON_REACH_CHARGER_STOP     = 0x01,
+    REASON_CHARGER_UNRELIABLE     = 0x02,
+    // 人工中止 bit[2:3]
+    REASON_CHARGER_MANUAL_NORMAL  = 0x00,
+    REASON_CHARGER_MANUAL_STOP    = 0x04,
+    REASON_CHARGER_MANUAL_UNRELIABLE = 0x08,
+    // 故障中止 bit[4:5]
+    REASON_CHARGER_NO_ERROR       = 0x00,
+    REASON_CHARGER_ERROR_STOP     = 0x10,
+    REASON_CHARGER_ERROR_UNRELIABLE   = 0x20,
+    // BMS主动中止 bit[6:7]
+    REASON_BMS_NORMAL   = 0x00,
+    REASON_BMS_STOP     = 0x40,
+    REASON_BMS_UNRELIABLE     = 0x80
+};
+enum ERROR_PGN6656 {
+    // charger过温故障 bit[0:1]
+    ERROR_CHARGER_TEMP_NORMAL  = 0x00,
+    ERROR_CHARGER_TEMP         = 0x01,
+    ERROR_CARGER_TEMP_UNRELIABLE    = 0x02,
+    // 充电连接器过温 bit[2:3]
+    ERROR_CHARGINGCONNECTOR_TEMP_NORMAL = 0x00,
+    ERROR_CHARGINGCONNECTOR_TEMP        = 0x04,
+    ERROR_CHARGINGCONNECTOR_TEMP_UNRELIABLE = 0x08,
+    // 充电机内部过温 bit[4:5]
+    ERROR_CHARGER_INTEMP_NORMAL = 0x00,
+    ERROR_CHARGER_INTEMP        = 0x10,
+    ERROR_CHARGER_INTEMP_UNRELIABLE = 0x20,
+    // 所需电量不能传送 bit[6:7]
+    ERROR_POWER_TRANSFER_NORMAL = 0x00,
+    ERROR_POWER_TRANSFER        = 0x40,
+    ERROR_POWER_TRANSFER_UNRELIABLE = 0x80,
+    // 充电机急停故障 bit[8:9]
+    ERROR_CHARGER_EMERGENCY_STOP_NORMAL = 0x00,
+    ERROR_CHARGER_EMERGENCY_STOP        = 0x100,
+    ERROR_CHARGER_EMERGENCY_STOP_UNRELIABLE = 0x200,
+    // 其他故障 bit[10:11]
+    ERROR_OTHERPGN6656_NORMAL = 0x00,
+    ERROR_OTHERPGN6656        = 0x400,
+    ERROR_OTHERPGN6656_UNRELIABLE = 0x800
+};
+enum FAULT_PGN6656 {
+    //电流过大 bit[0:1]
+    FAULT_CURRENT_MATCHING_NORMAL = 0x00,
+    FAULT_CURRENT_UN_MATCHING     = 0x01,
+    FAULT_CURRENT_PGN6656_UNRELIABLE      = 0x02,
+    //电压异常 bit[2:3]
+    FAULT_VOL_PGN6656_NORMAL        = 0x00,
+    FAULT_VOL_PGN6656_UN_NORMAL     = 0x04,
+    FAULT_VOL_PGN6656_UNRELIABLE    = 0x08
 };
 
 // 充电结束阶段
 // BMS统计数据
 struct pgn7168 {
-
+    //中止荷电状态SOC 1% 每位，0%偏移，范围0-100%
+    u8 spn3601_stop_soc_status;
+    //动力蓄电池单体最低电压 0.01V 每位, 0V偏移，范围 0- 24V
+    u16 spn3602_singal_battery_min_vol;
+    //动力蓄电池单体最高电压 0.01V 每位, 0V偏移，范围 0- 24V
+    u16 spn3603_singal_battery_max_vol;
+    //动力蓄电池最低温度 1 度每位， -50度偏移， 范围 -50 - 200
+    u8 spn3604_battery_min_temp;
+    //动力蓄电池最高温度 1 度每位， -50度偏移， 范围 -50 - 200
+    u8 spn3605_battery_max_temp;
 };
 
 // 充电机统计数据
 struct pgn7424 {
-
+    //累计充电时间, 1Min 每位 0 min偏移 范围 0-600min
+    u16 spn3611_total_charge_time;
+    //输出能量 0.1kW.h每位， 范围 0-1000 kW。h
+    u16 spn3612_output_energy;
+    // 充电机编号， 1每位 1偏移量 范围 0-0xFFFFFFFF
+    u8 spn3613_charger_sn[4];
 };
 
 // 错误报文分类
 // BMS 错误报文
 struct pgn7680 {
+    u8 bem_crm;//@ enum BEM_PGN3901_3902
+    u8 bem_ccp;//@ enum BEM_PGN3903_3904
+    u8 bem_cst;//@ enum BEM_PGN3905_3906
+    u8 bem_csd;//@ enum BEM_PGN3907
+};
 
+enum BEM_PGN3901_3902{
+    //接收spn2560 ==0x00 辨识报文超时 bit[0:1]
+    BEM_00_NORMAL       = 0x00,
+    BEM_00_TIMEOUT      = 0x01,
+    BEM_00_UNRELIABLE   = 0x02,
+    //接收spn2560 ==0xAA 辨识报文超时 bit[2:3]
+    BEM_AA_NORMAL       = 0x00,
+    BEM_AA_TIMEOUT      = 0x04,
+    BEM_AA_UNRELIABLE   = 0x08
+};
+enum BEM_PGN3903_3904{
+    //接收充电机的时间同步和充电机最大输出能力报文超时 bit[0:1]
+    BEM_CTS_CML_NORMAL       = 0x00,
+    BEM_CTS_CML_TIMEOUT      = 0x01,
+    BEM_CTS_CML_UNRELIABLE   = 0x02,
+    //接收充电机完成充电准备报文超时 bit[2:3]
+    BEM_CRO_NORMAL       = 0x00,
+    BEM_CRO_TIMEOUT      = 0x04,
+    BEM_CRO_UNRELIABLE   = 0x08
+};
+enum BEM_PGN3905_3906{
+    //接收充电机充电状态报文超时 bit[0:1]
+    BEM_CCS_NORMAL       = 0x00,
+    BEM_CCS_TIMEOUT      = 0x01,
+    BEM_CCS_UNRELIABLE   = 0x02,
+    //接收充电机中止充电报文超时 bit[2:3]
+    BEM_CST_NORMAL       = 0x00,
+    BEM_CST_TIMEOUT      = 0x04,
+    BEM_CST_UNRELIABLE   = 0x08
+};
+enum BEM_PGN3907{
+    //接收充电机统计报文超时 bit[0:1]
+    BEM_CSD_NORMAL       = 0x00,
+    BEM_CSD_TIMEOUT      = 0x01,
+    BEM_CSD_UNRELIABLE   = 0x02
 };
 
 // 充电机错误报文
 struct pgn7936 {
-
+    u8 cem_brm;//@ enum BEM_PGN3921
+    u8 cem_bro;//@ enum BEM_PGN3922_3923
+    u8 cem_bst;//@ enum BEM_PGN3924_3925_3926
+    u8 cem_bsd;//@ enum BEM_PGN3927
 };
+
+enum BEM_PGN3921{
+    //接收BMS辨识报文超时 bit[0:1]
+    BEM_BMS_NORMAL       = 0x00,
+    BEM_BMS_TIMEOUT      = 0x01,
+    BEM_BMS_UNRELIABLE   = 0x02
+};
+enum BEM_PGN3922_3923{
+    //接收电池充电参数报文超时 bit[0:1]
+    BEM_BCP_NORMAL       = 0x00,
+    BEM_BCP_TIMEOUT      = 0x01,
+    BEM_BCP_UNRELIABLE   = 0x02,
+    //接收BMS完成充电准备报文超时 bit[2:3]
+    BEM_BRO_NORMAL       = 0x00,
+    BEM_BRO_TIMEOUT      = 0x04,
+    BEM_BRO_UNRELIABLE   = 0x08
+};
+enum BEM_PGN3924_3925_3926{
+    //接收电池充电总状态报文超时 bit[0:1]
+    BEM_BCS_NORMAL       = 0x00,
+    BEM_BCS_TIMEOUT      = 0x01,
+    BEM_BCS_UNRELIABLE   = 0x02,
+    //接收电池充电需求报文超时 bit[2:3]
+    BEM_BCL_NORMAL       = 0x00,
+    BEM_BCL_TIMEOUT      = 0x04,
+    BEM_BCL_UNRELIABLE   = 0x08,
+    //接收BMS中止充电报文超时 bit[4:5]
+    BEM_BST_NORMAL       = 0x00,
+    BEM_BST_TIMEOUT      = 0x10,
+    BEM_BST_UNRELIABLE   = 0x20
+};
+enum BEM_PGN3927{
+    //接收BMS统计报文超时 bit[0:1]
+    BEM_BSD_NORMAL       = 0x00,
+    BEM_BSD_TIMEOUT      = 0x01,
+    BEM_BSD_UNRELIABLE   = 0x02
+};
+
+
 
 #pragma pack()
 
@@ -541,7 +696,6 @@ struct can_tp_param {
     unsigned int tp_size;
     // 即将传输的数据包个数
     unsigned int tp_pack_nr;
-
     // 已经接收的数据字节数
     unsigned int tp_rcv_bytes;
     // 已经接收的数据包个数
