@@ -72,7 +72,7 @@ struct can_pack_generator generator[] = {
     .can_counter = 0
     },
     {
-    .stage      =  CHARGE_STAGE_HANDSHACKING,
+    .stage      =  CHARGE_STAGE_IDENTIFICATION,
     .pgn        =  PGN_CRM,//0x000100,
     .prioriy    =  6,
     .datalen    =  8,
@@ -84,7 +84,7 @@ struct can_pack_generator generator[] = {
     .can_counter = 0
     },
     {
-    .stage      =  CHARGE_STAGE_HANDSHACKING,
+    .stage      =  CHARGE_STAGE_IDENTIFICATION,
     .pgn        =  PGN_BRM,//0x000200,
     .prioriy    =  6,
     .datalen    =  8,
@@ -542,7 +542,6 @@ static int can_packet_callback(
         Hachiko_new(&thiz->can_heart_beat, HACHIKO_AUTO_FEED, 4, NULL);
         log_printf(INF, "BMS: CHARGER change stage to "RED("CHARGE_STAGE_HANDSHACKING"));
         thiz->charge_stage = CHARGE_STAGE_HANDSHACKING;
-        //thiz->charge_stage = CHARGE_STAGE_CONFIGURE;
         break;
     case EVENT_CAN_RESET:
         // 事件循环函数复位
@@ -564,21 +563,24 @@ static int can_packet_callback(
     case EVENT_TX_DONE:
         // 数据包发送完成了
         log_printf(DBG_LV0, "BMS: packet sent. %08X", param->can_id);
-        if ( (param->can_id & 0x00FF0000) == (PGN_CRM << 8) &&
-             bit_read(thiz, F_BMS_RECOGNIZED ) &&
-             bit_read(thiz, F_VEHICLE_RECOGNIZED ) &&
-             thiz->charge_stage == CHARGE_STAGE_HANDSHACKING) {
-            thiz->charge_stage = CHARGE_STAGE_CONFIGURE;
-            log_printf(INF, "BMS: CHARGER change stage to "RED("CHARGE_STAGE_CONFIGURE"));
-        }
-        if ( (param->can_id & 0x00FF0000) == (PGN_CRO << 8) &&
-             bit_read(thiz, F_CHARGER_READY) &&
-             bit_read(thiz, F_BMS_READY ) &&
-             thiz->charge_stage == CHARGE_STAGE_CONFIGURE ) {
-            thiz->charge_stage = CHARGE_STAGE_CHARGING;
-            log_printf(INF,
-              "BMS: CHARGER change stage to "RED("CHARGE_STAGE_CHARGING"));
-        }
+        param->can_id = param->can_id >> 8;
+        about_packet_transfer_done(thiz,param);
+
+//        if ( (param->can_id & 0x00FF0000) == (PGN_CRM << 8) &&
+//             bit_read(thiz, F_BMS_RECOGNIZED ) &&
+//             bit_read(thiz, F_VEHICLE_RECOGNIZED ) &&
+//             thiz->charge_stage == CHARGE_STAGE_HANDSHACKING) {
+//            thiz->charge_stage = CHARGE_STAGE_CONFIGURE;
+//            log_printf(INF, "BMS: CHARGER change stage to "RED("CHARGE_STAGE_CONFIGURE"));
+//        }
+//        if ( (param->can_id & 0x00FF0000) == (PGN_CRO << 8) &&
+//             bit_read(thiz, F_CHARGER_READY) &&
+//             bit_read(thiz, F_BMS_READY ) &&
+//             thiz->charge_stage == CHARGE_STAGE_CONFIGURE ) {
+//            thiz->charge_stage = CHARGE_STAGE_CHARGING;
+//            log_printf(INF,
+//              "BMS: CHARGER change stage to "RED("CHARGE_STAGE_CHARGING"));
+//        }
         //thiz->charge_stage = CHARGE_STAGE_CONFIGURE;//add by debug
         break;
     case EVENT_TX_PRE:
@@ -624,9 +626,18 @@ static int can_packet_callback(
             param->evt_param = EVT_RET_ERR;
             break;
         case CHARGE_STAGE_HANDSHACKING:
-            //gen_packet_PGN256(thiz, param);
-            if ( generator[I_CRM].heartbeat >= generator[I_CRM].period ) {
-                gen_packet_PGN256(thiz, param);
+            if ( generator[I_BHM].heartbeat >= generator[I_BHM].period ) {
+                //gen_packet_PGN512(thiz, param);
+                generator[I_BHM].heartbeat = 0;
+            }
+            if ( generator[I_CEM].heartbeat >= generator[I_CEM].period ) {
+                gen_packet_PGN7936(thiz, param);
+                generator[I_CEM].heartbeat = 0;
+            }
+            break;
+        case CHARGE_STAGE_IDENTIFICATION:
+            if ( generator[I_BRM].heartbeat >= generator[I_BRM].period ) {
+                gen_packet_PGN512(thiz, param);
                 generator[I_CRM].heartbeat = 0;
             }
             if ( generator[I_CEM].heartbeat >= generator[I_CEM].period ) {
@@ -680,8 +691,16 @@ static int can_packet_callback(
             break;
         }
         break;
-    case EVENT_TX_TP_RTS: // 本系统中BMS通信暂时不会使用
+    case EVENT_TX_TP_RTS: // 需增加
         //串口处于连接管理状态时，将会收到该传输数据报请求。
+        param->buff.tx_buff[0] = 0x10;
+//        param->buff.tx_buff[1] = ;
+//        param->buff.tx_buff[2] = ;
+//        param->buff.tx_buff[3] = ;
+        param->buff.tx_buff[4] = 0xFF;
+        param->buff.tx_buff[5] = (thiz->can_tp_param.tp_pgn >> 16) & 0xFF;
+        param->buff.tx_buff[6] = (thiz->can_tp_param.tp_pgn >> 8 ) & 0xFF;
+        param->buff.tx_buff[7] = thiz->can_tp_param.tp_pgn & 0xFF;
         break;
     case EVENT_TX_TP_CTS:
     {
@@ -735,13 +754,48 @@ static int can_packet_callback(
 
     return 0;
 }
-
+// CAN数据包发送完成
+int about_packet_transfer_done(struct charge_task *thiz,
+                             struct event_struct *param)
+{
+    switch (param->can_id & 0x00FF00) {
+        case PGN_BHM:
+            break;
+    }
+}
 // CAN数据包接受完成
 int about_packet_reciev_done(struct charge_task *thiz,
                              struct event_struct *param)
 {
     switch ( param->can_id & 0x00FF00 ) {
+    case PGN_CHM:
+        break;
+    case PGN_BHM:
+        break;
     case PGN_CRM :// 0x000100,
+        generator[I_CRM].can_counter ++;
+        generator[I_CRM].can_silence = 0;
+        if ( bit_read(task, S_BMS_COMM_DOWN) ) {
+            log_printf(INF, "BMS: BMS 通信"GRN("恢复"));
+        }
+        bit_clr(task, S_BMS_COMM_DOWN);
+
+        if ( param->buff_payload == 8 ) {
+            memcpy(&thiz->charger_info, param->buff.rx_buff, 8);
+        } else if ( param->buff_payload == sizeof(struct pgn256_CRM) ) {
+            memcpy(&thiz->charger_info,
+                   param->buff.rx_buff, sizeof(struct pgn256_CRM));
+        }
+        if( thiz->charger_info.spn2560_recognize == BMS_NOT_RECOGNIZED ){
+            log_printf(WRN,
+                  "BMS not recognized .");
+            bit_clr(thiz, F_BMS_RECOGNIZED);
+            break;
+        }else if( thiz->charger_info.spn2560_recognize == BMS_RECOGNIZED ){
+            bit_set(thiz, F_VEHICLE_RECOGNIZED);
+        }
+        break;
+    case PGN_BRM :// 0x000200, BMS 车辆辨识报文
         break;
     case PGN_CTS :// 0x000700,
         break;
@@ -756,62 +810,6 @@ int about_packet_reciev_done(struct charge_task *thiz,
     case PGN_CRO :// 0x000A00,
         break;
     case PGN_CEM :// 0x001F00
-        break;
-    case PGN_BRM :// 0x000200, BMS 车辆辨识报文
-        generator[I_BRM].can_counter ++;
-        generator[I_BRM].can_silence = 0;
-        if ( bit_read(task, S_BMS_COMM_DOWN) ) {
-            log_printf(INF, "BMS: BMS 通信"GRN("恢复"));
-        }
-        bit_clr(task, S_BMS_COMM_DOWN);
-
-        if ( param->buff_payload == 8 ) {
-            memcpy(&thiz->vehicle_info, param->buff.rx_buff, 8);
-        } else if ( param->buff_payload == sizeof(struct pgn512_BRM) ) {
-            memcpy(&thiz->vehicle_info,
-                   param->buff.rx_buff, sizeof(struct pgn512_BRM));
-        }
-
-        if ( thiz->vehicle_info.spn2565_bms_version[0] == 0x00 &&
-             thiz->vehicle_info.spn2565_bms_version[1] == 0x01 &&
-             thiz->vehicle_info.spn2565_bms_version[2] == 0x00 ) {
-
-        } else {
-            log_printf(WRN,
-                  "BMS not recognized due to invalid BMS VERSION(SPN2565).");
-            //bit_clr(thiz, F_BMS_RECOGNIZED);
-            //break;
-        }
-
-        if ( thiz->vehicle_info.spn2566_battery_type == 0 ||
-             (thiz->vehicle_info.spn2566_battery_type > 0x08 &&
-              thiz->vehicle_info.spn2566_battery_type < 0xFF) ) {
-            log_printf(WRN,
-                   "BMS not recognized due to invalid BATTERY TYPE(SPN2566)");
-            bit_clr(thiz, F_BMS_RECOGNIZED);
-            break;
-        }
-
-        if ( thiz->vehicle_info.spn2567_capacity / 10.0f > 1000.0f ) {
-            log_printf(WRN,
-                   "BMS not recognized due to invalid CAP INFO(SPN2567)");
-            bit_clr(thiz, F_BMS_RECOGNIZED);
-            break;
-        }
-
-        if ( thiz->vehicle_info.spn2568_volatage / 10.0f > 750.0f ) {
-            log_printf(WRN,
-                  "BMS not recognized due to invalid VOLTAGE INFO(SPN2568)");
-            bit_clr(thiz, F_BMS_RECOGNIZED);
-            break;
-        }
-        log_printf(INF, "BMS recognized....CAP: %d A.H, VOL: %d V",
-                   thiz->vehicle_info.spn2567_capacity,
-                   thiz->vehicle_info.spn2568_volatage);
-        if ( ! bit_read(thiz, F_BMS_RECOGNIZED ) ) {
-            // send recognized event from here.
-        }
-        bit_set(thiz, F_BMS_RECOGNIZED);
         break;
     case PGN_BCP :// 0x000600, BMS 配置报文
         generator[I_BCP].can_counter ++;
@@ -1058,13 +1056,12 @@ void *thread_bms_write_service(void *arg) ___THREAD_ENTRY___
     int *done = (int *)arg;
     int mydone = 0;
     int s = 0;
-//    struct sockaddr_can addr;
-//    struct ifreq ifr;
-    //struct can_frame frame;
-    VCI_CAN_OBJ frame;//[RX_BUFF_SIZE];
-    struct event_struct param;
-    unsigned char txbuff[32];
     int nbytes;
+    VCI_CAN_OBJ frame;//[RX_BUFF_SIZE];
+    VCI_ERR_INFO errinfo;
+    struct event_struct param;
+    unsigned char txbuff[TEMP_BUFF_SIZE];
+
     if ( done == NULL ) done = &mydone;
 
     log_printf(INF, "%s running...s=%d", __FUNCTION__, s);
@@ -1080,8 +1077,9 @@ void *thread_bms_write_service(void *arg) ___THREAD_ENTRY___
 
         /*
          * 写线程同时负责写数据和进行连接管理时的控制数据写出，这里需要对当前CAN的
-         * 状态进行判定，当CAN处于CAN_NORMAL时进行普通的写操作，当CAN处于CAN_TP_RD
-         * 时，采用EVENT_TX_REQUEST 当CAN处于CAN_TP_RD时采用EVENT_TX_TP_REQUEST
+         * 状态进行判定，当CAN处于CAN_NORMAL时进行普通的写操作，采用EVENT_TX_REQUEST,
+         * 当CAN处于CAN_TP_RD时采用EVENT_TX_TP_CTS
+         * 当CAN处于CAN_TP_WR时采用EVENT_TX_TP_RTS
          */
         param.buff.tx_buff = txbuff;
         param.buff_size = sizeof(txbuff);
@@ -1091,7 +1089,7 @@ void *thread_bms_write_service(void *arg) ___THREAD_ENTRY___
         } else if ( task->can_bms_status & CAN_TP_RD ) {
             switch ( task->can_bms_status & 0xF0 ) {
             case CAN_TP_CTS:
-                can_packet_callback(task, EVENT_TX_TP_CTS, &param);
+                can_packet_callback(task, EVENT_TX_TP_CTS, &param);//准备发送数据包
                 break;
             case CAN_TP_TX:
             case CAN_TP_RX:
@@ -1108,10 +1106,20 @@ void *thread_bms_write_service(void *arg) ___THREAD_ENTRY___
                 continue;
                 break;
             }
-        } else if ( task->can_bms_status & CAN_TP_WR ) {
-            // 当前协议没有用到
-            log_printf(WRN, "BMS: CAN_TP_WRITE not implement.");
-            continue;
+        } else if ( task->can_bms_status & CAN_TP_WR ) {//增加多数据包写
+            log_printf(WRN, "BMS: CAN_TP_WRITE.");
+            switch ( task->can_bms_status & 0xF0 ) {
+            case CAN_TP_RTS:
+                can_packet_callback(task, EVENT_TX_TP_RTS, &param);//请求发送数据包
+                break;
+            case CAN_TP_TX:// 数据发送中
+                break;
+            default:
+                log_printf(WRN, "BMS: can_bms_status crashed(%d).",
+                           task->can_bms_status);
+                continue;
+                break;
+            }
         } else if ( task->can_bms_status == CAN_INVALID ) {
             log_printf(DBG_LV0, "BMS: invalid can_bms_status: %d.",
                        task->can_bms_status);
@@ -1151,34 +1159,26 @@ void *thread_bms_write_service(void *arg) ___THREAD_ENTRY___
             frame.ID = param.can_id;
             frame.DataLen= param.buff_payload;
             memcpy(frame.Data, param.buff.tx_buff, 8);
-            //nbytes = write(s, &frame, sizeof(struct can_frame));
             nbytes = VCI_Transmit(m_devtype,m_devind,m_cannum,&frame,TX_BUFF_SIZE);
-//            if ( (unsigned int)nbytes < param.buff_payload ) {
-//                param.evt_param = EVT_RET_ERR;
-//                can_packet_callback(task, EVENT_TX_FAILS, &param);
-//            } else {
-//                param.evt_param = EVT_RET_OK;
-//                can_packet_callback(task, EVENT_TX_DONE, &param);
-//            }
-            send_frame.ID = frame.ID;
-            send_frame.DataLen = frame.DataLen;
-            send_frame.ExternFlag = frame.ExternFlag;
-            send_frame.RemoteFlag = frame.RemoteFlag;
-            send_frame.SendType = frame.SendType;
-            memcpy(send_frame.Data,frame.Data,frame.DataLen);
-
-
-            param.evt_param = EVT_RET_OK;
-            can_packet_callback(task, EVENT_TX_DONE, &param);
-
+            if(nbytes<=0){
+                //注意：如果没有读到数据则必须调用此函数来读取出当前的错误码，
+                //千万不能省略这一步（即使你可能不想知道错误码是什么）
+                VCI_ReadErrInfo(m_devtype,m_devind,m_cannum,&errinfo);
+                param.evt_param = EVT_RET_ERR;
+                can_packet_callback(task, EVENT_TX_FAILS, &param);
+            }else{
+                param.evt_param = EVT_RET_OK;
+                can_packet_callback(task, EVENT_TX_DONE, &param);
+                send_frame.ID = frame.ID;
+                send_frame.DataLen = frame.DataLen;
+                send_frame.ExternFlag = frame.ExternFlag;
+                send_frame.RemoteFlag = frame.RemoteFlag;
+                send_frame.SendType = frame.SendType;
+                memcpy(send_frame.Data,frame.Data,frame.DataLen);
+            }
         } else if ( param.buff_payload > 8 ) {
             // 大于8字节的数据包在这里处理，程序向后兼容
-            static unsigned int notimplement = 0;
-            if ( notimplement % 10000 == 0 ) {
-                log_printf(INF,
-                           "BMS: Connection manage for send has not implemented.");
-            }
-            notimplement ++;
+
         } else {
         }
 
@@ -1260,40 +1260,29 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
         }
 
         memset(&frame, 0, sizeof(frame));
-        //nbytes = read(s, &frame, sizeof(struct can_frame));
         nbytes = VCI_Receive(m_devtype, m_devind, m_cannum, &frame, RX_BUFF_SIZE, RX_WAIT_TIME/*ms*/);
         if(nbytes<=0){
             //注意：如果没有读到数据则必须调用此函数来读取出当前的错误码，
             //千万不能省略这一步（即使你可能不想知道错误码是什么）
             VCI_ReadErrInfo(m_devtype,m_devind,m_cannum,&errinfo);
+            param.evt_param = EVT_RET_ERR;
+            log_printf(DBG_LV3, "BMS: read frame error %x", frame.ID);
+            can_packet_callback(task, EVENT_RX_ERROR, &param);
+            continue;
         }
         else{
-//            for(i=0;i<nbytes;i++){
 //            debug_log(DBG_LV1,
 //                       "BMS: get %dst packet %08X:%02X%02X%02X%02X%02X%02X%02X%02X",
-//                       i,
-//                       frameinfo[i].ID,
-//                       frameinfo[i].Data[0],
-//                       frameinfo[i].Data[1],
-//                       frameinfo[i].Data[2],
-//                       frameinfo[i].Data[3],
-//                       frameinfo[i].Data[4],
-//                       frameinfo[i].Data[5],
-//                       frameinfo[i].Data[6],
-//                       frameinfo[i].Data[7]);
-//            }
-            debug_log(DBG_LV1,
-                       "BMS: get %dst packet %08X:%02X%02X%02X%02X%02X%02X%02X%02X",
-                       dbg_packets,
-                       frame.ID,
-                       frame.Data[0],
-                       frame.Data[1],
-                       frame.Data[2],
-                       frame.Data[3],
-                       frame.Data[4],
-                       frame.Data[5],
-                       frame.Data[6],
-                       frame.Data[7]);
+//                       dbg_packets,
+//                       frame.ID,
+//                       frame.Data[0],
+//                       frame.Data[1],
+//                       frame.Data[2],
+//                       frame.Data[3],
+//                       frame.Data[4],
+//                       frame.Data[5],
+//                       frame.Data[6],
+//                       frame.Data[7]);
             receive_frame.ID = frame.ID;
             receive_frame.DataLen = frame.DataLen;
             receive_frame.ExternFlag = frame.ExternFlag;
@@ -1312,14 +1301,6 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
 
         dbg_packets ++;
 
-#if 0
-        if ( nbytes != sizeof(frame) ) {
-            param.evt_param = EVT_RET_ERR;
-            log_printf(DBG_LV3, "BMS: read frame error %x", frame.ID);
-            can_packet_callback(task, EVENT_RX_ERROR, &param);
-            continue;
-        }
-#endif
         debug_log(DBG_LV1,
                    "BMS: get %dst packet %08X:%02X%02X%02X%02X%02X%02X%02X%02X",
                    dbg_packets,
@@ -1337,8 +1318,8 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
          * CAN通信处于普通模式
          *
          * SAE J1939-21 Revised December 2006 版协议中规定
-         * TP.DT.PGN 为 0x00EB00  连接管理
-         * TP.CM.PGN 为 0x00EC00  数据传输
+         * TP.CM.PGN 为 0x00EC00  连接管理
+         * TP.DT.PGN 为 0x00EB00  数据传输
          * CAN 的数据包大小最大为8字节，因此需要传输大于等于9字节的数据包
          * 时需要使用连接管理功能来传输数据包。
          * 首先由数据发送方，发送一个数据发送请求包，请求包中包含的数据内容有
@@ -1377,7 +1358,7 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
             }
         } else if ( ((frame.ID & 0x00FF0000) >> 16 ) == 0xEC ) {
             // Connection managment
-            if ( 0x10 == frame.Data[0] ) {
+            if ( 0x11 == frame.Data[0] ) {
                 if ( task->can_tp_buff_nr ) {
                     /*
                      * 数据传输太快，还没将缓冲区的数据发送出去
@@ -1535,6 +1516,33 @@ int gen_packet_PGN256(struct charge_task * thiz, struct event_struct* param)
     generator[I_BRM].can_counter ++;//I_CRM
 
     return 0;
+}
+
+// 握手-BRM-BMS辨识报文
+int gen_packet_PGN512(struct charge_task * thiz, struct event_struct* param)
+{
+    struct can_pack_generator *gen = &generator[I_BRM];
+
+    memset(param->buff.tx_buff, INIT, sizeof(struct pgn512_BRM));
+    set_data_tcu_PGN512(thiz);
+    //memcpy(param->buff.tx_buff, &thiz->charger_info, sizeof(struct pgn512_BRM));
+    param->buff.tx_buff[0] = 0x01;
+    param->buff.tx_buff[1] = 0x01;
+    param->buff.tx_buff[2] = 0x00;
+    param->buff_payload = 8;//gen->datalen;
+    param->can_id = gen->prioriy << 26 | gen->pgn << 8 | CAN_TX_ID_MASK | CAN_EFF_FLAG;
+
+    param->evt_param = EVT_RET_OK;
+
+    generator[I_BRM].can_counter ++;//I_CRM
+
+    return 0;
+}
+int set_data_tcu_PGN512(struct charge_task * thiz){
+    memset(&thiz->vehicle_info, INIT, sizeof(struct pgn512_BRM));
+    thiz->vehicle_info.spn2565_bms_version[0] = 0x01;
+    thiz->vehicle_info.spn2565_bms_version[1] = 0x01;
+    thiz->vehicle_info.spn2565_bms_version[2] = 0x00;
 }
 
 // 配置-CTS-充电机发送时间同步信息

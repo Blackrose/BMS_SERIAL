@@ -10,10 +10,10 @@
 #define CAN_ADDR_CHARGER   0x56  // 86
 // BMS地址
 #define CAN_ADDR_BMS       0xF4  // 244
-#define CAN_RCV_ID_MASK    ((CAN_ADDR_CHARGER<<8)|CAN_ADDR_BMS)
-#define CAN_TX_ID_MASK    ((CAN_ADDR_CHARGER)|CAN_ADDR_BMS<<8)
-//#define CAN_TX_ID_MASK    ((CAN_ADDR_CHARGER<<8)|CAN_ADDR_BMS)
-//#define CAN_RCV_ID_MASK    ((CAN_ADDR_CHARGER)|CAN_ADDR_BMS<<8)
+//#define CAN_RCV_ID_MASK    ((CAN_ADDR_CHARGER<<8)|CAN_ADDR_BMS)
+//#define CAN_TX_ID_MASK    ((CAN_ADDR_CHARGER)|CAN_ADDR_BMS<<8)
+#define CAN_TX_ID_MASK    ((CAN_ADDR_CHARGER<<8)|CAN_ADDR_BMS)
+#define CAN_RCV_ID_MASK    ((CAN_ADDR_CHARGER)|CAN_ADDR_BMS<<8)
 
 #ifndef u8
 #define u8 unsigned char
@@ -62,6 +62,7 @@ struct can_frame {
 #define RX_WAIT_TIME  100
 #define RX_BUFF_SIZE  1
 #define TX_BUFF_SIZE  1
+#define TEMP_BUFF_SIZE 2048
 
 //add end====================================================================
 
@@ -757,11 +758,17 @@ typedef enum {
     I_CEM = 21
 }CAN_PGN_STATISTICS;
 
-
+int about_packet_transfer_done(struct charge_task *thiz,
+                             struct event_struct *param);
 int about_packet_reciev_done(struct charge_task *thiz,
                              struct event_struct *param);
 int gen_packet_PGN256(struct charge_task * thiz,
                        struct event_struct* param);
+
+int gen_packet_PGN512(struct charge_task * thiz,
+                       struct event_struct* param);
+int set_data_tcu_PGN512(struct charge_task * thiz);
+
 int gen_packet_PGN1792(struct charge_task * thiz,
                         struct event_struct* param);
 int gen_packet_PGN2048(struct charge_task * thiz,

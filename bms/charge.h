@@ -107,14 +107,16 @@ typedef enum {
     CHARGE_STAGE_INVALID      =0x00,
     // 充电握手
     CHARGE_STAGE_HANDSHACKING =0x01,
+    // 充电辨识
+    CHARGE_STAGE_IDENTIFICATION =0x02,
     // 充电配置
-    CHARGE_STAGE_CONFIGURE    =0x02,
+    CHARGE_STAGE_CONFIGURE    =0x03,
     // 充电
-    CHARGE_STAGE_CHARGING     =0x03,
+    CHARGE_STAGE_CHARGING     =0x04,
     // 充电结束
-    CHARGE_STAGE_DONE         =0x04,
+    CHARGE_STAGE_DONE         =0x05,
     // 任意阶段
-    CHARGE_STAGE_ANY          =0x05
+    CHARGE_STAGE_ANY          =0x06
 }CHARGE_STAGE;
 
 // 充电阶段变更事件
@@ -147,7 +149,7 @@ typedef enum {
     CAN_NORMAL                =0x01,
     // 连接管理读模式, 多数据包读
     CAN_TP_RD                 =0x02,
-    // 连接管理写模式，多数据包写，当前的协议标准没有用到
+    // 连接管理写模式，多数据包写
     CAN_TP_WR                 =0x04
 }CAN_BMS_STATUS;
 
@@ -295,6 +297,8 @@ struct charge_task {
     // CAN数据包心跳
     struct Hachiko_food can_heart_beat;
 
+    //充电机基本信息
+    struct pgn256_CRM charger_info;
     // 车辆基本信息
     struct pgn512_BRM  vehicle_info;
     // BMS充电配置信息

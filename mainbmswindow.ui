@@ -525,7 +525,7 @@
       <property name="title">
        <string>充电参数BCP</string>
       </property>
-      <widget class="QWidget" name="layoutWidget">
+      <widget class="QWidget" name="layoutWidget_59">
        <property name="geometry">
         <rect>
          <x>11</x>
@@ -547,7 +547,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="layoutWidget">
+      <widget class="QWidget" name="layoutWidget_60">
        <property name="geometry">
         <rect>
          <x>11</x>
@@ -569,7 +569,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="layoutWidget">
+      <widget class="QWidget" name="layoutWidget_61">
        <property name="geometry">
         <rect>
          <x>11</x>
@@ -591,7 +591,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="layoutWidget">
+      <widget class="QWidget" name="layoutWidget_62">
        <property name="geometry">
         <rect>
          <x>11</x>
@@ -613,7 +613,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="layoutWidget">
+      <widget class="QWidget" name="layoutWidget_63">
        <property name="geometry">
         <rect>
          <x>112</x>
@@ -635,7 +635,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="layoutWidget">
+      <widget class="QWidget" name="layoutWidget_64">
        <property name="geometry">
         <rect>
          <x>113</x>
@@ -657,7 +657,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="layoutWidget">
+      <widget class="QWidget" name="layoutWidget_65">
        <property name="geometry">
         <rect>
          <x>113</x>
@@ -1078,7 +1078,7 @@
       <property name="title">
        <string>通讯协议版本</string>
       </property>
-      <widget class="QWidget" name="layoutWidget">
+      <widget class="QWidget" name="layoutWidget_66">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -1125,7 +1125,7 @@
       <property name="title">
        <string>最高允许充电电压</string>
       </property>
-      <widget class="QWidget" name="layoutWidget">
+      <widget class="QWidget" name="layoutWidget_67">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -1145,7 +1145,7 @@
       </widget>
      </widget>
     </widget>
-    <widget class="QWidget" name="layoutWidget">
+    <widget class="QWidget" name="layoutWidget_68">
      <property name="geometry">
       <rect>
        <x>21</x>
