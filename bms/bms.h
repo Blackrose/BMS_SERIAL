@@ -6,15 +6,6 @@
 #ifndef _BMS_PACKAGE_INCLUDED_H_
 #define _BMS_PACKAGE_INCLUDED_H_
 
-// 充电机地址
-#define CAN_ADDR_CHARGER   0x56  // 86
-// BMS地址
-#define CAN_ADDR_BMS       0xF4  // 244
-//#define CAN_RCV_ID_MASK    ((CAN_ADDR_CHARGER<<8)|CAN_ADDR_BMS)
-//#define CAN_TX_ID_MASK    ((CAN_ADDR_CHARGER)|CAN_ADDR_BMS<<8)
-#define CAN_TX_ID_MASK    ((CAN_ADDR_CHARGER<<8)|CAN_ADDR_BMS)
-#define CAN_RCV_ID_MASK    ((CAN_ADDR_CHARGER)|CAN_ADDR_BMS<<8)
-
 #ifndef u8
 #define u8 unsigned char
 #endif
@@ -65,6 +56,24 @@ struct can_frame {
 #define TEMP_BUFF_SIZE 2048
 
 //add end====================================================================
+
+
+// 充电机地址
+#define CAN_ADDR_CHARGER   0x56  // 86
+// BMS地址
+#define CAN_ADDR_BMS       0xF4  // 244
+//#define CAN_RCV_ID_MASK    ((CAN_ADDR_CHARGER<<8)|CAN_ADDR_BMS)
+//#define CAN_TX_ID_MASK    ((CAN_ADDR_CHARGER)|CAN_ADDR_BMS<<8)
+#define CAN_TX_ID_MASK    ((CAN_ADDR_CHARGER<<8)|CAN_ADDR_BMS)
+#define CAN_RCV_ID_MASK    ((CAN_ADDR_CHARGER)|CAN_ADDR_BMS<<8)
+
+#define CAN_TP_CM       0x00EC00 //连接管理
+#define CAN_TP_DT       0x00EB00 //数据传送
+#define PRI             0x07
+
+#define CAN_TP_CM_ID    ((PRI<< 26)|(CAN_TP_CM<<8)|CAN_TX_ID_MASK|CAN_EFF_FLAG)
+#define CAN_TP_DT_ID    ((PRI<< 26)|(CAN_TP_DT<<8)|CAN_TX_ID_MASK|CAN_EFF_FLAG)
+
 
 #pragma pack(1)
 // 握手阶段
@@ -646,33 +655,36 @@ typedef enum {
     /* 连接管理模式下的准备发送数据包，进行连接数据控制。
      */
     EVENT_TX_TP_CTS = 5,
+    /* 连接管理模式下的数据发送包，进行数据传递控制。
+     */
+    EVENT_TX_TP_DT = 6,
     /* 连接管理模式下的接收数据包完成应答，进行连接数据控制。
      */
-    EVENT_TX_TP_ACK = 6,
+    EVENT_TX_TP_ACK = 7,
     /* 连接管理模式下的传输中止，进行连接数据控制。
      */
-    EVENT_TX_TP_ABRT= 7,
+    EVENT_TX_TP_ABRT= 8,
 
     /* 数据包准备发送。当EVENT_TX_REQUEST返回结果是需要发送时，经发送线程
      * 经发送线程确认后，将会受到该消息，表示发送线程已经准备发送该消息了，此时
      * 可以返回取消发送指令，实现数据包的取消发送。
      */
-    EVENT_TX_PRE     = 8,
+    EVENT_TX_PRE     = 9,
 
     /* 数据包发送完成。当确认后的数据包发送完成后，将会受到该消息，表征数据包
      * 已经正确的发送完成。
      */
-    EVENT_TX_DONE    = 9,
+    EVENT_TX_DONE    = 10,
 
     /* 数据包发送失败。当确认后的数据包发送失败后，将会受到改小。
      */
-    EVENT_TX_FAILS   = 10,
+    EVENT_TX_FAILS   = 11,
 
     // CAN 消息函数初始化。当第一次运行函数时将会收到该消息，可重复发送。
-    EVENT_CAN_INIT   = 11,
+    EVENT_CAN_INIT   = 12,
 
     // CAN 消息复位。再次执行初始化操作。
-    EVENT_CAN_RESET  = 12
+    EVENT_CAN_RESET  = 13
 }EVENT_CAN;
 
 // 事件通知返回/传入参数
@@ -697,6 +709,8 @@ struct can_tp_param {
     unsigned int tp_size;
     // 即将传输的数据包个数
     unsigned int tp_pack_nr;
+    // 即将发送的数据包编号
+    unsigned int tp_pack_num;
     // 已经接收的数据字节数
     unsigned int tp_rcv_bytes;
     // 已经接收的数据包个数

@@ -540,8 +540,8 @@ static int can_packet_callback(
         thiz->can_heart_beat.Hachiko_notify_proc=
                 Hachiko_packet_heart_beart_notify_proc;
         Hachiko_new(&thiz->can_heart_beat, HACHIKO_AUTO_FEED, 4, NULL);
-        log_printf(INF, "BMS: CHARGER change stage to "RED("CHARGE_STAGE_HANDSHACKING"));
-        thiz->charge_stage = CHARGE_STAGE_HANDSHACKING;
+        log_printf(INF, "BMS: CHARGER now stage to "RED("CHARGE_STAGE_INVALID"));
+        thiz->charge_stage = CHARGE_STAGE_INVALID;
         break;
     case EVENT_CAN_RESET:
         // 事件循环函数复位
@@ -559,11 +559,12 @@ static int can_packet_callback(
         break;
     case EVENT_TX_FAILS:
         // 数据包发送失败了
+        log_printf(DBG_LV0, "BMS: packet sent error");
         break;
     case EVENT_TX_DONE:
         // 数据包发送完成了
         log_printf(DBG_LV0, "BMS: packet sent. %08X", param->can_id);
-        param->can_id = param->can_id >> 8;
+        //param->can_id = param->can_id >> 8;
         about_packet_transfer_done(thiz,param);
 
 //        if ( (param->can_id & 0x00FF0000) == (PGN_CRM << 8) &&
@@ -638,7 +639,7 @@ static int can_packet_callback(
         case CHARGE_STAGE_IDENTIFICATION:
             if ( generator[I_BRM].heartbeat >= generator[I_BRM].period ) {
                 gen_packet_PGN512(thiz, param);
-                generator[I_CRM].heartbeat = 0;
+                generator[I_BRM].heartbeat = 0;
             }
             if ( generator[I_CEM].heartbeat >= generator[I_CEM].period ) {
                 gen_packet_PGN7936(thiz, param);
@@ -691,21 +692,84 @@ static int can_packet_callback(
             break;
         }
         break;
-    case EVENT_TX_TP_RTS: // 需增加
+    case EVENT_TX_TP_RTS:
         //串口处于连接管理状态时，将会收到该传输数据报请求。
+        log_printf(INF, "BMS: EVENT_TX_TP_RTS.");
+
+#if 0
+        switch ( thiz->charge_stage ) {
+            case CHARGE_STAGE_INVALID:
+                param->evt_param = EVT_RET_ERR;
+                break;
+            case CHARGE_STAGE_HANDSHACKING:
+                if ( generator[I_BHM].heartbeat >= generator[I_BHM].period ) {
+                    gen_packet_PGN512(thiz, param);
+                    generator[I_BHM].heartbeat = 0;
+                }
+                if ( generator[I_CEM].heartbeat >= generator[I_CEM].period ) {
+                    gen_packet_PGN7936(thiz, param);
+                    generator[I_CEM].heartbeat = 0;
+                }
+                break;
+            default:
+                break;
+        }
+#endif
+
+        /* request a connection. TP.CM_RTS
+         * byte[1]: 0x10
+         * byte[2:3]: 消息大小，字节数目
+         * byte[4]: 全部数据包的数目
+         * byte[5]: 0xFF
+         * byte[6:8]: PGN
+         */
         param->buff.tx_buff[0] = 0x10;
-//        param->buff.tx_buff[1] = ;
-//        param->buff.tx_buff[2] = ;
-//        param->buff.tx_buff[3] = ;
+        param->buff.tx_buff[1] = 0x29;
+        param->buff.tx_buff[2] = 0x00;
+        param->buff.tx_buff[3] = 0x06;
         param->buff.tx_buff[4] = 0xFF;
-        param->buff.tx_buff[5] = (thiz->can_tp_param.tp_pgn >> 16) & 0xFF;
-        param->buff.tx_buff[6] = (thiz->can_tp_param.tp_pgn >> 8 ) & 0xFF;
-        param->buff.tx_buff[7] = thiz->can_tp_param.tp_pgn & 0xFF;
+        param->buff.tx_buff[5] = 0x00;
+        param->buff.tx_buff[6] = 0x02;
+        param->buff.tx_buff[7] = 0x00;
+        param->buff_payload = 8;
+        param->can_id = CAN_TP_CM_ID;
+        param->evt_param = EVT_RET_OK;
         break;
     case EVENT_TX_TP_CTS:
     {
-        /*串口处于连接管理状态时，将会收到该传输数据报请求。
-         * 当数据包接收完成后向BMS发送消息结束应答数据包
+        /* TP.CM_CTS
+         *
+         * byte[1]: 0x11
+         * byte[2]: 可发送的数据包个数
+         * byte[3]: 下一个要发送的数据包编号
+         * byte[4:5]: 0xFF
+         * byte[6:8]: PGN
+         */
+    }
+        break;
+    case EVENT_TX_TP_DT:
+    {
+        /* TP.CM_DT
+         *
+         * byte[1]: 序列号（1、2、3、4...）
+         * byte[2:8]: 数据（7字节），不足为FF
+         */
+        param->buff.tx_buff[0] = 0x01;
+        param->buff.tx_buff[1] = 0x00;
+        param->buff.tx_buff[2] = 0x01;
+        param->buff.tx_buff[3] = 0x01;
+        param->buff.tx_buff[4] = 0x01;
+        param->buff.tx_buff[5] = 0x80;
+        param->buff.tx_buff[6] = 0x0C;
+        param->buff.tx_buff[7] = 0x04;
+        param->buff_payload = 8;
+        param->can_id = CAN_TP_DT_ID;
+        param->evt_param = EVT_RET_OK;
+    }
+        break;
+    case EVENT_TX_TP_ACK:
+    {        
+        /*TP.CM_ACK
          *
          * byte[1]: 0x13
          * byte[2:3]: 消息大小，字节数目
@@ -713,40 +777,10 @@ static int can_packet_callback(
          * byte[5]: 0xFF
          * byte[6:8]: PGN
          */
-
-        param->buff.tx_buff[0] = 0x11;
-        // 目前的多数据包发送策略是： 无论要发送多少数据包，都一次传输完成
-        param->buff.tx_buff[1] = thiz->can_tp_param.tp_pack_nr;
-        param->buff.tx_buff[2] = 1;
-        param->buff.tx_buff[3] = 0xFF;
-        param->buff.tx_buff[4] = 0xFF;
-        param->buff.tx_buff[5] = (thiz->can_tp_param.tp_pgn >> 16) & 0xFF;
-        param->buff.tx_buff[6] = (thiz->can_tp_param.tp_pgn >> 8 ) & 0xFF;
-        param->buff.tx_buff[7] = thiz->can_tp_param.tp_pgn & 0xFF;
-        param->buff_payload = 8;
-        param->can_id = 0x1cecf456 | CAN_EFF_FLAG;
-        param->evt_param = EVT_RET_OK;
-    }
-        break;
-    case EVENT_TX_TP_ACK:
-    {
-        //串口处于连接管理状态时，将会收到该传输数据报请求。
-        param->buff.tx_buff[0] = 0x13;
-        // 目前的多数据包发送策略是： 无论要发送多少数据包，都一次传输完成
-        param->buff.tx_buff[1] = thiz->can_tp_param.tp_size & 0xFF;
-        param->buff.tx_buff[2] = (thiz->can_tp_param.tp_size >> 8) & 0xFF;
-        param->buff.tx_buff[3] = thiz->can_tp_param.tp_pack_nr;
-        param->buff.tx_buff[4] = 0xFF;
-        param->buff.tx_buff[5] = (thiz->can_tp_param.tp_pgn >> 16) & 0xFF;
-        param->buff.tx_buff[6] = (thiz->can_tp_param.tp_pgn >> 8 ) & 0xFF;
-        param->buff.tx_buff[7] = thiz->can_tp_param.tp_pgn & 0xFF;
-        param->buff_payload = 8;
-        param->can_id = 0x1cecf456 | CAN_EFF_FLAG;
-        param->evt_param = EVT_RET_OK;
     }
         break;
     case EVENT_TX_TP_ABRT:
-        //串口处于连接管理状态时，将会收到该传输数据报请求。
+        //TP.CM_ABORT
         break;
     default:
         break;
@@ -760,6 +794,9 @@ int about_packet_transfer_done(struct charge_task *thiz,
 {
     switch (param->can_id & 0x00FF00) {
         case PGN_BHM:
+            break;
+        case PGN_BRM :// 0x000200, BMS 车辆辨识报文
+            log_printf(INF, "BMS: PGN_BRM");
             break;
     }
 }
@@ -790,12 +827,17 @@ int about_packet_reciev_done(struct charge_task *thiz,
             log_printf(WRN,
                   "BMS not recognized .");
             bit_clr(thiz, F_BMS_RECOGNIZED);
+            thiz->charge_stage = CHARGE_STAGE_IDENTIFICATION;
+            thiz->can_bms_status = CAN_TP_WR | CAN_TP_RTS;
             break;
         }else if( thiz->charger_info.spn2560_recognize == BMS_RECOGNIZED ){
             bit_set(thiz, F_VEHICLE_RECOGNIZED);
+            thiz->charge_stage = CHARGE_STAGE_CONFIGURE;
         }
         break;
     case PGN_BRM :// 0x000200, BMS 车辆辨识报文
+        log_printf(INF, "BMS: PGN_BRM 0x000200");
+
         break;
     case PGN_CTS :// 0x000700,
         break;
@@ -1049,6 +1091,20 @@ int about_packet_reciev_done(struct charge_task *thiz,
     return ERR_OK;
 }
 
+/*
+ * CAN通信处于普通模式
+ *
+ * SAE J1939-21 Revised December 2006 版协议中规定
+ * TP.CM.PGN 为 0x00EC00  连接管理
+ * TP.DT.PGN 为 0x00EB00  数据传输
+ * CAN 的数据包大小最大为8字节，因此需要传输大于等于9字节的数据包
+ * 时需要使用连接管理功能来传输数据包。
+ * 首先由数据发送方，发送一个数据发送请求包，请求包中包含的数据内容有
+ * 消息的总长度，需要发送的数据包个数（必须大于1），最大的数据包编号，
+ * 这个消息的PGN等
+ */
+
+
 // bms 通信 写 服务线程
 // 提供bms通信服务
 void *thread_bms_write_service(void *arg) ___THREAD_ENTRY___
@@ -1078,34 +1134,14 @@ void *thread_bms_write_service(void *arg) ___THREAD_ENTRY___
         /*
          * 写线程同时负责写数据和进行连接管理时的控制数据写出，这里需要对当前CAN的
          * 状态进行判定，当CAN处于CAN_NORMAL时进行普通的写操作，采用EVENT_TX_REQUEST,
-         * 当CAN处于CAN_TP_RD时采用EVENT_TX_TP_CTS
-         * 当CAN处于CAN_TP_WR时采用EVENT_TX_TP_RTS
+         * 当CAN处于CAN_TP_RD时采用EVENT_TX_TP_CTS,EVENT_TX_TP_ACK
+         * 当CAN处于CAN_TP_WR时采用EVENT_TX_TP_RTS,EVENT_TX_TP_DT
          */
         param.buff.tx_buff = txbuff;
         param.buff_size = sizeof(txbuff);
         param.evt_param = EVT_RET_INVALID;
         if ( task->can_bms_status & CAN_NORMAL ) {
             can_packet_callback(task, EVENT_TX_REQUEST, &param);
-        } else if ( task->can_bms_status & CAN_TP_RD ) {
-            switch ( task->can_bms_status & 0xF0 ) {
-            case CAN_TP_CTS:
-                can_packet_callback(task, EVENT_TX_TP_CTS, &param);//准备发送数据包
-                break;
-            case CAN_TP_TX:
-            case CAN_TP_RX:
-                break;
-            case CAN_TP_ACK:
-                can_packet_callback(task, EVENT_TX_TP_ACK, &param);
-                break;
-            case CAN_TP_ABRT:
-                can_packet_callback(task, EVENT_TX_TP_ABRT, &param);
-                break;
-            default:
-                log_printf(WRN, "BMS: can_bms_status crashed(%d).",
-                           task->can_bms_status);
-                continue;
-                break;
-            }
         } else if ( task->can_bms_status & CAN_TP_WR ) {//增加多数据包写
             log_printf(WRN, "BMS: CAN_TP_WRITE.");
             switch ( task->can_bms_status & 0xF0 ) {
@@ -1113,6 +1149,7 @@ void *thread_bms_write_service(void *arg) ___THREAD_ENTRY___
                 can_packet_callback(task, EVENT_TX_TP_RTS, &param);//请求发送数据包
                 break;
             case CAN_TP_TX:// 数据发送中
+                can_packet_callback(task, EVENT_TX_TP_DT, &param);//发送数据包中......
                 break;
             default:
                 log_printf(WRN, "BMS: can_bms_status crashed(%d).",
@@ -1145,12 +1182,14 @@ void *thread_bms_write_service(void *arg) ___THREAD_ENTRY___
                 continue;
             } else {
                 // confirm to send.
+                log_printf(DBG_LV0,"confirm to send.");
             }
         }
         frame.ExternFlag = 0x01;
         frame.RemoteFlag = 0x00;
         frame.SendType = 0x00;
 
+        log_printf(DBG_LV0,"confirm to send111111111111.");
 
         /* 根据GB/T 27930-2011 中相关规定，充电机向BMS发送数据包都没有超过
          * 8字节限制，因此这里不用进行连接管理通信。
@@ -1166,6 +1205,7 @@ void *thread_bms_write_service(void *arg) ___THREAD_ENTRY___
                 VCI_ReadErrInfo(m_devtype,m_devind,m_cannum,&errinfo);
                 param.evt_param = EVT_RET_ERR;
                 can_packet_callback(task, EVENT_TX_FAILS, &param);
+                log_printf(ERR,"VCI_ReadErrInfo");
             }else{
                 param.evt_param = EVT_RET_OK;
                 can_packet_callback(task, EVENT_TX_DONE, &param);
@@ -1237,6 +1277,8 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
     unsigned int tp_packets_nr = 0;
     // 数据包字节总数
     unsigned int tp_packets_size = 0;
+    // 数据包编号
+    unsigned int tp_packets_num = 0;
     // 数据包对应的PGN
     unsigned int tp_packet_PGN = 0;
 
@@ -1314,72 +1356,10 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
                    frame.Data[6],
                    frame.Data[7]);
 
-        /*
-         * CAN通信处于普通模式
-         *
-         * SAE J1939-21 Revised December 2006 版协议中规定
-         * TP.CM.PGN 为 0x00EC00  连接管理
-         * TP.DT.PGN 为 0x00EB00  数据传输
-         * CAN 的数据包大小最大为8字节，因此需要传输大于等于9字节的数据包
-         * 时需要使用连接管理功能来传输数据包。
-         * 首先由数据发送方，发送一个数据发送请求包，请求包中包含的数据内容有
-         * 消息的总长度，需要发送的数据包个数（必须大于1），最大的数据包编号，
-         * 这个消息的PGN等
-         */
-        if ( ((frame.ID & 0x00FF0000) >> 16) == 0xEB ) {
-            /* Data transfer
-             * byte[1]: 数据包编号
-             * byte[2:8]: 数据
-             */
-            if ( (task->can_bms_status & CAN_TP_RD) != CAN_TP_RD ) {
-                task->can_bms_status = CAN_NORMAL;
-                log_printf(WRN, "BMS: timing crashed.");
-                continue;
-            }
-            Hachiko_feed(&task->can_tp_bomb);
-            memcpy(&tp_buff[ (frame.Data[0] - 1) * 7 ], &frame.Data[1], 7);
-            log_printf(DBG_LV1, "BM data tansfer fetch the %dst packet.",
-                       frame.Data[0]);
-            task->can_tp_param.tp_rcv_pack_nr ++;
-            if ( task->can_tp_param.tp_rcv_pack_nr >=
-                 task->can_tp_param.tp_pack_nr ) {
-                // 数据接收完成后即可关闭定时器
-                Hachiko_kill(&task->can_tp_bomb);
-
-                param.buff_payload = task->can_tp_param.tp_size;
-                param.evt_param = EVT_RET_INVALID;
-                param.can_id = task->can_tp_param.tp_pgn;
-                log_printf(DBG_LV3,
-                           "BMS: data transfer complete PGN=%08X change to ACK",
-                           task->can_tp_param.tp_pgn);
-                can_packet_callback(task, EVENT_RX_DONE, &param);
-                // 数据链接接受完成
-                task->can_bms_status = CAN_TP_RD | CAN_TP_ACK;
-            }
-        } else if ( ((frame.ID & 0x00FF0000) >> 16 ) == 0xEC ) {
+        if ( ((frame.ID & 0x00FF0000) >> 16 ) == 0xEC ) {
             // Connection managment
             if ( 0x11 == frame.Data[0] ) {
-                if ( task->can_tp_buff_nr ) {
-                    /*
-                     * 数据传输太快，还没将缓冲区的数据发送出去
-                     */
-                    log_printf(WRN, "BMS: CAN data transfer too fast.");
-                    continue;
-                }
-                /* request a connection. TP.CM_RTS
-                 * byte[1]: 0x10
-                 * byte[2:3]: 消息大小，字节数目
-                 * byte[4]: 全部数据包的数目
-                 * byte[5]: 0xFF
-                 * byte[6:8]: PGN
-                 */
-                tp_cnt = 0;
-                tp_packets_size = frame.Data[2] * 256 + frame.Data[1];
-                tp_packets_nr = frame.Data[3];
-                tp_packet_PGN = frame.Data[5] +
-                        (frame.Data[6] << 8) + (frame.Data[7] << 16);
-                /*
-                 * 接收到这个数据包后向BMS发送准备发送数据包
+                /* TP.CM_CTS
                  *
                  * byte[1]: 0x11
                  * byte[2]: 可发送的数据包个数
@@ -1387,55 +1367,37 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
                  * byte[4:5]: 0xFF
                  * byte[6:8]: PGN
                  */
-                if ( tp_packets_size <= 8 ) {
-                    log_printf(WRN,
-                         "BMS: detect a BMS transfer error, pack size < 8 bytes");
-                    continue;
-                }
-                if ( tp_packets_nr <= 1 ) {
-                    log_printf(WRN,
-                               "BMS: detect a BMS transfer error, pack count < 2");
-                    continue;
-                }
-
-                if ( task->can_tp_private.status == PRIVATE_BUSY ) {
-                    log_printf(WRN, "BMS: previous connection not exit,"
-                               " do new connection instead.");
-                    Hachiko_feed( &task->can_tp_bomb );
-                } else {
-                    task->can_tp_bomb.Hachiko_notify_proc =
-                            Hachiko_CAN_TP_notify_proc;
-                    // 根据SAE J1939-21中关于CAN总线数据传输链接的说明，中间传输
-                    // 过程最大不超过1250ms
-                    int ret = Hachiko_new( & task->can_tp_bomb,
-                                           HACHIKO_ONECE, 1250,
-                                           &task->can_tp_private);
-                    if ( ret == (int)ERR_WRONG_PARAM ) {
-                        log_printf(ERR,
-                                   "BMS: set new timer error, with code:%d",
-                                   ret);
-                        continue;
-                    }
-                    if ( ret == (int)ERR_TIMER_BEMAX ) {
-                        log_printf(ERR,
-                                   "BMS: set new timer error, with code:%d",
-                                   ret);
-                        continue;
-                    }
-                }
-
+                tp_packets_nr = frame.Data[1];
+                tp_packets_num = frame.Data[2];
+                tp_packet_PGN = frame.Data[5] +
+                        (frame.Data[6] << 8) + (frame.Data[7] << 16);
                 task->can_tp_param.tp_pack_nr = tp_packets_nr;
-                task->can_tp_param.tp_size = tp_packets_size;
+                task->can_tp_param.tp_pack_num = tp_packets_num;
+                //task->can_tp_param.tp_size = tp_packets_size;
                 task->can_tp_param.tp_pgn = tp_packet_PGN;
                 task->can_tp_param.tp_rcv_bytes = 0;
                 task->can_tp_param.tp_rcv_pack_nr = 0;
-                task->can_bms_status = CAN_TP_RD | CAN_TP_CTS;
-                log_printf(DBG_LV2,
-                           "BMS: data connection accepted, rolling..."
-                           "PGN: %X, total: %d packets, %d bytes",
-                           tp_packet_PGN, tp_packets_nr, tp_packets_size);
-            } else if ( 0xFF == frame.Data[0] ) {
-                /* connection abort.
+
+                param.can_id = tp_packet_PGN;
+                param.buff_payload = frame.DataLen;
+                param.evt_param = EVT_RET_INVALID;
+                can_packet_callback(task, EVENT_RX_DONE, &param);
+
+                task->can_bms_status = CAN_TP_WR | CAN_TP_TX;
+            } else if ( 0x13 == frame.Data[0] ) {
+                /* TP.CM_ACK
+                 *
+                 * byte[1]: 0x13
+                 * byte[2:3]: 消息大小，字节数目
+                 * byte[4]: 全部数据包数目
+                 * byte[5]: 0xFF
+                 * byte[6:8]: PGN
+                 */
+                //task->can_bms_status = CAN_TP_WR | CAN_TP_ACK;
+                //待增加内容......
+            }else if ( 0xFF == frame.Data[0] ) {
+                /* TP.CM_ABORT
+                 *
                  * byte[1]: 0xFF
                  * byte[2:5]: 0xFF
                  * byte[6:8]: PGN

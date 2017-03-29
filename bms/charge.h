@@ -273,6 +273,7 @@ struct charge_task {
     CHARGE_GUN_SN can_charge_gun_sn;
     // CAN BMS 通信所处状态
     CAN_BMS_STATUS can_bms_status;
+
     // CAN 通信输入缓冲区
     unsigned char can_buff_in[CAN_BUFF_SIZE];
     volatile unsigned int can_buff_in_nr;
