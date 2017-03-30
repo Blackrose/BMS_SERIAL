@@ -61,7 +61,7 @@ struct can_pack_generator generator[] = {
     },
     {
     .stage      =  CHARGE_STAGE_HANDSHACKING,
-    .pgn        =  PGN_BHM,//0x000100,
+    .pgn        =  PGN_BHM,//0x002700,
     .prioriy    =  6,
     .datalen    =  2,
     .period     =  250,
@@ -87,7 +87,7 @@ struct can_pack_generator generator[] = {
     .stage      =  CHARGE_STAGE_IDENTIFICATION,
     .pgn        =  PGN_BRM,//0x000200,
     .prioriy    =  6,
-    .datalen    =  8,
+    .datalen    =  41,
     .period     =  250,
     .heartbeat   =  0,
     .mnemonic   =  "BRM",
@@ -183,7 +183,7 @@ struct can_pack_generator generator[] = {
     .stage      =  CHARGE_STAGE_CHARGING,
     .pgn        =  PGN_CCS,//0x001200,
     .prioriy    =  6,
-    .datalen    =  6,
+    .datalen    =  8,//6
     .period     =  50,
     .heartbeat   =  0,
     .mnemonic   =  "CCS",
@@ -440,7 +440,7 @@ struct bms_statistics statistics[] = {
 #endif
 
 // 数据包超时心跳包, 定时器自动复位, 一个单位时间一次
-void Hachiko_packet_heart_beart_notify_proc(Hachiko_EVT evt, void *private,
+void Hachiko_packet_heart_beart_notify_proc(Hachiko_EVT evt, void *_private,
                             const struct Hachiko_food *self)
 {
     if (evt == HACHIKO_TIMEOUT ) {
@@ -521,6 +521,61 @@ void Hachiko_packet_heart_beart_notify_proc(Hachiko_EVT evt, void *private,
             }
         }
     }
+}
+
+void set_packet_TP_CM_RTS(int png_num,struct event_struct* param){
+    /* request a connection. TP.CM_RTS
+     * byte[1]: 0x10
+     * byte[2:3]: 消息大小，字节数目
+     * byte[4]: 全部数据包的数目
+     * byte[5]: 0xFF
+     * byte[6:8]: PGN
+     */
+    log_printf(INF, "BMS: "RED("TP_CM_RTS"));
+    param->buff.tx_buff[0] = CAN_TP_CM_RTS_CONTROL;
+    param->buff.tx_buff[1] = generator[png_num].datalen%256;//0x29;//
+    param->buff.tx_buff[2] = generator[png_num].datalen/256;//0x00;//
+    param->buff.tx_buff[3] = (generator[png_num].datalen -1)/7 + 1; // (41-1)/7+1=6 0x06;//
+    param->buff.tx_buff[4] = 0xFF;
+    param->buff.tx_buff[5] = generator[png_num].pgn&0x0000FF;
+    param->buff.tx_buff[6] = ((generator[png_num].pgn&0x00FF00) >> 8);//注意优先级
+    param->buff.tx_buff[7] = ((generator[png_num].pgn&0xFF0000) >> 16);
+    //task->can_tp_param.tp_size = generator[png_num].datalen;
+
+    param->buff_payload = 8;
+    param->can_id = CAN_TP_CM_ID;
+    param->evt_param = EVT_RET_OK;
+}
+void set_packet_TP_DT(int png_num,struct event_struct* param){
+    /* TP.CM_DT
+     *
+     * byte[1]: 序列号（1、2、3、4...）
+     * byte[2:8]: 数据（7字节），不足为FF
+     */
+    log_printf(INF, "BMS: "RED("TP_DT"));
+//    param->buff.tx_buff[0] = 0x01;
+//    param->buff.tx_buff[1] = 0x00;
+//    param->buff.tx_buff[2] = 0x01;
+//    param->buff.tx_buff[3] = 0x01;
+//    param->buff.tx_buff[4] = 0x01;
+//    param->buff.tx_buff[5] = 0x80;
+//    param->buff.tx_buff[6] = 0x0C;
+//    param->buff.tx_buff[7] = 0x04;
+    log_printf(INF, "BMS: tp_pack_num==%d",task->can_tp_param.tp_pack_num);
+    log_printf(INF, "BMS: tp_size==%d",task->can_tp_param.tp_size);
+    if(task->can_tp_param.tp_pack_num <= (task->can_tp_param.tp_size/7+1)){
+
+        param->buff.tx_buff[0] = task->can_tp_param.tp_pack_num;
+        //memcpy(&param->buff.tx_buff[1], &task->can_buff_in[(task->can_tp_param.tp_pack_num -1)*7], 7);
+        memcpy(&param->buff.tx_buff[1], &task->can_tp_param.tx_buff[(task->can_tp_param.tp_pack_num -1)*7], 7);
+        param->buff_payload = 8;
+        param->can_id = CAN_TP_DT_ID;
+        task->can_tp_param.tp_pack_num ++;
+        param->evt_param = EVT_RET_OK;
+    }else{
+        log_printf(INF, "BMS: 111tp_pack_num==%d",task->can_tp_param.tp_pack_num);
+    }
+
 }
 
 /*
@@ -693,18 +748,20 @@ static int can_packet_callback(
         }
         break;
     case EVENT_TX_TP_RTS:
+    {
         //串口处于连接管理状态时，将会收到该传输数据报请求。
         log_printf(INF, "BMS: EVENT_TX_TP_RTS.");
 
-#if 0
+#if 1
         switch ( thiz->charge_stage ) {
             case CHARGE_STAGE_INVALID:
                 param->evt_param = EVT_RET_ERR;
                 break;
-            case CHARGE_STAGE_HANDSHACKING:
-                if ( generator[I_BHM].heartbeat >= generator[I_BHM].period ) {
+            case CHARGE_STAGE_IDENTIFICATION:
+                if ( generator[I_BRM].heartbeat >= generator[I_BRM].period ) {
                     gen_packet_PGN512(thiz, param);
-                    generator[I_BHM].heartbeat = 0;
+                    set_packet_TP_CM_RTS(I_BRM,param);
+                    generator[I_BRM].heartbeat = 0;
                 }
                 if ( generator[I_CEM].heartbeat >= generator[I_CEM].period ) {
                     gen_packet_PGN7936(thiz, param);
@@ -715,7 +772,7 @@ static int can_packet_callback(
                 break;
         }
 #endif
-
+        //set_packet_TP_CM_RTS(I_BRM,param);
         /* request a connection. TP.CM_RTS
          * byte[1]: 0x10
          * byte[2:3]: 消息大小，字节数目
@@ -723,17 +780,18 @@ static int can_packet_callback(
          * byte[5]: 0xFF
          * byte[6:8]: PGN
          */
-        param->buff.tx_buff[0] = 0x10;
-        param->buff.tx_buff[1] = 0x29;
-        param->buff.tx_buff[2] = 0x00;
-        param->buff.tx_buff[3] = 0x06;
-        param->buff.tx_buff[4] = 0xFF;
-        param->buff.tx_buff[5] = 0x00;
-        param->buff.tx_buff[6] = 0x02;
-        param->buff.tx_buff[7] = 0x00;
-        param->buff_payload = 8;
-        param->can_id = CAN_TP_CM_ID;
-        param->evt_param = EVT_RET_OK;
+//        param->buff.tx_buff[0] = CAN_TP_CM_RTS_CONTROL;
+//        param->buff.tx_buff[1] = 0x29;
+//        param->buff.tx_buff[2] = 0x00;
+//        param->buff.tx_buff[3] = 0x06;
+//        param->buff.tx_buff[4] = 0xFF;
+//        param->buff.tx_buff[5] = 0x00;
+//        param->buff.tx_buff[6] = 0x02;
+//        param->buff.tx_buff[7] = 0x00;
+//        param->buff_payload = 8;
+//        param->can_id = CAN_TP_CM_ID;
+//        param->evt_param = EVT_RET_OK;
+    }
         break;
     case EVENT_TX_TP_CTS:
     {
@@ -749,22 +807,39 @@ static int can_packet_callback(
         break;
     case EVENT_TX_TP_DT:
     {
+        log_printf(INF, "BMS: EVENT_TX_TP_DT.");
+#if 1
+        switch ( thiz->charge_stage ) {
+            case CHARGE_STAGE_INVALID:
+                param->evt_param = EVT_RET_ERR;
+                break;
+            case CHARGE_STAGE_IDENTIFICATION:
+                if ( generator[I_BRM].heartbeat >= generator[I_BRM].period ) {
+                    set_packet_TP_DT(I_BRM,param);
+                    generator[I_BRM].heartbeat = 0;
+                }
+                //set_packet_TP_DT(I_BRM,param);
+                break;
+            default:
+                break;
+        }
+#endif
         /* TP.CM_DT
          *
          * byte[1]: 序列号（1、2、3、4...）
          * byte[2:8]: 数据（7字节），不足为FF
          */
-        param->buff.tx_buff[0] = 0x01;
-        param->buff.tx_buff[1] = 0x00;
-        param->buff.tx_buff[2] = 0x01;
-        param->buff.tx_buff[3] = 0x01;
-        param->buff.tx_buff[4] = 0x01;
-        param->buff.tx_buff[5] = 0x80;
-        param->buff.tx_buff[6] = 0x0C;
-        param->buff.tx_buff[7] = 0x04;
-        param->buff_payload = 8;
-        param->can_id = CAN_TP_DT_ID;
-        param->evt_param = EVT_RET_OK;
+//        param->buff.tx_buff[0] = 0x01;
+//        param->buff.tx_buff[1] = 0x00;
+//        param->buff.tx_buff[2] = 0x01;
+//        param->buff.tx_buff[3] = 0x01;
+//        param->buff.tx_buff[4] = 0x01;
+//        param->buff.tx_buff[5] = 0x80;
+//        param->buff.tx_buff[6] = 0x0C;
+//        param->buff.tx_buff[7] = 0x04;
+//        param->buff_payload = 8;
+//        param->can_id = CAN_TP_DT_ID;
+//        param->evt_param = EVT_RET_OK;
     }
         break;
     case EVENT_TX_TP_ACK:
@@ -827,11 +902,13 @@ int about_packet_reciev_done(struct charge_task *thiz,
             log_printf(WRN,
                   "BMS not recognized .");
             bit_clr(thiz, F_BMS_RECOGNIZED);
+            log_printf(INF, "BMS: CHARGER change stage to "RED("CHARGE_STAGE_IDENTIFICATION"));
             thiz->charge_stage = CHARGE_STAGE_IDENTIFICATION;
             thiz->can_bms_status = CAN_TP_WR | CAN_TP_RTS;
             break;
         }else if( thiz->charger_info.spn2560_recognize == BMS_RECOGNIZED ){
             bit_set(thiz, F_VEHICLE_RECOGNIZED);
+            log_printf(INF, "BMS: CHARGER change stage to "RED("CHARGE_STAGE_CONFIGURE"));
             thiz->charge_stage = CHARGE_STAGE_CONFIGURE;
         }
         break;
@@ -1168,6 +1245,8 @@ void *thread_bms_write_service(void *arg) ___THREAD_ENTRY___
         }
 
         if ( EVT_RET_OK != param.evt_param ) {
+            log_printf(DBG_LV0, "BMS: param.evt_param: %d.",
+                       param.evt_param);
             continue;
         }
 
@@ -1177,8 +1256,10 @@ void *thread_bms_write_service(void *arg) ___THREAD_ENTRY___
             can_packet_callback(task, EVENT_TX_PRE, &param);
             if ( EVT_RET_TX_ABORT == param.evt_param ) {
                 // packet sent abort.
+                log_printf(DBG_LV0, "BMS: param.evt_param: EVT_RET_TX_ABORT.");
                 continue;
             } else if ( EVT_RET_OK != param.evt_param ) {
+                log_printf(DBG_LV0, "BMS: param.evt_param: not EVT_RET_OK.");
                 continue;
             } else {
                 // confirm to send.
@@ -1358,7 +1439,7 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
 
         if ( ((frame.ID & 0x00FF0000) >> 16 ) == 0xEC ) {
             // Connection managment
-            if ( 0x11 == frame.Data[0] ) {
+            if ( CAN_TP_CM_CTS_CONTROL == frame.Data[0] ) {
                 /* TP.CM_CTS
                  *
                  * byte[1]: 0x11
@@ -1384,7 +1465,7 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
                 can_packet_callback(task, EVENT_RX_DONE, &param);
 
                 task->can_bms_status = CAN_TP_WR | CAN_TP_TX;
-            } else if ( 0x13 == frame.Data[0] ) {
+            } else if ( CAN_TP_CM_ACK_CONTROL == frame.Data[0] ) {
                 /* TP.CM_ACK
                  *
                  * byte[1]: 0x13
@@ -1393,7 +1474,16 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
                  * byte[5]: 0xFF
                  * byte[6:8]: PGN
                  */
-                //task->can_bms_status = CAN_TP_WR | CAN_TP_ACK;
+                task->can_tp_param.tp_rcv_bytes = frame.Data[2] * 256 + frame.Data[1];
+                //task->can_tp_param.tp_rcv_pack_nr = frame.Data[3];
+
+                param.can_id = tp_packet_PGN;
+                param.buff_payload = frame.DataLen;
+                param.evt_param = EVT_RET_INVALID;
+                can_packet_callback(task, EVENT_RX_DONE, &param);
+
+
+                task->can_bms_status = CAN_TP_WR | CAN_TP_ACK;
                 //待增加内容......
             }else if ( 0xFF == frame.Data[0] ) {
                 /* TP.CM_ABORT
@@ -1413,6 +1503,8 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
             param.can_id = (frame.ID & 0x00FF0000) >> 8;
             param.buff_payload = frame.DataLen;
             param.evt_param = EVT_RET_INVALID;
+            log_printf(DBG_LV0, "BMS: param.evt_param:EVT_RET_INVALID %d.",
+                       param.evt_param);
             memcpy((void * __restrict__)param.buff.rx_buff, frame.Data, 8);
             can_packet_callback(task, EVENT_RX_DONE, &param);
             log_printf(DBG_LV0, "BMS: read a frame done. %08X", frame.ID);
@@ -1483,28 +1575,37 @@ int gen_packet_PGN256(struct charge_task * thiz, struct event_struct* param)
 // 握手-BRM-BMS辨识报文
 int gen_packet_PGN512(struct charge_task * thiz, struct event_struct* param)
 {
+    log_printf(INF, "BMS: "RED("gen_packet_PGN512"));
     struct can_pack_generator *gen = &generator[I_BRM];
 
     memset(param->buff.tx_buff, INIT, sizeof(struct pgn512_BRM));
     set_data_tcu_PGN512(thiz);
-    //memcpy(param->buff.tx_buff, &thiz->charger_info, sizeof(struct pgn512_BRM));
-    param->buff.tx_buff[0] = 0x01;
-    param->buff.tx_buff[1] = 0x01;
-    param->buff.tx_buff[2] = 0x00;
-    param->buff_payload = 8;//gen->datalen;
+    memcpy(param->buff.tx_buff, &thiz->vehicle_info, sizeof(struct pgn512_BRM));
+
+    param->buff_payload = gen->datalen;
     param->can_id = gen->prioriy << 26 | gen->pgn << 8 | CAN_TX_ID_MASK | CAN_EFF_FLAG;
 
     param->evt_param = EVT_RET_OK;
 
     generator[I_BRM].can_counter ++;//I_CRM
 
+    task->can_tp_param.tp_size = gen->datalen;
+    //memcpy(task->can_buff_in, &thiz->vehicle_info, sizeof(struct pgn512_BRM));//copy 到临时数据结构中
+    memcpy(task->can_tp_param.tx_buff, &thiz->vehicle_info, sizeof(struct pgn512_BRM));//copy 到临时数据结构中
+
+    memset(param->buff.tx_buff, INIT, sizeof(struct pgn512_BRM));
+    log_printf(INF, "BMS: "RED("gen_packet_PGN512 end"));
     return 0;
 }
 int set_data_tcu_PGN512(struct charge_task * thiz){
     memset(&thiz->vehicle_info, INIT, sizeof(struct pgn512_BRM));
-    thiz->vehicle_info.spn2565_bms_version[0] = 0x01;
+    thiz->vehicle_info.spn2565_bms_version[0] = 0x00;
     thiz->vehicle_info.spn2565_bms_version[1] = 0x01;
     thiz->vehicle_info.spn2565_bms_version[2] = 0x00;
+    thiz->vehicle_info.spn2566_battery_type = 0x03;
+    thiz->vehicle_info.spn2567_capacity = 850;
+    thiz->vehicle_info.spn2568_volatage = 450;
+
 }
 
 // 配置-CTS-充电机发送时间同步信息

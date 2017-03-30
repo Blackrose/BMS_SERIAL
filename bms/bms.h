@@ -54,6 +54,7 @@ struct can_frame {
 #define RX_BUFF_SIZE  1
 #define TX_BUFF_SIZE  1
 #define TEMP_BUFF_SIZE 2048
+#define TEMP_BUFFER_SIZE 100
 
 //add end====================================================================
 
@@ -74,6 +75,9 @@ struct can_frame {
 #define CAN_TP_CM_ID    ((PRI<< 26)|(CAN_TP_CM<<8)|CAN_TX_ID_MASK|CAN_EFF_FLAG)
 #define CAN_TP_DT_ID    ((PRI<< 26)|(CAN_TP_DT<<8)|CAN_TX_ID_MASK|CAN_EFF_FLAG)
 
+#define CAN_TP_CM_RTS_CONTROL 0x10
+#define CAN_TP_CM_CTS_CONTROL 0x11
+#define CAN_TP_CM_ACK_CONTROL 0x13
 
 #pragma pack(1)
 // 握手阶段
@@ -711,6 +715,8 @@ struct can_tp_param {
     unsigned int tp_pack_nr;
     // 即将发送的数据包编号
     unsigned int tp_pack_num;
+    // 即将发送的数据
+    unsigned char tx_buff[TEMP_BUFFER_SIZE];
     // 已经接收的数据字节数
     unsigned int tp_rcv_bytes;
     // 已经接收的数据包个数
@@ -797,6 +803,9 @@ int gen_packet_PGN7424(struct charge_task * thiz,
                         struct event_struct* param);
 int gen_packet_PGN7936(struct charge_task * thiz,
                         struct event_struct* param);
+
+void set_packet_TP_CM_RTS(int png_num,struct event_struct* param);
+void set_packet_TP_DT(int png_num,struct event_struct* param);
 
 #ifdef BMS_CC_LANG
 #define EXTERNC		extern "C"
