@@ -782,30 +782,51 @@ int about_packet_transfer_done(struct charge_task *thiz,
                              struct event_struct *param);
 int about_packet_reciev_done(struct charge_task *thiz,
                              struct event_struct *param);
-int gen_packet_PGN256(struct charge_task * thiz,
+//握手阶段
+int gen_packet_PGN9984(struct charge_task * thiz,
                        struct event_struct* param);
 
+//辨识阶段
 int gen_packet_PGN512(struct charge_task * thiz,
                        struct event_struct* param);
-int set_data_tcu_PGN512(struct charge_task * thiz);
 
-int gen_packet_PGN1792(struct charge_task * thiz,
+//参数配置阶段
+int gen_packet_PGN1536(struct charge_task * thiz,
                         struct event_struct* param);
-int gen_packet_PGN2048(struct charge_task * thiz,
+int gen_packet_PGN2304(struct charge_task * thiz,
                         struct event_struct* param);
-int gen_packet_PGN2560(struct charge_task * thiz,
+
+//充电阶段
+int gen_packet_PGN4096(struct charge_task * thiz,
                         struct event_struct* param);
-int gen_packet_PGN4608(struct charge_task * thiz,
+int gen_packet_PGN4352(struct charge_task * thiz,
                         struct event_struct* param);
-int gen_packet_PGN6656(struct charge_task * thiz,
+int gen_packet_PGN4864(struct charge_task * thiz,
                         struct event_struct* param);
-int gen_packet_PGN7424(struct charge_task * thiz,
+int gen_packet_PGN5376(struct charge_task * thiz,
                         struct event_struct* param);
-int gen_packet_PGN7936(struct charge_task * thiz,
+int gen_packet_PGN5632(struct charge_task * thiz,
                         struct event_struct* param);
+int gen_packet_PGN5888(struct charge_task * thiz,
+                        struct event_struct* param);
+int gen_packet_PGN6400(struct charge_task * thiz,
+                        struct event_struct* param);
+
+//充电结束阶段
+int gen_packet_PGN7168(struct charge_task * thiz,
+                        struct event_struct* param);
+//错误报文
+int gen_packet_PGN7680(struct charge_task * thiz,
+                        struct event_struct* param);
+
 
 void set_packet_TP_CM_RTS(int png_num,struct event_struct* param);
 void set_packet_TP_DT(int png_num,struct event_struct* param);
+
+int set_data_tcu_PGN9984(struct charge_task * thiz);
+int set_data_tcu_PGN512(struct charge_task * thiz);
+int set_data_tcu_PGN2304(struct charge_task * thiz);
+
 
 #ifdef BMS_CC_LANG
 #define EXTERNC		extern "C"

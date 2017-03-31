@@ -298,12 +298,20 @@ struct charge_task {
     // CAN数据包心跳
     struct Hachiko_food can_heart_beat;
 
+    //充电机握手
+    struct pgn9728_CHM charger_handshake;
+    //BMS握手
+    struct pgn9984_BHM bms_handshake;
     //充电机基本信息
     struct pgn256_CRM charger_info;
     // 车辆基本信息
     struct pgn512_BRM  vehicle_info;
     // BMS充电配置信息
     struct pgn1536_BCP bms_config_info;
+    // 充电机时间同步
+    struct pgn1792_CTS charger_cts;
+    //BMS 准备就绪
+    struct pgn2304_BRO bms_cro;
     // BMS当前充电需求信息
     struct pgn4096_BCL bms_charge_need_now;
     // BMS 电池充电总状态信息
