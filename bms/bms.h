@@ -826,7 +826,14 @@ void set_packet_TP_DT(int png_num,struct event_struct* param);
 int set_data_tcu_PGN9984(struct charge_task * thiz);
 int set_data_tcu_PGN512(struct charge_task * thiz);
 int set_data_tcu_PGN2304(struct charge_task * thiz);
-
+int set_data_tcu_PGN4096(struct charge_task * thiz);
+int set_data_tcu_PGN4352(struct charge_task * thiz);
+int set_data_tcu_PGN4864(struct charge_task * thiz);
+int set_data_tcu_PGN5376(struct charge_task * thiz);
+int set_data_tcu_PGN5632(struct charge_task * thiz);
+int set_data_tcu_PGN5888(struct charge_task * thiz);
+int set_data_tcu_PGN6400(struct charge_task * thiz);
+int set_data_tcu_PGN7168(struct charge_task * thiz);
 
 #ifdef BMS_CC_LANG
 #define EXTERNC		extern "C"

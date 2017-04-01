@@ -239,7 +239,7 @@ struct charge_task {
     // 任务状态
     CHARGE_TASK_STAT charge_task_stat;
     // 充电任务所处阶段
-    CHARGE_STAGE charge_stage;
+    CHARGE_STAGE bms_stage;
 
     // 系统信号, 最多支持64 * 8 种信号标记
     // 前面 16 * 8 = 128 个信号是系统内部使用信号标记
@@ -310,14 +310,18 @@ struct charge_task {
     struct pgn1536_BCP bms_config_info;
     // 充电机时间同步
     struct pgn1792_CTS charger_cts;
+    // 充电机最大输出能力参数
+    struct pgn2048_CML charger_cml;
     //BMS 准备就绪
-    struct pgn2304_BRO bms_cro;
-    // BMS当前充电需求信息
-    struct pgn4096_BCL bms_charge_need_now;
-    // BMS 电池充电总状态信息
-    struct pgn4352_BCS bms_all_battery_status;
+    struct pgn2304_BRO bms_bro;
+    // 充电机准备就绪
+    struct pgn2560_CRO charger_cro;
+    // BMS电池充电需求
+    struct pgn4096_BCL bms_bcl;
+    // BMS电池充电总状态
+    struct pgn4352_BCS bms_bcs;
     // BMS 动力蓄电池状态信息
-    struct pgn4864_BSM bms_battery_status;
+    struct pgn4864_BSM bms_bsm;
 };
 
 //struct charge_task tom;
@@ -346,6 +350,8 @@ typedef enum {
     F_BMS_RECOGNIZED,
     // 已经发送车辆已经识别数据包
     F_VEHICLE_RECOGNIZED,
+    F_CHARGER_CTS,//收到充电机时间同步
+    F_CHARGER_CML,//收到充电机最大输出参数
     // 已经收到BMS准备充电报文
     F_BMS_READY,
     // 充电机充电准备完成
