@@ -66,6 +66,26 @@ public:
     QTimer can_timer;
     mythread mythread_can ;
 
+    void set_data_tcu_PGN9984(struct charge_task * thiz);
+    int get_spn2566_battery_type(int index);
+    void set_data_tcu_PGN512(struct charge_task * thiz);
+    void set_data_tcu_PGN1536(struct charge_task * thiz);
+    int set_combobox_value(int index);
+    void set_data_tcu_PGN2304(struct charge_task * thiz);
+    int set_charge_mode(int index);
+    void set_data_tcu_PGN4096(struct charge_task * thiz);
+    void set_data_tcu_PGN4352(struct charge_task * thiz);
+    int get_data_tcu_PGN4864(struct charge_task * thiz);
+    int set_combobox_data(int index);
+    void set_data_tcu_PGN4864(struct charge_task * thiz);
+    void set_data_tcu_PGN5376(struct charge_task * thiz);
+    void set_data_tcu_PGN5632(struct charge_task * thiz);
+    void set_data_tcu_PGN5888(struct charge_task * thiz);
+    void set_data_tcu_PGN6400(struct charge_task * thiz);
+    void set_data_tcu_PGN7168(struct charge_task * thiz);
+
+
+
 private slots:
     void on_pushButton_connect_clicked();
 

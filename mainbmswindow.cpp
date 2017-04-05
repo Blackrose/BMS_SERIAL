@@ -46,6 +46,9 @@ MainBMSWindow::MainBMSWindow(QWidget *parent) :
     connect(mScheduler, SIGNAL(jobScheduled(QCanMessage&)), this, SLOT(sendMessage(QCanMessage&)));
 
 
+    set_data_tcu_PGN9984(task);
+    set_data_tcu_PGN4864(task);
+
 }
 
 MainBMSWindow::~MainBMSWindow()
@@ -378,4 +381,186 @@ void MainBMSWindow::slot_cantimer()
 
     msg.frame = send_frame;
     mSendModel->addMessage(msg);
+}
+
+
+void MainBMSWindow::set_data_tcu_PGN9984(struct charge_task * thiz)
+{
+    thiz->bms_handshake.spn2601_bms_max_vol = ui->lineEdit_spn2601->text().toUShort();
+    ui->comboBox_T_HM->currentText().toInt();
+}
+
+int MainBMSWindow::get_spn2566_battery_type(int index)
+{
+    int battery_type = 0x00;
+    switch (index) {
+    case 0:
+        battery_type = battery_type1;
+        break;
+    case 1:
+        battery_type = battery_type2;
+        break;
+    case 2:
+        battery_type = battery_type3;
+        break;
+    case 3:
+        battery_type = battery_type4;
+        break;
+    case 4:
+        battery_type = battery_type5;
+        break;
+    case 5:
+        battery_type = battery_type6;
+        break;
+    case 6:
+        battery_type = battery_type7;
+        break;
+    case 7:
+        battery_type = battery_type8;
+        break;
+    default:
+        battery_type = battery_type9;
+        break;
+    }
+    return battery_type;
+}
+void MainBMSWindow::set_data_tcu_PGN512(struct charge_task * thiz)
+{
+    thiz->vehicle_info.spn2565_bms_version[0] = ui->lineEdit_spn2565_1->text().toInt();
+    thiz->vehicle_info.spn2565_bms_version[1] = ui->lineEdit_spn2565_2->text().toInt();
+    thiz->vehicle_info.spn2565_bms_version[2] = ui->lineEdit_spn2565_3->text().toInt();
+    thiz->vehicle_info.spn2566_battery_type = get_spn2566_battery_type(ui->comboBox_spn2566->currentIndex());
+    thiz->vehicle_info.spn2567_capacity = ui->lineEdit_spn2567->text().toUShort();
+    thiz->vehicle_info.spn2568_volatage = ui->lineEdit_spn2568->text().toUShort();
+}
+
+void MainBMSWindow::set_data_tcu_PGN1536(struct charge_task *thiz)
+{
+    thiz->bms_config_info.spn2816_max_charge_volatage_single_battery = ui->lineEdit_spn2816->text().toFloat()*100;
+    thiz->bms_config_info.spn2817_max_charge_current = ui->lineEdit_spn2817->text().toUShort();
+    thiz->bms_config_info.spn2818_total_energy = ui->lineEdit_spn2818->text().toUShort();
+    thiz->bms_config_info.spn2819_max_charge_voltage = ui->lineEdit_spn2819->text().toUShort();
+    thiz->bms_config_info.spn2820_max_temprature = ui->lineEdit_spn2820->text().toInt();
+    thiz->bms_config_info.spn2821_soc = ui->lineEdit_spn2821->text().toUShort();
+    thiz->bms_config_info.spn2822_total_voltage = ui->lineEdit_spn2822->text().toUShort();
+}
+
+int MainBMSWindow::set_combobox_value(int index)
+{
+    int value =0;
+    switch (index) {
+    case 0:
+        value = 0x00;
+        break;
+    case 1:
+        value = 0xAA;
+        break;
+    default:
+        value = 0xFF;
+        break;
+    }
+    return value;
+//    BMS_NOT_READY_FOR_CHARGE =  0x00, // 没有准备好
+//    BMS_READY_FOR_CHARGE     =  0xAA, // 已准备好
+//    BMS_INVALID              =  0xFF // 无效
+}
+void MainBMSWindow::set_data_tcu_PGN2304(struct charge_task * thiz)
+{
+    thiz->bms_bro.spn2829_bms_ready_for_charge = set_combobox_value(ui->comboBox_spn2829->currentIndex());
+}
+
+int MainBMSWindow::set_charge_mode(int index)
+{
+    int charge_mode = 0;
+    switch (index) {
+    case 0:
+        charge_mode = CHARGE_WITH_CONST_VOLTAGE;
+        break;
+    case 1:
+        charge_mode = CHARGE_WITH_CONST_CURRENT;
+        break;
+    default:
+        break;
+    }
+    return charge_mode;
+}
+void MainBMSWindow::set_data_tcu_PGN4096(struct charge_task * thiz)
+{
+    thiz->bms_bcl.spn3072_need_voltage = ui->lineEdit_spn3072->text().toUShort();
+    thiz->bms_bcl.spn3073_need_current = ui->lineEdit_spn3073->text().toUShort();
+    thiz->bms_bcl.spn3074_charge_mode = set_charge_mode(ui->comboBox_spn3074->currentIndex());
+
+}
+void MainBMSWindow::set_data_tcu_PGN4352(struct charge_task * thiz)
+{
+    thiz->bms_bcs.spn3075_charge_voltage = ui->lineEdit_spn3075->text().toUShort();
+    thiz->bms_bcs.spn3076_charge_current = ui->lineEdit_spn3076->text().toUShort();
+    thiz->bms_bcs.spn3077_max_v_g_number = ui->lineEdit_spn3077_1->text().toUShort() | (ui->lineEdit_spn3077_2->text().toUShort() << 12);
+    thiz->bms_bcs.spn3078_soc = ui->lineEdit_spn3078->text().toInt();
+    thiz->bms_bcs.spn3079_need_time = ui->lineEdit_spn3079->text().toUShort();
+}
+int MainBMSWindow::get_data_tcu_PGN4864(struct charge_task * thiz)
+{
+    unsigned short remote_single = 0;
+    remote_single = set_combobox_data(ui->comboBox_spn3090->currentIndex());
+    remote_single = remote_single | ((set_combobox_data(ui->comboBox_spn3091->currentIndex()))<<2);
+    remote_single = remote_single | ((set_combobox_data(ui->comboBox_spn3092->currentIndex()))<<4);
+    remote_single = remote_single | ((set_combobox_data(ui->comboBox_spn3093->currentIndex()))<<6);
+    remote_single = remote_single | ((set_combobox_data(ui->comboBox_spn3094->currentIndex()))<<8);
+    remote_single = remote_single | ((set_combobox_data(ui->comboBox_spn3095->currentIndex()))<<10);
+    remote_single = remote_single | ((set_combobox_data(ui->comboBox_spn3096->currentIndex()))<<12);
+    return remote_single;
+}
+int MainBMSWindow::set_combobox_data(int index)
+{
+    int charge_data = 0;
+    switch (index) {
+    case 0:
+        charge_data = GENERAL_NORMAL;
+        break;
+    case 1:
+        charge_data = GENERAL_UN_NORMAL;
+        break;
+    case 2:
+        charge_data = GENERAL_INVALID;
+        break;
+    default:
+        break;
+    }
+    return charge_data;
+}
+void MainBMSWindow::set_data_tcu_PGN4864(struct charge_task * thiz)
+{
+    thiz->bms_bsm.sn_of_max_voltage_battery = ui->lineEdit_spn3085->text().toInt();
+    thiz->bms_bsm.max_temperature_of_battery = ui->lineEdit_spn3086->text().toInt();
+    thiz->bms_bsm.sn_of_max_temperature_point = ui->lineEdit_spn3087->text().toInt();
+    thiz->bms_bsm.min_temperature_of_battery = ui->lineEdit_spn3088->text().toInt();
+    thiz->bms_bsm.sn_of_min_temperature_point = ui->lineEdit_spn3089->text().toInt();
+    thiz->bms_bsm.remote_single = get_data_tcu_PGN4864(thiz);
+}
+void MainBMSWindow::set_data_tcu_PGN5376(struct charge_task * thiz)
+{
+
+}
+void MainBMSWindow::set_data_tcu_PGN5632(struct charge_task * thiz)
+{
+
+}
+void MainBMSWindow::set_data_tcu_PGN5888(struct charge_task * thiz)
+{
+
+}
+void MainBMSWindow::set_data_tcu_PGN6400(struct charge_task * thiz)
+{
+    thiz->bms_bst.reason = 0;
+    thiz->bms_bst.fault = 0;
+    thiz->bms_bst.error = 0;
+}
+void MainBMSWindow::set_data_tcu_PGN7168(struct charge_task * thiz)
+{
+    thiz->bms_bsd.spn3601_stop_soc_status = ui->lineEdit_spn3601->text().toInt();
+    thiz->bms_bsd.spn3602_singal_battery_min_vol = ui->lineEdit_spn3602->text().toUShort();
+    thiz->bms_bsd.spn3603_singal_battery_max_vol = ui->lineEdit_spn3603->text().toUShort();
+    thiz->bms_bsd.spn3604_battery_min_temp = ui->lineEdit_spn3604->text().toInt();
+    thiz->bms_bsd.spn3605_battery_max_temp = ui->lineEdit_spn3605->text().toInt();
 }

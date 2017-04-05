@@ -74,10 +74,14 @@ struct can_frame {
 
 #define CAN_TP_CM_ID    ((PRI<< 26)|(CAN_TP_CM<<8)|CAN_TX_ID_MASK|CAN_EFF_FLAG)
 #define CAN_TP_DT_ID    ((PRI<< 26)|(CAN_TP_DT<<8)|CAN_TX_ID_MASK|CAN_EFF_FLAG)
-
 #define CAN_TP_CM_RTS_CONTROL 0x10
 #define CAN_TP_CM_CTS_CONTROL 0x11
 #define CAN_TP_CM_ACK_CONTROL 0x13
+
+#define GENERAL_NORMAL 0x00
+#define GENERAL_UN_NORMAL 0x01
+#define GENERAL_INVALID 0x02
+
 
 #pragma pack(1)
 // 握手阶段
@@ -149,6 +153,18 @@ struct pgn512_BRM {
 enum battery_property {
     BATTERY_LEASE  = 0x00, // 租赁
     BATTERY_OWNER  = 0x01  // 私有
+};
+
+enum battery_type{
+    battery_type1 = 0x01,
+    battery_type2 = 0x02,
+    battery_type3 = 0x03,
+    battery_type4 = 0x04,
+    battery_type5 = 0x05,
+    battery_type6 = 0x06,
+    battery_type7 = 0x07,
+    battery_type8 = 0x08,
+    battery_type9 = 0xFF
 };
 
 // 充电参数配置阶段
@@ -482,7 +498,7 @@ enum FAULT_PGN6656 {
 
 // 充电结束阶段
 // BMS统计数据
-struct pgn7168 {
+struct pgn7168_BSD {
     //中止荷电状态SOC 1% 每位，0%偏移，范围0-100%
     u8 spn3601_stop_soc_status;
     //动力蓄电池单体最低电压 0.01V 每位, 0V偏移，范围 0- 24V
@@ -496,7 +512,7 @@ struct pgn7168 {
 };
 
 // 充电机统计数据
-struct pgn7424 {
+struct pgn7424_CSD {
     //累计充电时间, 1Min 每位 0 min偏移 范围 0-600min
     u16 spn3611_total_charge_time;
     //输出能量 0.1kW.h每位， 范围 0-1000 kW。h
@@ -507,7 +523,7 @@ struct pgn7424 {
 
 // 错误报文分类
 // BMS 错误报文
-struct pgn7680 {
+struct pgn7680_BEM {
     u8 bem_crm;//@ enum BEM_PGN3901_3902
     u8 bem_ccp;//@ enum BEM_PGN3903_3904
     u8 bem_cst;//@ enum BEM_PGN3905_3906
@@ -552,7 +568,7 @@ enum BEM_PGN3907{
 };
 
 // 充电机错误报文
-struct pgn7936 {
+struct pgn7936_CEM {
     u8 cem_brm;//@ enum BEM_PGN3921
     u8 cem_bro;//@ enum BEM_PGN3922_3923
     u8 cem_bst;//@ enum BEM_PGN3924_3925_3926
@@ -825,6 +841,7 @@ void set_packet_TP_DT(int png_num,struct event_struct* param);
 
 int set_data_tcu_PGN9984(struct charge_task * thiz);
 int set_data_tcu_PGN512(struct charge_task * thiz);
+int set_data_tcu_PGN1536(struct charge_task * thiz);
 int set_data_tcu_PGN2304(struct charge_task * thiz);
 int set_data_tcu_PGN4096(struct charge_task * thiz);
 int set_data_tcu_PGN4352(struct charge_task * thiz);

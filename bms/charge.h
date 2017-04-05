@@ -322,6 +322,13 @@ struct charge_task {
     struct pgn4352_BCS bms_bcs;
     // BMS 动力蓄电池状态信息
     struct pgn4864_BSM bms_bsm;
+    // BMS BMS中止报文
+    struct pgn6400_BST bms_bst;
+    // BMS 统计数据报文
+    struct pgn7168_BSD bms_bsd;
+    // BMS 错误报文
+    struct pgn7680_BEM bms_bem;
+
 };
 
 //struct charge_task tom;
