@@ -851,6 +851,7 @@ int set_data_bms_PGN5632(struct charge_task * thiz);
 int set_data_bms_PGN5888(struct charge_task * thiz);
 int set_data_bms_PGN6400(struct charge_task * thiz);
 int set_data_bms_PGN7168(struct charge_task * thiz);
+int set_data_bms_PGN7680(struct charge_task * thiz);
 
 #ifdef BMS_CC_LANG
 #define EXTERNC		extern "C"
