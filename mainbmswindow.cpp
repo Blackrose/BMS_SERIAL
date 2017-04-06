@@ -45,10 +45,7 @@ MainBMSWindow::MainBMSWindow(QWidget *parent) :
     mScheduler = new CanSendScheduler(this);
     connect(mScheduler, SIGNAL(jobScheduled(QCanMessage&)), this, SLOT(sendMessage(QCanMessage&)));
 
-
-    set_data_tcu_PGN9984(task);
-    set_data_tcu_PGN4864(task);
-
+    set_data_pgn();
 }
 
 MainBMSWindow::~MainBMSWindow()
@@ -85,6 +82,7 @@ void MainBMSWindow::my_tooltip()
     //辨识阶段
     ui->groupBox_SPN2560->setToolTip("辨识结果");
     ui->groupBox_SPN2561->setToolTip("充电机编号");
+    ui->groupBox_SPN2562->setToolTip("区域编码");
 
     ui->groupBox_SPN2565->setToolTip("BMS通讯协议版本号");
     ui->groupBox_SPN2566->setToolTip("电池类型");
@@ -384,10 +382,10 @@ void MainBMSWindow::slot_cantimer()
 }
 
 
-void MainBMSWindow::set_data_tcu_PGN9984(struct charge_task * thiz)
+void MainBMSWindow::set_data_bms_PGN9984(struct charge_task * thiz)
 {
     thiz->bms_handshake.spn2601_bms_max_vol = ui->lineEdit_spn2601->text().toUShort();
-    ui->comboBox_T_HM->currentText().toInt();
+    //ui->comboBox_T_HM->currentText().toInt();
 }
 
 int MainBMSWindow::get_spn2566_battery_type(int index)
@@ -424,7 +422,7 @@ int MainBMSWindow::get_spn2566_battery_type(int index)
     }
     return battery_type;
 }
-void MainBMSWindow::set_data_tcu_PGN512(struct charge_task * thiz)
+void MainBMSWindow::set_data_bms_PGN512(struct charge_task * thiz)
 {
     thiz->vehicle_info.spn2565_bms_version[0] = ui->lineEdit_spn2565_1->text().toInt();
     thiz->vehicle_info.spn2565_bms_version[1] = ui->lineEdit_spn2565_2->text().toInt();
@@ -434,7 +432,7 @@ void MainBMSWindow::set_data_tcu_PGN512(struct charge_task * thiz)
     thiz->vehicle_info.spn2568_volatage = ui->lineEdit_spn2568->text().toUShort();
 }
 
-void MainBMSWindow::set_data_tcu_PGN1536(struct charge_task *thiz)
+void MainBMSWindow::set_data_bms_PGN1536(struct charge_task *thiz)
 {
     thiz->bms_config_info.spn2816_max_charge_volatage_single_battery = ui->lineEdit_spn2816->text().toFloat()*100;
     thiz->bms_config_info.spn2817_max_charge_current = ui->lineEdit_spn2817->text().toUShort();
@@ -464,7 +462,7 @@ int MainBMSWindow::set_combobox_value(int index)
 //    BMS_READY_FOR_CHARGE     =  0xAA, // 已准备好
 //    BMS_INVALID              =  0xFF // 无效
 }
-void MainBMSWindow::set_data_tcu_PGN2304(struct charge_task * thiz)
+void MainBMSWindow::set_data_bms_PGN2304(struct charge_task * thiz)
 {
     thiz->bms_bro.spn2829_bms_ready_for_charge = set_combobox_value(ui->comboBox_spn2829->currentIndex());
 }
@@ -484,14 +482,14 @@ int MainBMSWindow::set_charge_mode(int index)
     }
     return charge_mode;
 }
-void MainBMSWindow::set_data_tcu_PGN4096(struct charge_task * thiz)
+void MainBMSWindow::set_data_bms_PGN4096(struct charge_task * thiz)
 {
     thiz->bms_bcl.spn3072_need_voltage = ui->lineEdit_spn3072->text().toUShort();
     thiz->bms_bcl.spn3073_need_current = ui->lineEdit_spn3073->text().toUShort();
     thiz->bms_bcl.spn3074_charge_mode = set_charge_mode(ui->comboBox_spn3074->currentIndex());
 
 }
-void MainBMSWindow::set_data_tcu_PGN4352(struct charge_task * thiz)
+void MainBMSWindow::set_data_bms_PGN4352(struct charge_task * thiz)
 {
     thiz->bms_bcs.spn3075_charge_voltage = ui->lineEdit_spn3075->text().toUShort();
     thiz->bms_bcs.spn3076_charge_current = ui->lineEdit_spn3076->text().toUShort();
@@ -499,7 +497,7 @@ void MainBMSWindow::set_data_tcu_PGN4352(struct charge_task * thiz)
     thiz->bms_bcs.spn3078_soc = ui->lineEdit_spn3078->text().toInt();
     thiz->bms_bcs.spn3079_need_time = ui->lineEdit_spn3079->text().toUShort();
 }
-int MainBMSWindow::get_data_tcu_PGN4864(struct charge_task * thiz)
+int MainBMSWindow::get_data_bms_PGN4864(struct charge_task * thiz)
 {
     unsigned short remote_single = 0;
     remote_single = set_combobox_data(ui->comboBox_spn3090->currentIndex());
@@ -529,38 +527,380 @@ int MainBMSWindow::set_combobox_data(int index)
     }
     return charge_data;
 }
-void MainBMSWindow::set_data_tcu_PGN4864(struct charge_task * thiz)
+void MainBMSWindow::set_data_bms_PGN4864(struct charge_task * thiz)
 {
     thiz->bms_bsm.sn_of_max_voltage_battery = ui->lineEdit_spn3085->text().toInt();
     thiz->bms_bsm.max_temperature_of_battery = ui->lineEdit_spn3086->text().toInt();
     thiz->bms_bsm.sn_of_max_temperature_point = ui->lineEdit_spn3087->text().toInt();
     thiz->bms_bsm.min_temperature_of_battery = ui->lineEdit_spn3088->text().toInt();
     thiz->bms_bsm.sn_of_min_temperature_point = ui->lineEdit_spn3089->text().toInt();
-    thiz->bms_bsm.remote_single = get_data_tcu_PGN4864(thiz);
+    thiz->bms_bsm.remote_single = get_data_bms_PGN4864(thiz);
 }
-void MainBMSWindow::set_data_tcu_PGN5376(struct charge_task * thiz)
+void MainBMSWindow::set_data_bms_PGN5376(struct charge_task * thiz)
 {
+//BMV
+}
+void MainBMSWindow::set_data_bms_PGN5632(struct charge_task * thiz)
+{
+//BMT
+}
+void MainBMSWindow::set_data_bms_PGN5888(struct charge_task * thiz)
+{
+//BSP
+}
 
-}
-void MainBMSWindow::set_data_tcu_PGN5632(struct charge_task * thiz)
-{
 
-}
-void MainBMSWindow::set_data_tcu_PGN5888(struct charge_task * thiz)
+int MainBMSWindow::get_data_bms_PGN6400_reason(struct charge_task * thiz)
 {
-
+    int reason = 0;
+    reason = set_combobox_data(ui->comboBox_spn3511_1->currentIndex());
+    reason = reason | ((set_combobox_data(ui->comboBox_spn3511_2->currentIndex()))<<2);
+    reason = reason | ((set_combobox_data(ui->comboBox_spn3511_3->currentIndex()))<<4);
+    reason = reason | ((set_combobox_data(ui->comboBox_spn3511_4->currentIndex()))<<6);
+    return reason;
 }
-void MainBMSWindow::set_data_tcu_PGN6400(struct charge_task * thiz)
+int MainBMSWindow::get_data_bms_PGN6400_fault(struct charge_task * thiz)
 {
-    thiz->bms_bst.reason = 0;
-    thiz->bms_bst.fault = 0;
-    thiz->bms_bst.error = 0;
+    unsigned short fault = 0;
+    fault = set_combobox_data(ui->comboBox_spn3512_1->currentIndex());
+    fault = fault | ((set_combobox_data(ui->comboBox_spn3512_2->currentIndex()))<<2);
+    fault = fault | ((set_combobox_data(ui->comboBox_spn3512_3->currentIndex()))<<4);
+    fault = fault | ((set_combobox_data(ui->comboBox_spn3512_4->currentIndex()))<<6);
+    fault = fault | ((set_combobox_data(ui->comboBox_spn3512_5->currentIndex()))<<8);
+    fault = fault | ((set_combobox_data(ui->comboBox_spn3512_6->currentIndex()))<<10);
+    fault = fault | ((set_combobox_data(ui->comboBox_spn3512_7->currentIndex()))<<12);
+    fault = fault | ((set_combobox_data(ui->comboBox_spn3512_8->currentIndex()))<<14);
+    return fault;
 }
-void MainBMSWindow::set_data_tcu_PGN7168(struct charge_task * thiz)
+int MainBMSWindow::get_data_bms_PGN6400_error(struct charge_task * thiz)
+{
+    int error = 0;
+    error = set_combobox_data(ui->comboBox_spn3513_1->currentIndex());
+    error = error | ((set_combobox_data(ui->comboBox_spn3513_2->currentIndex()))<<2);
+    return error;
+}
+void MainBMSWindow::set_data_bms_PGN6400(struct charge_task * thiz)
+{
+    thiz->bms_bst.reason = get_data_bms_PGN6400_reason(thiz);
+    thiz->bms_bst.fault = get_data_bms_PGN6400_fault(thiz);
+    thiz->bms_bst.error = get_data_bms_PGN6400_error(thiz);
+}
+void MainBMSWindow::set_data_bms_PGN7168(struct charge_task * thiz)
 {
     thiz->bms_bsd.spn3601_stop_soc_status = ui->lineEdit_spn3601->text().toInt();
     thiz->bms_bsd.spn3602_singal_battery_min_vol = ui->lineEdit_spn3602->text().toUShort();
     thiz->bms_bsd.spn3603_singal_battery_max_vol = ui->lineEdit_spn3603->text().toUShort();
     thiz->bms_bsd.spn3604_battery_min_temp = ui->lineEdit_spn3604->text().toInt();
     thiz->bms_bsd.spn3605_battery_max_temp = ui->lineEdit_spn3605->text().toInt();
+}
+
+
+void MainBMSWindow::set_data_pgn()
+{
+    set_data_bms_PGN9984(task);
+    set_data_bms_PGN512(task);
+    set_data_bms_PGN1536(task);
+    set_data_bms_PGN2304(task);
+    set_data_bms_PGN4096(task);
+    set_data_bms_PGN4352(task);
+    set_data_bms_PGN4864(task);
+    set_data_bms_PGN6400(task);
+    set_data_bms_PGN7168(task);
+}
+
+void MainBMSWindow::show_data_charger_PGN9728(struct charge_task * thiz)//CHM
+{
+    ui->lineEdit_spn2600_1->setText(QString(thiz->charger_handshake.spn2600_charger_version[0]));
+    ui->lineEdit_spn2600_2->setText(QString(thiz->charger_handshake.spn2600_charger_version[1]));
+    ui->lineEdit_spn2600_3->setText(QString(thiz->charger_handshake.spn2600_charger_version[2]));
+}
+void MainBMSWindow::show_data_charger_PGN256(struct charge_task * thiz)//CRM
+{
+    if(thiz->charger_info.spn2560_recognize == BMS_NOT_RECOGNIZED){
+        ui->comboBox_spn2560->setCurrentIndex(0);
+    }else if(thiz->charger_info.spn2560_recognize == BMS_RECOGNIZED){
+        ui->comboBox_spn2560->setCurrentIndex(1);
+    }
+
+    ui->lineEdit_spn2561->setText((char*)thiz->charger_info.spn2561_charger_sn);
+    ui->lineEdit_spn2562->setText((char*)thiz->charger_info.spn2562_charger_region_code);
+}
+
+void MainBMSWindow::show_data_charger_PGN1792(struct charge_task * thiz)//CTS
+{
+
+}
+void MainBMSWindow::show_data_charger_PGN2048(struct charge_task * thiz)//CML
+{
+    ui->lineEdit_spn2824->setText(QString(thiz->charger_cml.spn2824_max_output_voltage));
+    ui->lineEdit_spn2825->setText(QString(thiz->charger_cml.spn2825_min_output_voltage));
+    ui->lineEdit_spn2826->setText(QString(thiz->charger_cml.spn2826_max_output_current));
+    ui->lineEdit_spn2827->setText(QString(thiz->charger_cml.spn2826_min_output_current));
+}
+void MainBMSWindow::show_data_charger_PGN2560(struct charge_task * thiz)//CRO
+{
+    if(thiz->charger_cro.spn2830_charger_ready_for_charge == CHARGER_NOT_READY_FOR_CHARGE){
+        ui->comboBox_spn2830->setCurrentIndex(0);
+    }else if(thiz->charger_cro.spn2830_charger_ready_for_charge == CHARGER_READY_FOR_CHARGE){
+        ui->comboBox_spn2830->setCurrentIndex(1);
+    }else{
+        ui->comboBox_spn2830->setCurrentIndex(2);
+    }
+}
+
+void MainBMSWindow::show_data_charger_PGN4608(struct charge_task * thiz)//CCS
+{
+    ui->lineEdit_spn3081->setText(QString(thiz->charger_ccs.spn3081_output_voltage));
+    ui->lineEdit_spn3082->setText(QString(thiz->charger_ccs.spn3082_outpu_current));
+    ui->lineEdit_spn3083->setText(QString(thiz->charger_ccs.spn3083_charge_time));
+    if(thiz->charger_ccs.spn3929_charger_status == CHARGER_ALLOW){
+        ui->comboBox_spn3929->setCurrentIndex(0);
+    }else{
+        ui->comboBox_spn3929->setCurrentIndex(1);
+    }
+}
+
+void MainBMSWindow::show_data_charger_PGN6656(struct charge_task * thiz)//CST
+{
+    if(REASON_CHARGER_NORMAL == (thiz->charger_cst.spn3521_reason & REASON_CHARGER_NORMAL)){
+        ui->comboBox_spn3521_1->setCurrentIndex(0);
+    }
+    if(REASON_REACH_CHARGER_STOP == (thiz->charger_cst.spn3521_reason & REASON_REACH_CHARGER_STOP)){
+        ui->comboBox_spn3521_1->setCurrentIndex(1);
+    }
+    if(REASON_CHARGER_UNRELIABLE == (thiz->charger_cst.spn3521_reason & REASON_CHARGER_UNRELIABLE)){
+        ui->comboBox_spn3521_1->setCurrentIndex(2);
+    }
+
+    if(REASON_CHARGER_MANUAL_NORMAL == (thiz->charger_cst.spn3521_reason & REASON_CHARGER_MANUAL_NORMAL)){
+        ui->comboBox_spn3521_2->setCurrentIndex(0);
+    }
+    if(REASON_CHARGER_MANUAL_STOP == (thiz->charger_cst.spn3521_reason & REASON_CHARGER_MANUAL_STOP)){
+        ui->comboBox_spn3521_2->setCurrentIndex(1);
+    }
+    if(REASON_CHARGER_MANUAL_UNRELIABLE == (thiz->charger_cst.spn3521_reason & REASON_CHARGER_MANUAL_UNRELIABLE)){
+        ui->comboBox_spn3521_2->setCurrentIndex(2);
+    }
+
+    if(REASON_CHARGER_NO_ERROR == (thiz->charger_cst.spn3521_reason & REASON_CHARGER_NO_ERROR)){
+        ui->comboBox_spn3521_3->setCurrentIndex(0);
+    }
+    if(REASON_CHARGER_ERROR_STOP == (thiz->charger_cst.spn3521_reason & REASON_CHARGER_ERROR_STOP)){
+        ui->comboBox_spn3521_3->setCurrentIndex(1);
+    }
+    if(REASON_CHARGER_ERROR_UNRELIABLE == (thiz->charger_cst.spn3521_reason & REASON_CHARGER_ERROR_UNRELIABLE)){
+        ui->comboBox_spn3521_3->setCurrentIndex(2);
+    }
+
+    if(REASON_BMS_NORMAL == (thiz->charger_cst.spn3521_reason & REASON_BMS_NORMAL)){
+        ui->comboBox_spn3521_4->setCurrentIndex(0);
+    }
+    if(REASON_BMS_STOP == (thiz->charger_cst.spn3521_reason & REASON_BMS_STOP)){
+        ui->comboBox_spn3521_4->setCurrentIndex(1);
+    }
+    if(REASON_BMS_UNRELIABLE == (thiz->charger_cst.spn3521_reason & REASON_BMS_UNRELIABLE)){
+        ui->comboBox_spn3521_4->setCurrentIndex(2);
+    }
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+    if(ERROR_CHARGER_TEMP_NORMAL == (thiz->charger_cst.spn3522_error & ERROR_CHARGER_TEMP_NORMAL)){
+        ui->comboBox_spn3522_1->setCurrentIndex(0);
+    }
+    if(ERROR_CHARGER_TEMP == (thiz->charger_cst.spn3522_error & ERROR_CHARGER_TEMP)){
+        ui->comboBox_spn3522_1->setCurrentIndex(1);
+    }
+    if(ERROR_CARGER_TEMP_UNRELIABLE == (thiz->charger_cst.spn3522_error & ERROR_CARGER_TEMP_UNRELIABLE)){
+        ui->comboBox_spn3522_1->setCurrentIndex(2);
+    }
+
+    if(ERROR_CHARGINGCONNECTOR_TEMP_NORMAL == (thiz->charger_cst.spn3522_error & ERROR_CHARGINGCONNECTOR_TEMP_NORMAL)){
+        ui->comboBox_spn3522_2->setCurrentIndex(0);
+    }
+    if(ERROR_CHARGINGCONNECTOR_TEMP == (thiz->charger_cst.spn3522_error & ERROR_CHARGINGCONNECTOR_TEMP)){
+        ui->comboBox_spn3522_2->setCurrentIndex(1);
+    }
+    if(ERROR_CHARGINGCONNECTOR_TEMP_UNRELIABLE == (thiz->charger_cst.spn3522_error & ERROR_CHARGINGCONNECTOR_TEMP_UNRELIABLE)){
+        ui->comboBox_spn3522_2->setCurrentIndex(2);
+    }
+
+    if(ERROR_CHARGER_INTEMP_NORMAL == (thiz->charger_cst.spn3522_error & ERROR_CHARGER_INTEMP_NORMAL)){
+        ui->comboBox_spn3522_3->setCurrentIndex(0);
+    }
+    if(ERROR_CHARGER_INTEMP == (thiz->charger_cst.spn3522_error & ERROR_CHARGER_INTEMP)){
+        ui->comboBox_spn3522_3->setCurrentIndex(1);
+    }
+    if(ERROR_CHARGER_INTEMP_UNRELIABLE == (thiz->charger_cst.spn3522_error & ERROR_CHARGER_INTEMP_UNRELIABLE)){
+        ui->comboBox_spn3522_3->setCurrentIndex(2);
+    }
+
+    if(ERROR_POWER_TRANSFER_NORMAL == (thiz->charger_cst.spn3522_error & ERROR_POWER_TRANSFER_NORMAL)){
+        ui->comboBox_spn3522_4->setCurrentIndex(0);
+    }
+    if(ERROR_POWER_TRANSFER == (thiz->charger_cst.spn3522_error & ERROR_POWER_TRANSFER)){
+        ui->comboBox_spn3522_4->setCurrentIndex(1);
+    }
+    if(ERROR_POWER_TRANSFER_UNRELIABLE == (thiz->charger_cst.spn3522_error & ERROR_POWER_TRANSFER_UNRELIABLE)){
+        ui->comboBox_spn3522_4->setCurrentIndex(2);
+    }
+
+    if(ERROR_CHARGER_EMERGENCY_STOP_NORMAL == (thiz->charger_cst.spn3522_error & ERROR_CHARGER_EMERGENCY_STOP_NORMAL)){
+        ui->comboBox_spn3522_5->setCurrentIndex(0);
+    }
+    if(ERROR_CHARGER_EMERGENCY_STOP == (thiz->charger_cst.spn3522_error & ERROR_CHARGER_EMERGENCY_STOP)){
+        ui->comboBox_spn3522_5->setCurrentIndex(1);
+    }
+    if(ERROR_CHARGER_EMERGENCY_STOP_UNRELIABLE == (thiz->charger_cst.spn3522_error & ERROR_CHARGER_EMERGENCY_STOP_UNRELIABLE)){
+        ui->comboBox_spn3522_5->setCurrentIndex(2);
+    }
+
+    if(ERROR_OTHERPGN6656_NORMAL == (thiz->charger_cst.spn3522_error & ERROR_OTHERPGN6656_NORMAL)){
+        ui->comboBox_spn3522_6->setCurrentIndex(0);
+    }
+    if(ERROR_OTHERPGN6656 == (thiz->charger_cst.spn3522_error & ERROR_OTHERPGN6656)){
+        ui->comboBox_spn3522_6->setCurrentIndex(1);
+    }
+    if(ERROR_OTHERPGN6656_UNRELIABLE == (thiz->charger_cst.spn3522_error & ERROR_OTHERPGN6656_UNRELIABLE)){
+        ui->comboBox_spn3522_6->setCurrentIndex(2);
+    }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    if(FAULT_CURRENT_MATCHING_NORMAL == (thiz->charger_cst.spn3523_fault & FAULT_CURRENT_MATCHING_NORMAL)){
+        ui->comboBox_spn3523_1->setCurrentIndex(0);
+    }
+    if(FAULT_CURRENT_UN_MATCHING == (thiz->charger_cst.spn3523_fault & FAULT_CURRENT_UN_MATCHING)){
+        ui->comboBox_spn3523_1->setCurrentIndex(1);
+    }
+    if(FAULT_CURRENT_PGN6656_UNRELIABLE == (thiz->charger_cst.spn3523_fault & FAULT_CURRENT_PGN6656_UNRELIABLE)){
+        ui->comboBox_spn3523_1->setCurrentIndex(2);
+    }
+
+    if(FAULT_VOL_PGN6656_NORMAL == (thiz->charger_cst.spn3523_fault & FAULT_VOL_PGN6656_NORMAL)){
+        ui->comboBox_spn3523_2->setCurrentIndex(0);
+    }
+    if(FAULT_VOL_PGN6656_UN_NORMAL == (thiz->charger_cst.spn3523_fault & FAULT_VOL_PGN6656_UN_NORMAL)){
+        ui->comboBox_spn3523_2->setCurrentIndex(1);
+    }
+    if(FAULT_VOL_PGN6656_UNRELIABLE == (thiz->charger_cst.spn3523_fault & FAULT_VOL_PGN6656_UNRELIABLE)){
+        ui->comboBox_spn3523_2->setCurrentIndex(2);
+    }
+}
+void MainBMSWindow::show_data_charger_PGN7424(struct charge_task * thiz)//CSD
+{
+    ui->lineEdit_spn3611->setText(QString(thiz->charger_csd.spn3611_total_charge_time));
+    ui->lineEdit_spn3612->setText(QString(thiz->charger_csd.spn3612_output_energy));
+    ui->lineEdit_spn3613->setText((char*)thiz->charger_csd.spn3613_charger_sn);
+}
+void MainBMSWindow::show_data_charger_PGN7936(struct charge_task * thiz)//CEM
+{
+    if(BEM_BMS_NORMAL == (thiz->charger_cem.cem_brm & BEM_BMS_NORMAL)){
+        ui->comboBox_spn3921->setCurrentIndex(0);
+    }
+    if(BEM_BMS_TIMEOUT == (thiz->charger_cem.cem_brm & BEM_BMS_TIMEOUT)){
+         ui->comboBox_spn3921->setCurrentIndex(1);
+    }
+    if(BEM_BMS_UNRELIABLE == (thiz->charger_cem.cem_brm & BEM_BMS_UNRELIABLE)){
+         ui->comboBox_spn3921->setCurrentIndex(2);
+    }
+//====================================================================================//
+    if(BEM_BCP_NORMAL == (thiz->charger_cem.cem_bro & BEM_BCP_NORMAL)){
+        ui->comboBox_spn3922->setCurrentIndex(0);
+    }
+    if(BEM_BCP_TIMEOUT == (thiz->charger_cem.cem_bro & BEM_BCP_TIMEOUT)){
+         ui->comboBox_spn3922->setCurrentIndex(1);
+    }
+    if(BEM_BCP_UNRELIABLE == (thiz->charger_cem.cem_bro & BEM_BCP_UNRELIABLE)){
+         ui->comboBox_spn3922->setCurrentIndex(2);
+    }
+    if(BEM_BRO_NORMAL == (thiz->charger_cem.cem_bro & BEM_BRO_NORMAL)){
+        ui->comboBox_spn3923->setCurrentIndex(0);
+    }
+    if(BEM_BRO_TIMEOUT == (thiz->charger_cem.cem_bro & BEM_BRO_TIMEOUT)){
+         ui->comboBox_spn3923->setCurrentIndex(1);
+    }
+    if(BEM_BRO_UNRELIABLE == (thiz->charger_cem.cem_bro & BEM_BRO_UNRELIABLE)){
+         ui->comboBox_spn3923->setCurrentIndex(2);
+    }
+//====================================================================================//
+    if(BEM_BCS_NORMAL == (thiz->charger_cem.cem_bro & BEM_BCS_NORMAL)){
+        ui->comboBox_spn3924->setCurrentIndex(0);
+    }
+    if(BEM_BCS_TIMEOUT == (thiz->charger_cem.cem_bro & BEM_BCS_TIMEOUT)){
+         ui->comboBox_spn3924->setCurrentIndex(1);
+    }
+    if(BEM_BCS_UNRELIABLE == (thiz->charger_cem.cem_bro & BEM_BCS_UNRELIABLE)){
+         ui->comboBox_spn3924->setCurrentIndex(2);
+    }
+    if(BEM_BCL_NORMAL == (thiz->charger_cem.cem_bro & BEM_BCL_NORMAL)){
+        ui->comboBox_spn3925->setCurrentIndex(0);
+    }
+    if(BEM_BCL_TIMEOUT == (thiz->charger_cem.cem_bro & BEM_BCL_TIMEOUT)){
+         ui->comboBox_spn3925->setCurrentIndex(1);
+    }
+    if(BEM_BCL_UNRELIABLE == (thiz->charger_cem.cem_bro & BEM_BCL_UNRELIABLE)){
+         ui->comboBox_spn3925->setCurrentIndex(2);
+    }
+    if(BEM_BST_NORMAL == (thiz->charger_cem.cem_bro & BEM_BST_NORMAL)){
+        ui->comboBox_spn3926->setCurrentIndex(0);
+    }
+    if(BEM_BST_TIMEOUT == (thiz->charger_cem.cem_bro & BEM_BST_TIMEOUT)){
+         ui->comboBox_spn3926->setCurrentIndex(1);
+    }
+    if(BEM_BST_UNRELIABLE == (thiz->charger_cem.cem_bro & BEM_BST_UNRELIABLE)){
+         ui->comboBox_spn3926->setCurrentIndex(2);
+    }
+//====================================================================================//
+    if(BEM_BSD_NORMAL == (thiz->charger_cem.cem_bro & BEM_BSD_NORMAL)){
+        ui->comboBox_spn3927->setCurrentIndex(0);
+    }
+    if(BEM_BSD_TIMEOUT == (thiz->charger_cem.cem_bro & BEM_BSD_TIMEOUT)){
+         ui->comboBox_spn3927->setCurrentIndex(1);
+    }
+    if(BEM_BSD_UNRELIABLE == (thiz->charger_cem.cem_bro & BEM_BSD_UNRELIABLE)){
+         ui->comboBox_spn3927->setCurrentIndex(2);
+    }
+}
+
+void MainBMSWindow::show_data_pgn()
+{
+    show_data_charger_PGN9728(task);//CHM
+    show_data_charger_PGN256(task);//CRM
+    show_data_charger_PGN1792(task);//CTS
+    show_data_charger_PGN2048(task);//CML
+    show_data_charger_PGN2560(task);//CRO
+    show_data_charger_PGN4608(task);//CCS
+    show_data_charger_PGN6656(task);//CST
+    show_data_charger_PGN7424(task);//CSD
+    show_data_charger_PGN7936(task);//CEM
+}
+
+
+
+
+void MainBMSWindow::on_pushButton_BHM_clicked()
+{
+    set_data_bms_PGN9984(task);
+}
+
+void MainBMSWindow::on_pushButton_BRM_clicked()
+{
+    set_data_bms_PGN512(task);
+}
+
+void MainBMSWindow::on_pushButton_BCP_clicked()
+{
+    set_data_bms_PGN1536(task);
+}
+
+void MainBMSWindow::on_pushButton_BCL_BCS_BSM_clicked()
+{
+    set_data_bms_PGN2304(task);
+    set_data_bms_PGN4096(task);
+    set_data_bms_PGN4352(task);
+    set_data_bms_PGN4864(task);
+    set_data_bms_PGN6400(task);
+}
+
+void MainBMSWindow::on_pushButton_BSD_clicked()
+{
+    set_data_bms_PGN7168(task);
 }

@@ -320,15 +320,22 @@ struct charge_task {
     struct pgn4096_BCL bms_bcl;
     // BMS电池充电总状态
     struct pgn4352_BCS bms_bcs;
+    // 充电机充电状态
+    struct pgn4608_CCS charger_ccs;
     // BMS 动力蓄电池状态信息
     struct pgn4864_BSM bms_bsm;
     // BMS BMS中止报文
     struct pgn6400_BST bms_bst;
+    // 充电机中止报文
+    struct pgn6656_CST charger_cst;
     // BMS 统计数据报文
     struct pgn7168_BSD bms_bsd;
+    // 充电机统计数据
+    struct pgn7424_CSD charger_csd;
     // BMS 错误报文
     struct pgn7680_BEM bms_bem;
-
+    // 充电机错误报文
+    struct pgn7936_CEM charger_cem;
 };
 
 //struct charge_task tom;
@@ -363,6 +370,8 @@ typedef enum {
     F_BMS_READY,
     // 充电机充电准备完成
     F_CHARGER_READY,
+
+
     // 接收到电池充电总状态报文
     F_PCK_BAT_STATUS,
     // 接收到BMS终止充电报文

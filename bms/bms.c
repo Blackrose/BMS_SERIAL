@@ -724,10 +724,10 @@ static int can_packet_callback(
                 gen_packet_PGN4096(thiz, param);
                 generator[I_BCL].heartbeat = 0;
             }
-            /*else if ( generator[I_BCS].heartbeat >= generator[I_BCS].period ) {
-                gen_packet_PGN4352(thiz, param);
-                generator[I_BCS].heartbeat = 0;
-            }*/else if ( generator[I_BSM].heartbeat >= generator[I_BSM].period ) {
+            else if ( generator[I_BCS].heartbeat >= generator[I_BCS].period ) {
+                thiz->can_bms_status = (CAN_TP_WR | CAN_TP_RTS);
+                //generator[I_BCS].heartbeat = 0;
+            }else if ( generator[I_BSM].heartbeat >= generator[I_BSM].period ) {
                 gen_packet_PGN4864(thiz, param);
                 generator[I_BSM].heartbeat = 0;
             }else if ( generator[I_BMV].heartbeat >= generator[I_BMV].period ) {
@@ -843,20 +843,20 @@ static int can_packet_callback(
                 param->evt_param = EVT_RET_ERR;
                 break;
             case CHARGE_STAGE_IDENTIFICATION:
-                if ( generator[I_BRM].heartbeat >= generator[I_BRM].period ) {
+                if ( generator[I_BRM].heartbeat >= generator[I_BRM].period/25/*10ms*/ ) {
                     set_packet_TP_DT(I_BRM,param);
                     generator[I_BRM].heartbeat = 0;
                 }
                 //set_packet_TP_DT(I_BRM,param);
                 break;
             case CHARGE_STAGE_CONFIGURE:
-                if ( generator[I_BCP].heartbeat >= generator[I_BCP].period ) {
+                if ( generator[I_BCP].heartbeat >= generator[I_BCP].period/50/*10ms*/ ) {
                     set_packet_TP_DT(I_BCP,param);
                     generator[I_BCP].heartbeat = 0;
                 }
                 break;
             case CHARGE_STAGE_CHARGING:
-                if ( generator[I_BCS].heartbeat >= generator[I_BCS].period ) {
+                if ( generator[I_BCS].heartbeat >= generator[I_BCS].period/25/*10ms*/ ) {
                     gen_packet_PGN4352(thiz, param);
                     set_packet_TP_DT(I_BCS,param);
                     generator[I_BCS].heartbeat = 0;
@@ -917,7 +917,7 @@ int about_packet_transfer_done(struct charge_task *thiz,
             break;
         case PGN_BCL:// 0x001000, BMS 电池充电需求报文
             log_printf(INF, "BMS: PGN_BCL ");
-
+            //thiz->can_bms_status = (CAN_TP_WR | CAN_TP_RTS);//准备发送BCS
             break;
     }
     return ERR_OK;
@@ -1253,12 +1253,13 @@ void *thread_bms_write_service(void *arg) ___THREAD_ENTRY___
             log_printf(DBG_LV2, "BMS: connection aborted.");
         }
 #endif
-#if 1
+#if 0
         // 请求发送数据
         if ( task->can_bms_status == (CAN_TP_WR | CAN_TP_RTS) ) {
             task->can_bms_status = (CAN_TP_WR | CAN_TP_TX);
             log_printf(DBG_LV3, "BMS: ready for data transfer.");
         }
+#else
         // 数据传送完成并且应答结束
         if ( task->can_bms_status == (CAN_TP_WR | CAN_TP_ACK) ) {
             task->can_bms_status = CAN_NORMAL;
@@ -1509,7 +1510,7 @@ int gen_packet_PGN9984(struct charge_task * thiz, struct event_struct* param)
 //    }
 
     memset(param->buff.tx_buff, INIT, sizeof(struct pgn9984_BHM));
-    set_data_tcu_PGN9984(thiz);
+    set_data_bms_PGN9984(thiz);
     memcpy(param->buff.tx_buff, &thiz->bms_handshake, sizeof(struct pgn9984_BHM));
 
     param->buff_payload = gen->datalen;
@@ -1521,7 +1522,7 @@ int gen_packet_PGN9984(struct charge_task * thiz, struct event_struct* param)
 
     return 0;
 }
-int set_data_tcu_PGN9984(struct charge_task * thiz)
+int set_data_bms_PGN9984(struct charge_task * thiz)
 {
     memset(&thiz->bms_handshake, INIT, sizeof(struct pgn9984_BHM));
     thiz->bms_handshake.spn2601_bms_max_vol = 750;
@@ -1531,31 +1532,7 @@ int set_data_tcu_PGN9984(struct charge_task * thiz)
 
 
 // 握手-CRM-充电机辨识报文
-#if 0
-int gen_packet_PGN256(struct charge_task * thiz, struct event_struct* param)
-{
-    struct can_pack_generator *gen = &generator[I_CRM];
 
-    if ( 0 == bit_read(thiz, F_BMS_RECOGNIZED) ) {
-        param->buff.tx_buff[0] = BMS_NOT_RECOGNIZED;
-    } else {
-        param->buff.tx_buff[0] = BMS_RECOGNIZED;
-        bit_set(thiz, F_VEHICLE_RECOGNIZED);
-    }
-
-    param->buff.tx_buff[1] = 0x01;
-    strcpy((char * __restrict__)&param->buff.tx_buff[2], "ZH-CN");
-    param->buff.tx_buff[7] = 0xFF;
-    param->buff_payload = gen->datalen;
-    param->can_id = gen->prioriy << 26 | gen->pgn << 8 | CAN_TX_ID_MASK | CAN_EFF_FLAG;
-
-    param->evt_param = EVT_RET_OK;
-
-    generator[I_BRM].can_counter ++;//I_CRM
-
-    return 0;
-}
-#endif
 
 // 握手-BRM-BMS辨识报文
 int gen_packet_PGN512(struct charge_task * thiz, struct event_struct* param)
@@ -1564,7 +1541,7 @@ int gen_packet_PGN512(struct charge_task * thiz, struct event_struct* param)
     struct can_pack_generator *gen = &generator[I_BRM];
 
     memset(param->buff.tx_buff, INIT, sizeof(struct pgn512_BRM));
-    set_data_tcu_PGN512(thiz);
+    set_data_bms_PGN512(thiz);
     memcpy(param->buff.tx_buff, &thiz->vehicle_info, sizeof(struct pgn512_BRM));
 
     param->buff_payload = gen->datalen;
@@ -1582,7 +1559,7 @@ int gen_packet_PGN512(struct charge_task * thiz, struct event_struct* param)
     log_printf(INF, "BMS: "RED("gen_packet_PGN512 end"));
     return 0;
 }
-int set_data_tcu_PGN512(struct charge_task * thiz)
+int set_data_bms_PGN512(struct charge_task * thiz)
 {
     memset(&thiz->vehicle_info, INIT, sizeof(struct pgn512_BRM));
     thiz->vehicle_info.spn2565_bms_version[0] = 0x00;
@@ -1601,7 +1578,7 @@ int gen_packet_PGN1536(struct charge_task * thiz, struct event_struct* param)
     struct can_pack_generator *gen = &generator[I_BCP];
 
     memset(param->buff.tx_buff, INIT, sizeof(struct pgn1536_BCP));
-    set_data_tcu_PGN1536(thiz);
+    set_data_bms_PGN1536(thiz);
     memcpy(param->buff.tx_buff, &thiz->bms_config_info, sizeof(struct pgn1536_BCP));
 
     param->buff_payload = gen->datalen;
@@ -1619,7 +1596,7 @@ int gen_packet_PGN1536(struct charge_task * thiz, struct event_struct* param)
     log_printf(INF, "BMS: "RED("gen_packet_PGN1536 end"));
     return 0;
 }
-int set_data_tcu_PGN1536(struct charge_task * thiz)
+int set_data_bms_PGN1536(struct charge_task * thiz)
 {
     memset(&thiz->bms_config_info, INIT, sizeof(struct pgn1536_BCP));
     thiz->bms_config_info.spn2816_max_charge_volatage_single_battery = 425;
@@ -1642,7 +1619,7 @@ int gen_packet_PGN2304(struct charge_task * thiz, struct event_struct* param)
 
     memset(param->buff.tx_buff, INIT,  gen->datalen);
 
-    set_data_tcu_PGN2304(thiz);
+    set_data_bms_PGN2304(thiz);
     if(thiz->bms_bro.spn2829_bms_ready_for_charge == BMS_NOT_READY_FOR_CHARGE){
         bit_clr(thiz, F_BMS_READY);
     }else if(thiz->bms_bro.spn2829_bms_ready_for_charge == BMS_READY_FOR_CHARGE){
@@ -1660,7 +1637,7 @@ int gen_packet_PGN2304(struct charge_task * thiz, struct event_struct* param)
     return 0;
 }
 
-int set_data_tcu_PGN2304(struct charge_task * thiz)
+int set_data_bms_PGN2304(struct charge_task * thiz)
 {
     memset(&thiz->bms_bro, INIT, sizeof(struct pgn2304_BRO));
     if(bit_read(thiz, F_CHARGER_CTS ) && bit_read(thiz, F_CHARGER_CML)){
@@ -1680,7 +1657,7 @@ int gen_packet_PGN4096(struct charge_task * thiz, struct event_struct* param)
     struct can_pack_generator *gen = &generator[I_BCL];
     memset(param->buff.tx_buff, INIT,  gen->datalen);
 
-    set_data_tcu_PGN4096(thiz);
+    set_data_bms_PGN4096(thiz);
 
     memcpy(param->buff.tx_buff, &thiz->bms_bcl, sizeof(struct pgn4096_BCL));
 
@@ -1691,7 +1668,7 @@ int gen_packet_PGN4096(struct charge_task * thiz, struct event_struct* param)
 
     return 0;
 }
-int set_data_tcu_PGN4096(struct charge_task * thiz)
+int set_data_bms_PGN4096(struct charge_task * thiz)
 {
     memset(&thiz->bms_bcl, INIT, sizeof(struct pgn4096_BCL));
     thiz->bms_bcl.spn3072_need_voltage = 5000;
@@ -1707,7 +1684,7 @@ int gen_packet_PGN4352(struct charge_task * thiz, struct event_struct* param)
     struct can_pack_generator *gen = &generator[I_BCS];
 
     memset(param->buff.tx_buff, INIT, sizeof(struct pgn4352_BCS));
-    set_data_tcu_PGN4352(thiz);
+    set_data_bms_PGN4352(thiz);
     memcpy(param->buff.tx_buff, &thiz->bms_bcs, sizeof(struct pgn4352_BCS));
 
     param->buff_payload = gen->datalen;
@@ -1725,7 +1702,7 @@ int gen_packet_PGN4352(struct charge_task * thiz, struct event_struct* param)
     log_printf(INF, "BMS: "RED("gen_packet_PGN4352 end"));
     return 0;
 }
-int set_data_tcu_PGN4352(struct charge_task * thiz)
+int set_data_bms_PGN4352(struct charge_task * thiz)
 {
     memset(&thiz->bms_bcs, INIT, sizeof(struct pgn4352_BCS));
     thiz->bms_bcs.spn3075_charge_voltage = 5000;
@@ -1743,7 +1720,7 @@ int gen_packet_PGN4864(struct charge_task * thiz, struct event_struct* param)
     struct can_pack_generator *gen = &generator[I_BSM];
     memset(param->buff.tx_buff, INIT,  gen->datalen);
 
-    set_data_tcu_PGN4864(thiz);
+    set_data_bms_PGN4864(thiz);
 
     memcpy(param->buff.tx_buff, &thiz->bms_bsm, sizeof(struct pgn4864_BSM));
 
@@ -1754,7 +1731,7 @@ int gen_packet_PGN4864(struct charge_task * thiz, struct event_struct* param)
 
     return 0;
 }
-int set_data_tcu_PGN4864(struct charge_task * thiz)
+int set_data_bms_PGN4864(struct charge_task * thiz)
 {
     memset(&thiz->bms_bsm, INIT, sizeof(struct pgn4864_BSM));
     thiz->bms_bsm.sn_of_max_voltage_battery = 7;

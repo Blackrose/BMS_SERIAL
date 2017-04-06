@@ -66,25 +66,38 @@ public:
     QTimer can_timer;
     mythread mythread_can ;
 
-    void set_data_tcu_PGN9984(struct charge_task * thiz);
+    void set_data_bms_PGN9984(struct charge_task * thiz);
     int get_spn2566_battery_type(int index);
-    void set_data_tcu_PGN512(struct charge_task * thiz);
-    void set_data_tcu_PGN1536(struct charge_task * thiz);
+    void set_data_bms_PGN512(struct charge_task * thiz);
+    void set_data_bms_PGN1536(struct charge_task * thiz);
     int set_combobox_value(int index);
-    void set_data_tcu_PGN2304(struct charge_task * thiz);
+    void set_data_bms_PGN2304(struct charge_task * thiz);
     int set_charge_mode(int index);
-    void set_data_tcu_PGN4096(struct charge_task * thiz);
-    void set_data_tcu_PGN4352(struct charge_task * thiz);
-    int get_data_tcu_PGN4864(struct charge_task * thiz);
+    void set_data_bms_PGN4096(struct charge_task * thiz);
+    void set_data_bms_PGN4352(struct charge_task * thiz);
+    int get_data_bms_PGN4864(struct charge_task * thiz);
     int set_combobox_data(int index);
-    void set_data_tcu_PGN4864(struct charge_task * thiz);
-    void set_data_tcu_PGN5376(struct charge_task * thiz);
-    void set_data_tcu_PGN5632(struct charge_task * thiz);
-    void set_data_tcu_PGN5888(struct charge_task * thiz);
-    void set_data_tcu_PGN6400(struct charge_task * thiz);
-    void set_data_tcu_PGN7168(struct charge_task * thiz);
+    void set_data_bms_PGN4864(struct charge_task * thiz);
+    void set_data_bms_PGN5376(struct charge_task * thiz);
+    void set_data_bms_PGN5632(struct charge_task * thiz);
+    void set_data_bms_PGN5888(struct charge_task * thiz);
+    int get_data_bms_PGN6400_reason(struct charge_task * thiz);
+    int get_data_bms_PGN6400_fault(struct charge_task * thiz);
+    int get_data_bms_PGN6400_error(struct charge_task * thiz);
+    void set_data_bms_PGN6400(struct charge_task * thiz);
+    void set_data_bms_PGN7168(struct charge_task * thiz);
+    void set_data_pgn();
 
-
+    void show_data_charger_PGN9728(struct charge_task * thiz);//CHM
+    void show_data_charger_PGN256(struct charge_task * thiz);//CRM
+    void show_data_charger_PGN1792(struct charge_task * thiz);//CTS
+    void show_data_charger_PGN2048(struct charge_task * thiz);//CML
+    void show_data_charger_PGN2560(struct charge_task * thiz);//CRO
+    void show_data_charger_PGN4608(struct charge_task * thiz);//CCS
+    void show_data_charger_PGN6656(struct charge_task * thiz);//CST
+    void show_data_charger_PGN7424(struct charge_task * thiz);//CSD
+    void show_data_charger_PGN7936(struct charge_task * thiz);//CEM
+    void show_data_pgn();
 
 private slots:
     void on_pushButton_connect_clicked();
@@ -107,6 +120,17 @@ private slots:
     void on_actionNew_triggered();
     void on_actionAbout_triggered();
     void onCanbusError(quint32 error);
+
+
+    void on_pushButton_BHM_clicked();
+
+    void on_pushButton_BRM_clicked();
+
+    void on_pushButton_BCP_clicked();
+
+    void on_pushButton_BCL_BCS_BSM_clicked();
+
+    void on_pushButton_BSD_clicked();
 
 public slots:
     void slot_cantimer();

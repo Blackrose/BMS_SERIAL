@@ -102,7 +102,7 @@ struct pgn256_CRM {
     // 充电机编号， 范围0-0xFFFFFFFF
     u8 spn2561_charger_sn[4];
     // 充电机/充电站所在区域编码
-    unsigned char spn2562_charger_region_code[3];
+    u8 spn2562_charger_region_code[3];
 };
 enum recognize_result {
     BMS_RECOGNIZED     =  0xAA, // 充电机能识别BMS
@@ -432,13 +432,13 @@ enum FAULT_PGN6400 {
 };
 
 // 充电机终止充电
-struct pgn6656 {
+struct pgn6656_CST {
     // charger 中止充电原因 @ enum REASON_PGN6656
     u8 spn3521_reason;
     // charger 中止充电故障原因 enum ERROR_PGN6656
-    u16 spn3521_error;
+    u16 spn3522_error;
     // charger 中止充电错误原因 enum FAULT_PGN6656
-    u8 spn3521_fault;
+    u8 spn3523_fault;
 };
 
 enum REASON_PGN6656 {
@@ -839,18 +839,18 @@ int gen_packet_PGN7680(struct charge_task * thiz,
 void set_packet_TP_CM_RTS(int png_num,struct event_struct* param);
 void set_packet_TP_DT(int png_num,struct event_struct* param);
 
-int set_data_tcu_PGN9984(struct charge_task * thiz);
-int set_data_tcu_PGN512(struct charge_task * thiz);
-int set_data_tcu_PGN1536(struct charge_task * thiz);
-int set_data_tcu_PGN2304(struct charge_task * thiz);
-int set_data_tcu_PGN4096(struct charge_task * thiz);
-int set_data_tcu_PGN4352(struct charge_task * thiz);
-int set_data_tcu_PGN4864(struct charge_task * thiz);
-int set_data_tcu_PGN5376(struct charge_task * thiz);
-int set_data_tcu_PGN5632(struct charge_task * thiz);
-int set_data_tcu_PGN5888(struct charge_task * thiz);
-int set_data_tcu_PGN6400(struct charge_task * thiz);
-int set_data_tcu_PGN7168(struct charge_task * thiz);
+int set_data_bms_PGN9984(struct charge_task * thiz);
+int set_data_bms_PGN512(struct charge_task * thiz);
+int set_data_bms_PGN1536(struct charge_task * thiz);
+int set_data_bms_PGN2304(struct charge_task * thiz);
+int set_data_bms_PGN4096(struct charge_task * thiz);
+int set_data_bms_PGN4352(struct charge_task * thiz);
+int set_data_bms_PGN4864(struct charge_task * thiz);
+int set_data_bms_PGN5376(struct charge_task * thiz);
+int set_data_bms_PGN5632(struct charge_task * thiz);
+int set_data_bms_PGN5888(struct charge_task * thiz);
+int set_data_bms_PGN6400(struct charge_task * thiz);
+int set_data_bms_PGN7168(struct charge_task * thiz);
 
 #ifdef BMS_CC_LANG
 #define EXTERNC		extern "C"
