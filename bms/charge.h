@@ -356,35 +356,27 @@ typedef enum {
     F_TX_PGN6656,
     F_TX_PGN7424,
     F_TX_PGN7936,
-    // 扩展测量值刷新标记
-    F_MEASURE_DATA_NEW,
 
     //{{{ 状态标记
     // BMS 已经识别
     F_BMS_RECOGNIZED,
-    // 已经发送车辆已经识别数据包
+    // 车辆已经识别数据包
     F_VEHICLE_RECOGNIZED,
     F_CHARGER_CTS,//收到充电机时间同步
     F_CHARGER_CML,//收到充电机最大输出参数
-    // 已经收到BMS准备充电报文
+    // BMS准备充电报文
     F_BMS_READY,
-    // 充电机充电准备完成
+    // 收到充电机充电准备完成
     F_CHARGER_READY,
-
-
-    // 接收到电池充电总状态报文
-    F_PCK_BAT_STATUS,
-    // 接收到BMS终止充电报文
-    F_PCK_BMS_TRM,
-    // 接收电池充电总状态报文超时
-    F_PCK_BAT_STATUS_TIMEOUT,
-
-    // 触发充电刷卡完成
-    F_CARDING_TRIGER,
-    // 确认充电刷卡完成
-    F_CARDING_CONFIRM,
-    // 充电结束刷卡完成
-    F_CARDING_SETTLE,
+    F_BMS_BCL,// BMS电池充电需求标识
+    F_BMS_BCS,// BMS电池充电总状态标识
+    F_CHARGER_CCS,//收到充电机充电状态
+    F_BMS_BST,// BMS终止充电报文
+    F_CHARGER_CST,// 充电机终止充电报文
+    // 电池充电总状态报文超时
+    F_BMS_BCS_TIMEOUT,
+    F_BMS_STOP,// BMS 判断充电结束
+    F_CHARGER_STOP,// 充电机 判断充电结束
 
     // 系统人为条件可以充电
     F_MANUAL_CHARGE_ALLOW, // 人为禁止充电

@@ -719,16 +719,20 @@ static int can_packet_callback(
             else if ( generator[I_BCS].heartbeat >= generator[I_BCS].period ) {
                 thiz->can_bms_status = (CAN_TP_WR | CAN_TP_RTS);
             }else if ( generator[I_BSM].heartbeat >= generator[I_BSM].period ) {
-                gen_packet_PGN4864(thiz, param);
+                if(bit_read(thiz,F_CHARGER_CCS)){
+                    gen_packet_PGN4864(thiz, param);
+                }
                 generator[I_BSM].heartbeat = 0;
-            }else if ( generator[I_BMV].heartbeat >= generator[I_BMV].period ) {
+            }/*else if ( generator[I_BMV].heartbeat >= generator[I_BMV].period ) {
                 gen_packet_PGN5376(thiz, param);
                 generator[I_BMV].heartbeat = 0;
             }else if ( generator[I_BMT].heartbeat >= generator[I_BMT].period ) {
                 gen_packet_PGN5632(thiz, param);
                 generator[I_BMT].heartbeat = 0;
-            }else if ( generator[I_BST].heartbeat >= generator[I_BST].period ) {
-                gen_packet_PGN6400(thiz, param);
+            }*/else if ( generator[I_BST].heartbeat >= generator[I_BST].period ) {
+                if(bit_read(thiz,F_BMS_STOP) || bit_read(thiz,F_CHARGER_CST)){//充电主动结束，或接受充电机充电中止报文
+                    gen_packet_PGN6400(thiz, param);
+                }
                 generator[I_BST].heartbeat = 0;
             }
             if ( generator[I_BEM].heartbeat >= generator[I_BEM].period ) {
@@ -909,6 +913,11 @@ int about_packet_transfer_done(struct charge_task *thiz,
         case PGN_BCL:// 0x001000, BMS 电池充电需求报文
             log_printf(INF, "BMS: PGN_BCL ");
             //thiz->can_bms_status = (CAN_TP_WR | CAN_TP_RTS);//准备发送BCS
+            bit_set(thiz, F_BMS_BCL);
+            break;
+        case PGN_BST:
+            log_printf(INF, "BMS: PGN_BST ");
+            bit_set(thiz,F_BMS_BST);//发送中止报文
             break;
     }
     return ERR_OK;
@@ -1051,7 +1060,7 @@ int about_packet_reciev_done(struct charge_task *thiz,
                    param->buff.rx_buff, sizeof(struct pgn4608_CCS));
         }
         if(thiz->charger_ccs.spn3929_charger_status == CHARGER_ALLOW){
-
+            bit_set(thiz,F_CHARGER_CCS);
         }else{
 
         }
@@ -1071,9 +1080,11 @@ int about_packet_reciev_done(struct charge_task *thiz,
             memcpy(&thiz->charger_cst,
                    param->buff.rx_buff, sizeof(struct pgn6656_CST));
         }
-
-        log_printf(INF, "BMS: BMS change stage to "RED("CHARGE_STAGE_DONE"));
-        thiz->bms_stage = CHARGE_STAGE_DONE;
+        bit_set(thiz,F_CHARGER_CST);
+        if(bit_read(thiz,F_BMS_BST)) {//收到充电机中止报文，且已经发送过中止报文
+            log_printf(INF, "BMS: BMS change stage to "RED("CHARGE_STAGE_DONE"));
+            thiz->bms_stage = CHARGE_STAGE_DONE;
+        }
         break;
     //==============================================结束阶段=================//
     case PGN_CSD :// 0x001D00, 充电机统计数据
@@ -1091,7 +1102,8 @@ int about_packet_reciev_done(struct charge_task *thiz,
             memcpy(&thiz->charger_cst,
                    param->buff.rx_buff, sizeof(struct pgn7424_CSD));
         }
-
+        log_printf(INF, "BMS: BMS change stage to "RED("CHARGE_STAGE_ANY"));
+        thiz->bms_stage = CHARGE_STAGE_ANY;
         break;
     case PGN_CEM :// 0x001F00, 充电机错误报文
         log_printf(INF, "BMS: PGN_CEM 0x001F00");
@@ -1125,6 +1137,10 @@ int about_packet_reciev_done(struct charge_task *thiz,
     case PGN_BCL :// 0x001000, BMS 电池充电需求报文
         break;
     case PGN_BCS :// 0x001100, BMS 电池充电总状态报文
+        log_printf(INF, "BMS: PGN_BCS 0x001100");
+        if(thiz->can_bms_status == (CAN_TP_WR | CAN_TP_ACK)){
+            bit_set(thiz,F_BMS_BCS);
+        }
         break;
     case PGN_BSM :// 0x001300, 动力蓄电池状态信息报文
         break;
@@ -1797,6 +1813,7 @@ int set_data_bms_PGN4864(struct charge_task * thiz)
     thiz->bms_bsm.min_temperature_of_battery = 2;
     thiz->bms_bsm.sn_of_min_temperature_point = 3;
     thiz->bms_bsm.remote_single = 0;
+
     return 0;
 }
 
