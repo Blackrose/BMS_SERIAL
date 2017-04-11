@@ -46,6 +46,7 @@ MainBMSWindow::MainBMSWindow(QWidget *parent) :
     connect(mScheduler, SIGNAL(jobScheduled(QCanMessage&)), this, SLOT(sendMessage(QCanMessage&)));
 
     set_data_pgn();
+    show_data_pgn();
 }
 
 MainBMSWindow::~MainBMSWindow()

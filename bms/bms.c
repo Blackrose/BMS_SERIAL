@@ -1583,7 +1583,9 @@ int gen_packet_PGN9984(struct charge_task * thiz, struct event_struct* param)
 //    }
 
     memset(param->buff.tx_buff, INIT, sizeof(struct pgn9984_BHM));
+#ifdef SET_DATA
     set_data_bms_PGN9984(thiz);
+#endif
     memcpy(param->buff.tx_buff, &thiz->bms_handshake, sizeof(struct pgn9984_BHM));
 
     param->buff_payload = gen->datalen;
@@ -1614,7 +1616,9 @@ int gen_packet_PGN512(struct charge_task * thiz, struct event_struct* param)
     struct can_pack_generator *gen = &generator[I_BRM];
 
     memset(param->buff.tx_buff, INIT, sizeof(struct pgn512_BRM));
+#ifdef SET_DATA
     set_data_bms_PGN512(thiz);
+#endif
     memcpy(param->buff.tx_buff, &thiz->vehicle_info, sizeof(struct pgn512_BRM));
 
     param->buff_payload = gen->datalen;
@@ -1651,7 +1655,9 @@ int gen_packet_PGN1536(struct charge_task * thiz, struct event_struct* param)
     struct can_pack_generator *gen = &generator[I_BCP];
 
     memset(param->buff.tx_buff, INIT, sizeof(struct pgn1536_BCP));
+#ifdef SET_DATA
     set_data_bms_PGN1536(thiz);
+#endif
     memcpy(param->buff.tx_buff, &thiz->bms_config_info, sizeof(struct pgn1536_BCP));
 
     param->buff_payload = gen->datalen;
@@ -1691,8 +1697,9 @@ int gen_packet_PGN2304(struct charge_task * thiz, struct event_struct* param)
     struct can_pack_generator *gen = &generator[I_BRO];
 
     memset(param->buff.tx_buff, INIT,  gen->datalen);
-
+#ifdef SET_DATA
     set_data_bms_PGN2304(thiz);
+#endif
     if(thiz->bms_bro.spn2829_bms_ready_for_charge == BMS_NOT_READY_FOR_CHARGE){
         bit_clr(thiz, F_BMS_READY);
     }else if(thiz->bms_bro.spn2829_bms_ready_for_charge == BMS_READY_FOR_CHARGE){
@@ -1729,9 +1736,9 @@ int gen_packet_PGN4096(struct charge_task * thiz, struct event_struct* param)
     log_printf(INF, "BMS: "RED("gen_packet_PGN4096"));
     struct can_pack_generator *gen = &generator[I_BCL];
     memset(param->buff.tx_buff, INIT,  gen->datalen);
-
+#ifdef SET_DATA
     set_data_bms_PGN4096(thiz);
-
+#endif
     memcpy(param->buff.tx_buff, &thiz->bms_bcl, sizeof(struct pgn4096_BCL));
 
     param->buff_payload = gen->datalen;
@@ -1757,7 +1764,9 @@ int gen_packet_PGN4352(struct charge_task * thiz, struct event_struct* param)
     struct can_pack_generator *gen = &generator[I_BCS];
 
     memset(param->buff.tx_buff, INIT, sizeof(struct pgn4352_BCS));
+#ifdef SET_DATA
     set_data_bms_PGN4352(thiz);
+#endif
     memcpy(param->buff.tx_buff, &thiz->bms_bcs, sizeof(struct pgn4352_BCS));
 
     param->buff_payload = gen->datalen;
@@ -1792,9 +1801,9 @@ int gen_packet_PGN4864(struct charge_task * thiz, struct event_struct* param)
     log_printf(INF, "BMS: "RED("gen_packet_PGN4864"));
     struct can_pack_generator *gen = &generator[I_BSM];
     memset(param->buff.tx_buff, INIT,  gen->datalen);
-
+#ifdef SET_DATA
     set_data_bms_PGN4864(thiz);
-
+#endif
     memcpy(param->buff.tx_buff, &thiz->bms_bsm, sizeof(struct pgn4864_BSM));
 
     param->buff_payload = gen->datalen;
@@ -1833,9 +1842,9 @@ int gen_packet_PGN6400(struct charge_task * thiz, struct event_struct* param)
     log_printf(INF, "BMS: "RED("gen_packet_PGN6400"));
     struct can_pack_generator *gen = &generator[I_BST];
     memset(param->buff.tx_buff, INIT,  gen->datalen);
-
+#ifdef SET_DATA
     set_data_bms_PGN6400(thiz);
-
+#endif
     memcpy(param->buff.tx_buff, &thiz->bms_bst, sizeof(struct pgn6400_BST));
 
     param->buff_payload = gen->datalen;
@@ -1861,9 +1870,9 @@ int gen_packet_PGN7168(struct charge_task * thiz, struct event_struct* param)
     log_printf(INF, "BMS: "RED("gen_packet_PGN7168"));
     struct can_pack_generator *gen = &generator[I_BSD];
     memset(param->buff.tx_buff, INIT,  gen->datalen);
-
+#ifdef SET_DATA
     set_data_bms_PGN7168(thiz);
-
+#endif
     memcpy(param->buff.tx_buff, &thiz->bms_bsd, sizeof(struct pgn7168_BSD));
 
     param->buff_payload = gen->datalen;
@@ -1892,9 +1901,9 @@ int gen_packet_PGN7680(struct charge_task * thiz, struct event_struct* param)
     log_printf(INF, "BMS: "RED("gen_packet_PGN7680"));
     struct can_pack_generator *gen = &generator[I_BEM];
     memset(param->buff.tx_buff, INIT,  gen->datalen);
-
+#ifdef SET_DATA
     set_data_bms_PGN7680(thiz);
-
+#endif
     memcpy(param->buff.tx_buff, &thiz->bms_bem, sizeof(struct pgn7680_BEM));
 
     param->buff_payload = gen->datalen;
