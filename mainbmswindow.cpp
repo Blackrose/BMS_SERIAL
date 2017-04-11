@@ -385,6 +385,7 @@ void MainBMSWindow::slot_cantimer()
 
 void MainBMSWindow::set_data_bms_PGN9984(struct charge_task * thiz)
 {
+    memset(&thiz->bms_handshake, INIT, sizeof(struct pgn9984_BHM));
     thiz->bms_handshake.spn2601_bms_max_vol = ui->lineEdit_spn2601->text().toUShort();
     //ui->comboBox_T_HM->currentText().toInt();
 }
@@ -425,6 +426,7 @@ int MainBMSWindow::get_spn2566_battery_type(int index)
 }
 void MainBMSWindow::set_data_bms_PGN512(struct charge_task * thiz)
 {
+    memset(&thiz->vehicle_info, INIT, sizeof(struct pgn512_BRM));
     thiz->vehicle_info.spn2565_bms_version[0] = ui->lineEdit_spn2565_1->text().toInt();
     thiz->vehicle_info.spn2565_bms_version[1] = ui->lineEdit_spn2565_2->text().toInt();
     thiz->vehicle_info.spn2565_bms_version[2] = ui->lineEdit_spn2565_3->text().toInt();
@@ -435,6 +437,7 @@ void MainBMSWindow::set_data_bms_PGN512(struct charge_task * thiz)
 
 void MainBMSWindow::set_data_bms_PGN1536(struct charge_task *thiz)
 {
+    memset(&thiz->bms_config_info, INIT, sizeof(struct pgn1536_BCP));
     thiz->bms_config_info.spn2816_max_charge_volatage_single_battery = ui->lineEdit_spn2816->text().toFloat()*100;
     thiz->bms_config_info.spn2817_max_charge_current = ui->lineEdit_spn2817->text().toUShort();
     thiz->bms_config_info.spn2818_total_energy = ui->lineEdit_spn2818->text().toUShort();
@@ -465,6 +468,7 @@ int MainBMSWindow::set_combobox_value(int index)
 }
 void MainBMSWindow::set_data_bms_PGN2304(struct charge_task * thiz)
 {
+    memset(&thiz->bms_bro, INIT, sizeof(struct pgn2304_BRO));
     thiz->bms_bro.spn2829_bms_ready_for_charge = set_combobox_value(ui->comboBox_spn2829->currentIndex());
 }
 
@@ -485,6 +489,7 @@ int MainBMSWindow::set_charge_mode(int index)
 }
 void MainBMSWindow::set_data_bms_PGN4096(struct charge_task * thiz)
 {
+    memset(&thiz->bms_bcl, INIT, sizeof(struct pgn4096_BCL));
     thiz->bms_bcl.spn3072_need_voltage = ui->lineEdit_spn3072->text().toUShort();
     thiz->bms_bcl.spn3073_need_current = ui->lineEdit_spn3073->text().toUShort();
     thiz->bms_bcl.spn3074_charge_mode = set_charge_mode(ui->comboBox_spn3074->currentIndex());
@@ -492,6 +497,7 @@ void MainBMSWindow::set_data_bms_PGN4096(struct charge_task * thiz)
 }
 void MainBMSWindow::set_data_bms_PGN4352(struct charge_task * thiz)
 {
+    memset(&thiz->bms_bcs, INIT, sizeof(struct pgn4352_BCS));
     thiz->bms_bcs.spn3075_charge_voltage = ui->lineEdit_spn3075->text().toUShort();
     thiz->bms_bcs.spn3076_charge_current = ui->lineEdit_spn3076->text().toUShort();
     thiz->bms_bcs.spn3077_max_v_g_number = ui->lineEdit_spn3077_1->text().toUShort() | (ui->lineEdit_spn3077_2->text().toUShort() << 12);
@@ -530,6 +536,7 @@ int MainBMSWindow::set_combobox_data(int index)
 }
 void MainBMSWindow::set_data_bms_PGN4864(struct charge_task * thiz)
 {
+    memset(&thiz->bms_bsm, INIT, sizeof(struct pgn4864_BSM));
     thiz->bms_bsm.sn_of_max_voltage_battery = ui->lineEdit_spn3085->text().toInt();
     thiz->bms_bsm.max_temperature_of_battery = ui->lineEdit_spn3086->text().toInt();
     thiz->bms_bsm.sn_of_max_temperature_point = ui->lineEdit_spn3087->text().toInt();
@@ -582,12 +589,14 @@ int MainBMSWindow::get_data_bms_PGN6400_error(struct charge_task * thiz)
 }
 void MainBMSWindow::set_data_bms_PGN6400(struct charge_task * thiz)
 {
+    memset(&thiz->bms_bst, INIT, sizeof(struct pgn6400_BST));
     thiz->bms_bst.reason = get_data_bms_PGN6400_reason(thiz);
     thiz->bms_bst.fault = get_data_bms_PGN6400_fault(thiz);
     thiz->bms_bst.error = get_data_bms_PGN6400_error(thiz);
 }
 void MainBMSWindow::set_data_bms_PGN7168(struct charge_task * thiz)
 {
+    memset(&thiz->bms_bsd, INIT, sizeof(struct pgn7168_BSD));
     thiz->bms_bsd.spn3601_stop_soc_status = ui->lineEdit_spn3601->text().toInt();
     thiz->bms_bsd.spn3602_singal_battery_min_vol = ui->lineEdit_spn3602->text().toUShort();
     thiz->bms_bsd.spn3603_singal_battery_max_vol = ui->lineEdit_spn3603->text().toUShort();

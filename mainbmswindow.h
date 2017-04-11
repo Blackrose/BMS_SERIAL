@@ -44,6 +44,8 @@
 #include "cansendscheduler.h"
 #include "canmessagedlg.h"
 
+#define INIT 0xFF
+
 namespace Ui {
 class MainBMSWindow;
 }
