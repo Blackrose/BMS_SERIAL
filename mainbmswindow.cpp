@@ -9,11 +9,11 @@ MainBMSWindow::MainBMSWindow(QWidget *parent) :
     ui->pushButton_discon->setVisible(false);
     ui->groupBox_Charging_2->setVisible(false);
     ui->groupBox_Charging_3->setVisible(false);
-
+    ui->lineEdit_spn2560->setVisible(false);
 
     connect(ui->actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
-    connect(&can_timer,SIGNAL(timeout()),this,SLOT(slot_cantimer()));//版本校验下发参数
+    connect(&can_timer,SIGNAL(timeout()),this,SLOT(slot_cantimer()));//
     can_timer.start(100);
 
 
@@ -46,7 +46,15 @@ MainBMSWindow::MainBMSWindow(QWidget *parent) :
     connect(mScheduler, SIGNAL(jobScheduled(QCanMessage&)), this, SLOT(sendMessage(QCanMessage&)));
 
     set_data_pgn();
-    show_data_pgn();
+    //show_data_pgn();
+
+
+    connect(this,SIGNAL(ValueChanged(int)),this,SLOT(ChangeValue(int)));
+
+
+    connect(&bst_timer,SIGNAL(timeout()),this,SLOT(slot_statustimer()));//充电状态
+    //bst_timer.start(100);
+    oldvalue = 255;
 }
 
 MainBMSWindow::~MainBMSWindow()
@@ -159,6 +167,7 @@ void MainBMSWindow::on_pushButton_connect_clicked()
         ui->pushButton_connect->setVisible(false);
         ui->pushButton_discon->setVisible(true);
         mythread_can.start(); //bms_canbus();
+        bst_timer.start(100);
     }
     else
     {
@@ -631,9 +640,19 @@ void MainBMSWindow::show_data_charger_PGN256(struct charge_task * thiz)//CRM
     }else if(thiz->charger_info.spn2560_recognize == BMS_RECOGNIZED){
         ui->comboBox_spn2560->setCurrentIndex(1);
     }
+    QString tmp_sn;
+    for (int i = 0; i < 4; i++) {
+        tmp_sn += QString("%1").arg(thiz->charger_info.spn2561_charger_sn[i], 2, 16, QLatin1Char('0'));
+    }
 
-    ui->lineEdit_spn2561->setText((char*)thiz->charger_info.spn2561_charger_sn);
-    ui->lineEdit_spn2562->setText((char*)thiz->charger_info.spn2562_charger_region_code);
+    QString tmp_code;
+    for (int i = 0; i < 3; i++) {
+        tmp_code += QString("%1").arg(thiz->charger_info.spn2562_charger_region_code[i], 2, 16, QLatin1Char('0'));
+    }
+    ui->lineEdit_spn2561->setText(tmp_sn);
+    ui->lineEdit_spn2562->setText(tmp_code);
+    //ui->lineEdit_spn2561->setText((char*)thiz->charger_info.spn2561_charger_sn);
+    //ui->lineEdit_spn2562->setText((char*)thiz->charger_info.spn2562_charger_region_code);
 }
 
 void MainBMSWindow::show_data_charger_PGN1792(struct charge_task * thiz)//CTS
@@ -913,4 +932,51 @@ void MainBMSWindow::on_pushButton_BCL_BCS_BSM_clicked()
 void MainBMSWindow::on_pushButton_BSD_clicked()
 {
     set_data_bms_PGN7168(task);
+}
+
+
+void MainBMSWindow::SetValue(int value)
+{
+    if(value!=oldvalue)
+    {
+        oldvalue=value;
+        emit ValueChanged(value);
+    }//注意这里的if判断,这是避免递归的方式!如果没有if,当出现了循环连接的时候就会产生无限递归
+}
+
+void MainBMSWindow::ChangeValue(int value)
+{
+    switch (value) {
+    case CHARGE_STAGE_INVALID:
+        QMessageBox::about(NULL, "Connect", "准备充电握手");
+        break;
+    case CHARGE_STAGE_HANDSHACKING:
+        QMessageBox::about(NULL, "Connect", "充电握手完成");
+        break;
+    case CHARGE_STAGE_IDENTIFICATION:
+        set_data_bms_PGN512(task);
+        QMessageBox::about(NULL, "Connect", "充电辨识开始");
+        show_data_charger_PGN256(task);
+        break;
+    case CHARGE_STAGE_CONFIGURE:
+        show_data_charger_PGN256(task);
+        QMessageBox::about(NULL, "Connect", "充电辨识完成，充电配置");
+        break;
+    case CHARGE_STAGE_CHARGING:
+        QMessageBox::about(NULL, "Connect", "充电配置完成，开始充电");
+        break;
+    case CHARGE_STAGE_DONE:
+        QMessageBox::about(NULL, "Connect", "充电完成，结束充电");
+        break;
+    default:
+        //QMessageBox::about(NULL, "Connect", "电动汽车");
+        break;
+    }
+}
+
+void MainBMSWindow::slot_statustimer()
+{
+//    if(task->bms_stage == CHARGE_STAGE_HANDSHACKING){
+//    }
+    SetValue(task->bms_stage);
 }

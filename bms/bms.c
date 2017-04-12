@@ -35,7 +35,7 @@
 //#undef ANALYSIS_ON
 
 #define SET_DATA
-//#undef SET_DATA
+#undef SET_DATA
 
 #define  TIMEOUT_ON
 //#undef TIMEOUT_ON
@@ -949,6 +949,7 @@ int about_packet_reciev_done(struct charge_task *thiz,
             thiz->bms_stage = CHARGE_STAGE_HANDSHACKING;
         }else{
             log_printf(ERR, "BMS: BMS handshake err "RED("PGN_CHM"));
+            thiz->bms_err_stage = CHARGE_STAGE_ERR_HANDSHACKING;
         }
         break;
     //==============================================辨识阶段=================//
@@ -979,6 +980,8 @@ int about_packet_reciev_done(struct charge_task *thiz,
             log_printf(INF, "BMS: BMS change stage to "RED("CHARGE_STAGE_CONFIGURE"));
             thiz->bms_stage = CHARGE_STAGE_CONFIGURE;
             thiz->can_bms_status = (CAN_TP_WR | CAN_TP_RTS);
+        }else{
+            thiz->bms_err_stage = CHARGE_STAGE_ERR_IDENTIFICATION;
         }
         break;
     //==============================================参数阶段=================//
@@ -1040,6 +1043,8 @@ int about_packet_reciev_done(struct charge_task *thiz,
                 log_printf(INF, "BMS: BMS change stage to "RED("CHARGE_STAGE_CHARGING"));
                 thiz->bms_stage = CHARGE_STAGE_CHARGING;
                 thiz->can_bms_status = (CAN_TP_WR | CAN_TP_RTS);//准备发送BCS
+            }else{
+                thiz->bms_err_stage = CHARGE_STAGE_ERR_CONFIGURE;
             }
         }
         break;

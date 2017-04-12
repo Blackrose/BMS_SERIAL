@@ -119,6 +119,24 @@ typedef enum {
     CHARGE_STAGE_ANY          =0x06
 }CHARGE_STAGE;
 
+// 充电阶段定义
+typedef enum {
+    // 充电状态无效，可能是在初始化或者析构
+    CHARGE_STAGE_ERR_INVALID      =0x00,
+    // 充电握手
+    CHARGE_STAGE_ERR_HANDSHACKING =0x10,
+    // 充电辨识
+    CHARGE_STAGE_ERR_IDENTIFICATION =0x20,
+    // 充电配置
+    CHARGE_STAGE_ERR_CONFIGURE    =0x30,
+    // 充电
+    CHARGE_STAGE_ERR_CHARGING     =0x40,
+    // 充电结束
+    CHARGE_STAGE_ERR_DONE         =0x50,
+    // 任意阶段
+    CHARGE_STAGE_ERR_ANY          =0x60
+}CHARGE_ERR_STAGE;
+
 // 充电阶段变更事件
 typedef enum {
     // 充电状态变为无效状态
@@ -240,6 +258,7 @@ struct charge_task {
     CHARGE_TASK_STAT charge_task_stat;
     // 充电任务所处阶段
     CHARGE_STAGE bms_stage;
+    CHARGE_ERR_STAGE bms_err_stage;
 
     // 系统信号, 最多支持64 * 8 种信号标记
     // 前面 16 * 8 = 128 个信号是系统内部使用信号标记

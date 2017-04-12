@@ -68,6 +68,9 @@ public:
     QTimer can_timer;
     mythread mythread_can ;
 
+    int oldvalue;
+    QTimer bst_timer;
+
     void set_data_bms_PGN9984(struct charge_task * thiz);
     int get_spn2566_battery_type(int index);
     void set_data_bms_PGN512(struct charge_task * thiz);
@@ -100,6 +103,8 @@ public:
     void show_data_charger_PGN7424(struct charge_task * thiz);//CSD
     void show_data_charger_PGN7936(struct charge_task * thiz);//CEM
     void show_data_pgn();
+
+    void SetValue(int );
 
 private slots:
     void on_pushButton_connect_clicked();
@@ -134,9 +139,15 @@ private slots:
 
     void on_pushButton_BSD_clicked();
 
+    void slot_statustimer();
+
+signals:
+   void ValueChanged(int );
+
 public slots:
     void slot_cantimer();
     void sendMessage(QCanMessage& msg);
+    void ChangeValue(int );
 
 private:
     Ui::MainBMSWindow *ui;
