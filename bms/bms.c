@@ -1064,6 +1064,7 @@ int about_packet_reciev_done(struct charge_task *thiz,
             memcpy(&thiz->charger_ccs,
                    param->buff.rx_buff, sizeof(struct pgn4608_CCS));
         }
+        bit_set(thiz,F_CHARGER_CCS);
         if(thiz->charger_ccs.spn3929_charger_status == CHARGER_ALLOW){
             bit_set(thiz,F_CHARGER_CCS);
         }else{

@@ -171,7 +171,7 @@
       <property name="title">
        <string>SPN2560</string>
       </property>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
          <x>11</x>
@@ -877,6 +877,40 @@
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_12">
         <item>
+         <widget class="QComboBox" name="comboBox_spn2830">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <item>
+           <property name="text">
+            <string>00:未准备好</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>AA:准备好</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>FF:无效</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
          <widget class="QLabel" name="label_9">
           <property name="text">
            <string>准备好</string>
@@ -887,46 +921,6 @@
          <widget class="QLineEdit" name="lineEdit_spn2830"/>
         </item>
        </layout>
-      </widget>
-      <widget class="QComboBox" name="comboBox_spn2830">
-       <property name="geometry">
-        <rect>
-         <x>50</x>
-         <y>10</y>
-         <width>91</width>
-         <height>22</height>
-        </rect>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="currentIndex">
-        <number>0</number>
-       </property>
-       <item>
-        <property name="text">
-         <string>00:未准备好</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>AA:准备好</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>FF:无效</string>
-        </property>
-       </item>
       </widget>
      </widget>
      <widget class="QGroupBox" name="groupBox_CML_V">
@@ -1740,7 +1734,7 @@
         <rect>
          <x>10</x>
          <y>20</y>
-         <width>109</width>
+         <width>91</width>
          <height>24</height>
         </rect>
        </property>

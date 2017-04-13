@@ -10,6 +10,9 @@ MainBMSWindow::MainBMSWindow(QWidget *parent) :
     ui->groupBox_Charging_2->setVisible(false);
     ui->groupBox_Charging_3->setVisible(false);
     ui->lineEdit_spn2560->setVisible(false);
+    ui->label_9->setVisible(false);
+    ui->lineEdit_spn2830->setVisible(false);
+    ui->lineEdit_spn3929->setVisible(false);
 
     connect(ui->actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
@@ -45,7 +48,7 @@ MainBMSWindow::MainBMSWindow(QWidget *parent) :
     mScheduler = new CanSendScheduler(this);
     connect(mScheduler, SIGNAL(jobScheduled(QCanMessage&)), this, SLOT(sendMessage(QCanMessage&)));
 
-    set_data_pgn();
+    //set_data_pgn();
     //show_data_pgn();
 
 
@@ -479,6 +482,11 @@ void MainBMSWindow::set_data_bms_PGN2304(struct charge_task * thiz)
 {
     memset(&thiz->bms_bro, INIT, sizeof(struct pgn2304_BRO));
     thiz->bms_bro.spn2829_bms_ready_for_charge = set_combobox_value(ui->comboBox_spn2829->currentIndex());
+    if(bit_read(thiz, F_CHARGER_CTS ) && bit_read(thiz, F_CHARGER_CML)){
+        thiz->bms_bro.spn2829_bms_ready_for_charge = BMS_READY_FOR_CHARGE;
+    }else{
+        thiz->bms_bro.spn2829_bms_ready_for_charge = BMS_NOT_READY_FOR_CHARGE;
+    }
 }
 
 int MainBMSWindow::set_charge_mode(int index)
@@ -646,12 +654,13 @@ void MainBMSWindow::show_data_charger_PGN256(struct charge_task * thiz)//CRM
     }
 
     QString tmp_code;
-    for (int i = 0; i < 3; i++) {
-        tmp_code += QString("%1").arg(thiz->charger_info.spn2562_charger_region_code[i], 2, 16, QLatin1Char('0'));
-    }
+    tmp_code = QString((char*)thiz->charger_info.spn2562_charger_region_code);
+//    for (int i = 0; i < 3; i++) {
+//        tmp_code += QString(thiz->charger_info.spn2562_charger_region_code[i]);
+//    }
     ui->lineEdit_spn2561->setText(tmp_sn);
     ui->lineEdit_spn2562->setText(tmp_code);
-    //ui->lineEdit_spn2561->setText((char*)thiz->charger_info.spn2561_charger_sn);
+    //ui->lineEdit_spn2561->setText((char*)thiz->charger_info.spn2561_charger_sn);//传输为十六进制无法显示字符需转换 错误
     //ui->lineEdit_spn2562->setText((char*)thiz->charger_info.spn2562_charger_region_code);
 }
 
@@ -661,10 +670,10 @@ void MainBMSWindow::show_data_charger_PGN1792(struct charge_task * thiz)//CTS
 }
 void MainBMSWindow::show_data_charger_PGN2048(struct charge_task * thiz)//CML
 {
-    ui->lineEdit_spn2824->setText(QString(thiz->charger_cml.spn2824_max_output_voltage));
-    ui->lineEdit_spn2825->setText(QString(thiz->charger_cml.spn2825_min_output_voltage));
-    ui->lineEdit_spn2826->setText(QString(thiz->charger_cml.spn2826_max_output_current));
-    ui->lineEdit_spn2827->setText(QString(thiz->charger_cml.spn2826_min_output_current));
+    ui->lineEdit_spn2824->setText(QString::number(thiz->charger_cml.spn2824_max_output_voltage));
+    ui->lineEdit_spn2825->setText(QString::number(thiz->charger_cml.spn2825_min_output_voltage));
+    ui->lineEdit_spn2826->setText(QString::number(thiz->charger_cml.spn2826_max_output_current));
+    ui->lineEdit_spn2827->setText(QString::number(thiz->charger_cml.spn2826_min_output_current));
 }
 void MainBMSWindow::show_data_charger_PGN2560(struct charge_task * thiz)//CRO
 {
@@ -679,9 +688,9 @@ void MainBMSWindow::show_data_charger_PGN2560(struct charge_task * thiz)//CRO
 
 void MainBMSWindow::show_data_charger_PGN4608(struct charge_task * thiz)//CCS
 {
-    ui->lineEdit_spn3081->setText(QString(thiz->charger_ccs.spn3081_output_voltage));
-    ui->lineEdit_spn3082->setText(QString(thiz->charger_ccs.spn3082_outpu_current));
-    ui->lineEdit_spn3083->setText(QString(thiz->charger_ccs.spn3083_charge_time));
+    ui->lineEdit_spn3081->setText(QString::number(thiz->charger_ccs.spn3081_output_voltage));
+    ui->lineEdit_spn3082->setText(QString::number(thiz->charger_ccs.spn3082_outpu_current));
+    ui->lineEdit_spn3083->setText(QString::number(thiz->charger_ccs.spn3083_charge_time));
     if(thiz->charger_ccs.spn3929_charger_status == CHARGER_ALLOW){
         ui->comboBox_spn3929->setCurrentIndex(0);
     }else{
@@ -815,9 +824,13 @@ void MainBMSWindow::show_data_charger_PGN6656(struct charge_task * thiz)//CST
 }
 void MainBMSWindow::show_data_charger_PGN7424(struct charge_task * thiz)//CSD
 {
-    ui->lineEdit_spn3611->setText(QString(thiz->charger_csd.spn3611_total_charge_time));
-    ui->lineEdit_spn3612->setText(QString(thiz->charger_csd.spn3612_output_energy));
-    ui->lineEdit_spn3613->setText((char*)thiz->charger_csd.spn3613_charger_sn);
+    ui->lineEdit_spn3611->setText(QString::number(thiz->charger_csd.spn3611_total_charge_time));
+    ui->lineEdit_spn3612->setText(QString::number(thiz->charger_csd.spn3612_output_energy));
+    QString tmp_sn;
+    for (int i = 0; i < 4; i++) {
+        tmp_sn += QString("%1").arg(thiz->charger_csd.spn3613_charger_sn[i], 2, 16, QLatin1Char('0'));
+    }
+    ui->lineEdit_spn3613->setText(tmp_sn);
 }
 void MainBMSWindow::show_data_charger_PGN7936(struct charge_task * thiz)//CEM
 {
@@ -954,19 +967,47 @@ void MainBMSWindow::ChangeValue(int value)
         QMessageBox::about(NULL, "Connect", "充电握手完成");
         break;
     case CHARGE_STAGE_IDENTIFICATION:
+#ifdef SET_DATA
         set_data_bms_PGN512(task);
+#endif
         QMessageBox::about(NULL, "Connect", "充电辨识开始");
         show_data_charger_PGN256(task);
         break;
     case CHARGE_STAGE_CONFIGURE:
         show_data_charger_PGN256(task);
-        QMessageBox::about(NULL, "Connect", "充电辨识完成，充电配置");
+        //QMessageBox::about(NULL, "Connect", "充电辨识完成，充电配置");
+#ifdef SET_DATA
+        set_data_bms_PGN1536(task);
+#endif
+        /*if(bit_read(task,F_CHARGER_CML))*/{
+            show_data_charger_PGN2048(task);
+        }
+#ifdef SET_DATA
+        set_data_bms_PGN2304(task);
+#endif
+        show_data_charger_PGN2560(task);
         break;
     case CHARGE_STAGE_CHARGING:
-        QMessageBox::about(NULL, "Connect", "充电配置完成，开始充电");
+        show_data_charger_PGN2560(task);
+        //QMessageBox::about(NULL, "Connect", "充电配置完成，开始充电");
+#ifdef SET_DATA
+        set_data_bms_PGN4096(task);
+        set_data_bms_PGN4352(task);
+#endif
+        show_data_charger_PGN4608(task);
+#ifdef SET_DATA
+        set_data_bms_PGN4864(task);
+        set_data_bms_PGN6400(task);
+#endif
+        show_data_charger_PGN6656(task);
         break;
     case CHARGE_STAGE_DONE:
-        QMessageBox::about(NULL, "Connect", "充电完成，结束充电");
+        show_data_charger_PGN6656(task);
+        //QMessageBox::about(NULL, "Connect", "充电完成，结束充电");
+#ifdef SET_DATA
+        set_data_bms_PGN7168(task);
+#endif
+        show_data_charger_PGN7424(task);
         break;
     default:
         //QMessageBox::about(NULL, "Connect", "电动汽车");
@@ -977,6 +1018,15 @@ void MainBMSWindow::ChangeValue(int value)
 void MainBMSWindow::slot_statustimer()
 {
 //    if(task->bms_stage == CHARGE_STAGE_HANDSHACKING){
+//    }
+    if(bit_read(task,F_CHARGER_CML) && (task->bms_stage == CHARGE_STAGE_CONFIGURE)){
+        oldvalue = 255;
+    }
+    if(bit_read(task,F_CHARGER_CCS) && (task->bms_stage == CHARGE_STAGE_CHARGING)){
+        oldvalue = 255;
+    }
+//    if(bit_read(task,F_CHARGER_CTS)){
+//        oldvalue = CHARGE_STAGE_CONFIGURE;
 //    }
     SetValue(task->bms_stage);
 }

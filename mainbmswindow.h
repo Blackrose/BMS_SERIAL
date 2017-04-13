@@ -45,6 +45,8 @@
 #include "canmessagedlg.h"
 
 #define INIT 0xFF
+#define SET_DATA
+//#undef SET_DATA
 
 namespace Ui {
 class MainBMSWindow;
