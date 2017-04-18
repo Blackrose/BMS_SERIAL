@@ -7,8 +7,14 @@ MainBMSWindow::MainBMSWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->pushButton_discon->setVisible(false);
-    ui->groupBox_Charging_2->setVisible(false);
-    ui->groupBox_Charging_3->setVisible(false);
+    //ui->groupBox_Charging_2->setVisible(false);
+    //ui->groupBox_Charging_3->setVisible(false);
+    ui->groupBox_warning->setVisible(false);
+    ui->toolBox->setVisible(false);
+
+    ui->groupBox_send->setVisible(false);
+    ui->groupBox_receive->setVisible(false);
+
     ui->lineEdit_spn2560->setVisible(false);
     ui->label_9->setVisible(false);
     ui->lineEdit_spn2830->setVisible(false);
@@ -139,6 +145,33 @@ void MainBMSWindow::my_tooltip()
     ui->comboBox_spn3095->setToolTip("动力蓄电池输出连接器连接状态");
     ui->comboBox_spn3096->setToolTip("充电允许/禁止");
 
+    //充电结束阶段
+    ui->lineEdit_spn3601->setToolTip("中止荷电状态");
+    ui->lineEdit_spn3602->setToolTip("动力蓄电池单体最低电压");
+    ui->lineEdit_spn3603->setToolTip("动力蓄电池单体最高电压");
+    ui->lineEdit_spn3604->setToolTip("动力蓄电池最低温度");
+    ui->lineEdit_spn3605->setToolTip("动力蓄电池最高温度");
+
+    ui->lineEdit_spn3611->setToolTip("累计充电时间");
+    ui->lineEdit_spn3612->setToolTip("输出能量kW.h");
+    ui->lineEdit_spn3613->setToolTip("充电机编号");
+
+    //错误报文
+    ui->comboBox_spn3901->setToolTip("接收SPN2560==0x00的充电辨识报文超时");
+    ui->comboBox_spn3902->setToolTip("接收SPN2560==0xAA的充电辨识报文超时");
+    ui->comboBox_spn3903->setToolTip("接收CTS和CML报文超时");
+    ui->comboBox_spn3904->setToolTip("接收CRO报文超时");
+    ui->comboBox_spn3905->setToolTip("接收CCS报文超时");
+    ui->comboBox_spn3906->setToolTip("接收CST报文超时");
+    ui->comboBox_spn3907->setToolTip("接收CSD报文超时");
+
+    ui->comboBox_spn3921->setToolTip("接收BMS辨识报文超时");
+    ui->comboBox_spn3922->setToolTip("接收BCP报文超时");
+    ui->comboBox_spn3923->setToolTip("接收BRO报文超时");
+    ui->comboBox_spn3924->setToolTip("接收BCS报文超时");
+    ui->comboBox_spn3925->setToolTip("接收BCL报文超时");
+    ui->comboBox_spn3926->setToolTip("接收BST报文超时");
+    ui->comboBox_spn3927->setToolTip("接收BSD报文超时");
 }
 
 void MainBMSWindow::on_pushButton_connect_clicked()

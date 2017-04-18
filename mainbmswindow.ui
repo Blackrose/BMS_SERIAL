@@ -182,9 +182,6 @@
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_8">
         <item>
-         <widget class="QLineEdit" name="lineEdit_spn2560"/>
-        </item>
-        <item>
          <widget class="QComboBox" name="comboBox_spn2560">
           <property name="minimumSize">
            <size>
@@ -212,6 +209,9 @@
            </property>
           </item>
          </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_spn2560"/>
         </item>
        </layout>
       </widget>
@@ -871,7 +871,7 @@
         <rect>
          <x>10</x>
          <y>20</y>
-         <width>159</width>
+         <width>91</width>
          <height>24</height>
         </rect>
        </property>
@@ -1567,7 +1567,7 @@
         <rect>
          <x>10</x>
          <y>20</y>
-         <width>101</width>
+         <width>91</width>
          <height>24</height>
         </rect>
        </property>
@@ -1734,7 +1734,7 @@
         <rect>
          <x>10</x>
          <y>20</y>
-         <width>109</width>
+         <width>91</width>
          <height>24</height>
         </rect>
        </property>
