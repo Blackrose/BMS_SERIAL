@@ -569,47 +569,47 @@ enum BEM_PGN3907{
 
 // 充电机错误报文
 struct pgn7936_CEM {
-    u8 cem_brm;//@ enum BEM_PGN3921
-    u8 cem_bro;//@ enum BEM_PGN3922_3923
-    u8 cem_bst;//@ enum BEM_PGN3924_3925_3926
-    u8 cem_bsd;//@ enum BEM_PGN3927
+    u8 cem_brm;//@ enum CEM_PGN3921
+    u8 cem_bro;//@ enum CEM_PGN3922_3923
+    u8 cem_bst;//@ enum CEM_PGN3924_3925_3926
+    u8 cem_bsd;//@ enum CEM_PGN3927
 };
 
-enum BEM_PGN3921{
+enum CEM_PGN3921{
     //接收BMS辨识报文超时 bit[0:1]
-    BEM_BMS_NORMAL       = 0x00,
-    BEM_BMS_TIMEOUT      = 0x01,
-    BEM_BMS_UNRELIABLE   = 0x02
+    CEM_BMS_NORMAL       = 0x00,
+    CEM_BMS_TIMEOUT      = 0x01,
+    CEM_BMS_UNRELIABLE   = 0x02
 };
-enum BEM_PGN3922_3923{
+enum CEM_PGN3922_3923{
     //接收电池充电参数报文超时 bit[0:1]
-    BEM_BCP_NORMAL       = 0x00,
-    BEM_BCP_TIMEOUT      = 0x01,
-    BEM_BCP_UNRELIABLE   = 0x02,
+    CEM_BCP_NORMAL       = 0x00,
+    CEM_BCP_TIMEOUT      = 0x01,
+    CEM_BCP_UNRELIABLE   = 0x02,
     //接收BMS完成充电准备报文超时 bit[2:3]
-    BEM_BRO_NORMAL       = 0x00,
-    BEM_BRO_TIMEOUT      = 0x04,
-    BEM_BRO_UNRELIABLE   = 0x08
+    CEM_BRO_NORMAL       = 0x00,
+    CEM_BRO_TIMEOUT      = 0x04,
+    CEM_BRO_UNRELIABLE   = 0x08
 };
-enum BEM_PGN3924_3925_3926{
+enum CEM_PGN3924_3925_3926{
     //接收电池充电总状态报文超时 bit[0:1]
-    BEM_BCS_NORMAL       = 0x00,
-    BEM_BCS_TIMEOUT      = 0x01,
-    BEM_BCS_UNRELIABLE   = 0x02,
+    CEM_BCS_NORMAL       = 0x00,
+    CEM_BCS_TIMEOUT      = 0x01,
+    CEM_BCS_UNRELIABLE   = 0x02,
     //接收电池充电需求报文超时 bit[2:3]
-    BEM_BCL_NORMAL       = 0x00,
-    BEM_BCL_TIMEOUT      = 0x04,
-    BEM_BCL_UNRELIABLE   = 0x08,
+    CEM_BCL_NORMAL       = 0x00,
+    CEM_BCL_TIMEOUT      = 0x04,
+    CEM_BCL_UNRELIABLE   = 0x08,
     //接收BMS中止充电报文超时 bit[4:5]
-    BEM_BST_NORMAL       = 0x00,
-    BEM_BST_TIMEOUT      = 0x10,
-    BEM_BST_UNRELIABLE   = 0x20
+    CEM_BST_NORMAL       = 0x00,
+    CEM_BST_TIMEOUT      = 0x10,
+    CEM_BST_UNRELIABLE   = 0x20
 };
-enum BEM_PGN3927{
+enum CEM_PGN3927{
     //接收BMS统计报文超时 bit[0:1]
-    BEM_BSD_NORMAL       = 0x00,
-    BEM_BSD_TIMEOUT      = 0x01,
-    BEM_BSD_UNRELIABLE   = 0x02
+    CEM_BSD_NORMAL       = 0x00,
+    CEM_BSD_TIMEOUT      = 0x01,
+    CEM_BSD_UNRELIABLE   = 0x02
 };
 
 

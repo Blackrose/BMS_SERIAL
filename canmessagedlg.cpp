@@ -66,7 +66,7 @@ QCanMessage CanMessageDlg::getMessage() const
     Q_ASSERT_X(dlc <= 8, "set dlc", "dlc > 8");
     if (ui.checkBoxExtended->isChecked()) {
         frame.ID = id & CAN_EFF_MASK;
-        frame.ID |= CAN_EFF_FLAG;
+        //frame.ID |= CAN_EFF_FLAG;
         frame.ExternFlag = TRUE;
     } else {
         frame.ID = id & CAN_SFF_MASK;

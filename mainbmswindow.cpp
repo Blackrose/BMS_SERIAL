@@ -7,14 +7,16 @@ MainBMSWindow::MainBMSWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->pushButton_discon->setVisible(false);
-    //ui->groupBox_Charging_2->setVisible(false);
-    //ui->groupBox_Charging_3->setVisible(false);
+
     ui->groupBox_warning->setVisible(false);
     ui->toolBox->setVisible(false);
-
+#if 1
+    ui->groupBox_Charging_2->setVisible(false);
+    ui->groupBox_Charging_3->setVisible(false);
+#else
     ui->groupBox_send->setVisible(false);
     ui->groupBox_receive->setVisible(false);
-
+#endif
     ui->lineEdit_spn2560->setVisible(false);
     ui->label_9->setVisible(false);
     ui->lineEdit_spn2830->setVisible(false);
@@ -48,12 +50,11 @@ MainBMSWindow::MainBMSWindow(QWidget *parent) :
     QItemSelectionModel *selectionModel = new QItemSelectionModel(mSendModel);
     ui->tableViewSend->setSelectionModel(selectionModel);
 
-
-    my_tooltip();
-
     mScheduler = new CanSendScheduler(this);
     connect(mScheduler, SIGNAL(jobScheduled(QCanMessage&)), this, SLOT(sendMessage(QCanMessage&)));
 
+
+    my_tooltip();
     set_data_pgn();
     //show_data_pgn();
 
@@ -412,19 +413,25 @@ void MainBMSWindow::slot_cantimer()
 
     QCanMessage msg;
 
-    QDateTime now = QDateTime::currentDateTimeUtc();
-    msg.time = now.toMSecsSinceEpoch();
-
     msg.frame = receive_frame;
-    mReceiveModel->addMessage(msg);
-
+    memset(&receive_frame,0,sizeof(receive_frame));//清零以确定接收报文个数
+    if(msg.frame.ID != 0x00){
+        QDateTime nowreceive = QDateTime::currentDateTimeUtc();
+        msg.time = nowreceive.toMSecsSinceEpoch();
+        mReceiveModel->addMessage(msg);
+    }
     QString trace = QString("%1.%2      %3    %4    ").arg(msg.time / 1000, 16, 10, QLatin1Char(' ')).arg(msg.time % 1000, 3, 10, QLatin1Char('0')).arg(msg.frame.ID, 8, 16).arg(msg.frame.DataLen);
     for (int i = 0; i < msg.frame.DataLen; i++) {
         trace += QString("%1  ").arg(msg.frame.Data[i], 2, 16, QLatin1Char('0'));
     }
 
     msg.frame = send_frame;
-    mSendModel->addMessage(msg);
+    memset(&send_frame,0,sizeof(send_frame));//清零以确定发送报文个数
+    if(msg.frame.ID != 0x00){
+        QDateTime nowsend = QDateTime::currentDateTimeUtc();
+        msg.time = nowsend.toMSecsSinceEpoch();
+        mSendModel->addMessage(msg);
+    }
 }
 
 
@@ -553,6 +560,20 @@ void MainBMSWindow::set_data_bms_PGN4352(struct charge_task * thiz)
     thiz->bms_bcs.spn3077_max_v_g_number = (int)(ui->lineEdit_spn3077_1->text().toFloat()*100) | (ui->lineEdit_spn3077_2->text().toUShort() << 12);
     thiz->bms_bcs.spn3078_soc = ui->lineEdit_spn3078->text().toInt();
     thiz->bms_bcs.spn3079_need_time = ui->lineEdit_spn3079->text().toUShort();
+}
+
+int MainBMSWindow::analysis_data_bms_PGN4864(struct charge_task * thiz)
+{
+    if(GENERAL_NORMAL == set_combobox_data(ui->comboBox_spn3090->currentIndex())){
+
+    }else if(GENERAL_UN_NORMAL == set_combobox_data(ui->comboBox_spn3090->currentIndex())){
+
+    }else{
+
+    }
+
+
+
 }
 int MainBMSWindow::get_data_bms_PGN4864(struct charge_task * thiz)
 {
@@ -865,72 +886,145 @@ void MainBMSWindow::show_data_charger_PGN7424(struct charge_task * thiz)//CSD
     }
     ui->lineEdit_spn3613->setText(tmp_sn);
 }
+
+void MainBMSWindow::show_data_charger_PGN7680(struct charge_task * thiz)//BEM
+{
+    if(BEM_00_NORMAL == (thiz->bms_bem.bem_crm & BEM_00_NORMAL)){
+        ui->comboBox_spn3901->setCurrentIndex(0);
+    }
+    if(BEM_00_TIMEOUT == (thiz->bms_bem.bem_crm & BEM_00_TIMEOUT)){
+        ui->comboBox_spn3901->setCurrentIndex(1);
+    }
+    if(BEM_00_UNRELIABLE == (thiz->bms_bem.bem_crm & BEM_00_UNRELIABLE)){
+        ui->comboBox_spn3901->setCurrentIndex(2);
+    }
+
+    if(BEM_AA_NORMAL == (thiz->bms_bem.bem_crm & BEM_AA_NORMAL)){
+        ui->comboBox_spn3902->setCurrentIndex(0);
+    }
+    if(BEM_AA_TIMEOUT == (thiz->bms_bem.bem_crm & BEM_AA_TIMEOUT)){
+        ui->comboBox_spn3902->setCurrentIndex(1);
+    }
+    if(BEM_AA_UNRELIABLE == (thiz->bms_bem.bem_crm & BEM_AA_UNRELIABLE)){
+        ui->comboBox_spn3902->setCurrentIndex(2);
+    }
+//====================================================================================//
+    if(BEM_CTS_CML_NORMAL == (thiz->bms_bem.bem_ccp & BEM_CTS_CML_NORMAL)){
+        ui->comboBox_spn3903->setCurrentIndex(0);
+    }
+    if(BEM_CTS_CML_TIMEOUT == (thiz->bms_bem.bem_ccp & BEM_CTS_CML_TIMEOUT)){
+        ui->comboBox_spn3903->setCurrentIndex(1);
+    }
+    if(BEM_CTS_CML_UNRELIABLE == (thiz->bms_bem.bem_ccp & BEM_CTS_CML_UNRELIABLE)){
+        ui->comboBox_spn3903->setCurrentIndex(2);
+    }
+
+    if(BEM_CRO_NORMAL == (thiz->bms_bem.bem_ccp & BEM_CRO_NORMAL)){
+        ui->comboBox_spn3904->setCurrentIndex(0);
+    }
+    if(BEM_CRO_TIMEOUT == (thiz->bms_bem.bem_ccp & BEM_CRO_TIMEOUT)){
+        ui->comboBox_spn3904->setCurrentIndex(1);
+    }
+    if(BEM_CRO_UNRELIABLE == (thiz->bms_bem.bem_ccp & BEM_CRO_UNRELIABLE)){
+        ui->comboBox_spn3904->setCurrentIndex(2);
+    }
+//====================================================================================//
+    if(BEM_CCS_NORMAL == (thiz->bms_bem.bem_cst & BEM_CCS_NORMAL)){
+        ui->comboBox_spn3905->setCurrentIndex(0);
+    }
+    if(BEM_CCS_TIMEOUT == (thiz->bms_bem.bem_cst & BEM_CCS_TIMEOUT)){
+        ui->comboBox_spn3905->setCurrentIndex(1);
+    }
+    if(BEM_CCS_UNRELIABLE == (thiz->bms_bem.bem_cst & BEM_CCS_UNRELIABLE)){
+        ui->comboBox_spn3905->setCurrentIndex(2);
+    }
+
+    if(BEM_CST_NORMAL == (thiz->bms_bem.bem_cst & BEM_CST_NORMAL)){
+        ui->comboBox_spn3906->setCurrentIndex(0);
+    }
+    if(BEM_CST_TIMEOUT == (thiz->bms_bem.bem_cst & BEM_CST_TIMEOUT)){
+        ui->comboBox_spn3906->setCurrentIndex(1);
+    }
+    if(BEM_CST_UNRELIABLE == (thiz->bms_bem.bem_cst & BEM_CST_UNRELIABLE)){
+        ui->comboBox_spn3906->setCurrentIndex(2);
+    }
+//====================================================================================//
+    if(BEM_CSD_NORMAL == (thiz->bms_bem.bem_csd & BEM_CSD_NORMAL)){
+        ui->comboBox_spn3906->setCurrentIndex(0);
+    }
+    if(BEM_CSD_TIMEOUT == (thiz->bms_bem.bem_csd & BEM_CSD_TIMEOUT)){
+        ui->comboBox_spn3906->setCurrentIndex(1);
+    }
+    if(BEM_CSD_UNRELIABLE == (thiz->bms_bem.bem_csd & BEM_CSD_UNRELIABLE)){
+        ui->comboBox_spn3906->setCurrentIndex(2);
+    }
+}
 void MainBMSWindow::show_data_charger_PGN7936(struct charge_task * thiz)//CEM
 {
-    if(BEM_BMS_NORMAL == (thiz->charger_cem.cem_brm & BEM_BMS_NORMAL)){
+    if(CEM_BMS_NORMAL == (thiz->charger_cem.cem_brm & CEM_BMS_NORMAL)){
         ui->comboBox_spn3921->setCurrentIndex(0);
     }
-    if(BEM_BMS_TIMEOUT == (thiz->charger_cem.cem_brm & BEM_BMS_TIMEOUT)){
+    if(CEM_BMS_TIMEOUT == (thiz->charger_cem.cem_brm & CEM_BMS_TIMEOUT)){
          ui->comboBox_spn3921->setCurrentIndex(1);
     }
-    if(BEM_BMS_UNRELIABLE == (thiz->charger_cem.cem_brm & BEM_BMS_UNRELIABLE)){
+    if(CEM_BMS_UNRELIABLE == (thiz->charger_cem.cem_brm & CEM_BMS_UNRELIABLE)){
          ui->comboBox_spn3921->setCurrentIndex(2);
     }
 //====================================================================================//
-    if(BEM_BCP_NORMAL == (thiz->charger_cem.cem_bro & BEM_BCP_NORMAL)){
+    if(CEM_BCP_NORMAL == (thiz->charger_cem.cem_bro & CEM_BCP_NORMAL)){
         ui->comboBox_spn3922->setCurrentIndex(0);
     }
-    if(BEM_BCP_TIMEOUT == (thiz->charger_cem.cem_bro & BEM_BCP_TIMEOUT)){
+    if(CEM_BCP_TIMEOUT == (thiz->charger_cem.cem_bro & CEM_BCP_TIMEOUT)){
          ui->comboBox_spn3922->setCurrentIndex(1);
     }
-    if(BEM_BCP_UNRELIABLE == (thiz->charger_cem.cem_bro & BEM_BCP_UNRELIABLE)){
+    if(CEM_BCP_UNRELIABLE == (thiz->charger_cem.cem_bro & CEM_BCP_UNRELIABLE)){
          ui->comboBox_spn3922->setCurrentIndex(2);
     }
-    if(BEM_BRO_NORMAL == (thiz->charger_cem.cem_bro & BEM_BRO_NORMAL)){
+    if(CEM_BRO_NORMAL == (thiz->charger_cem.cem_bro & CEM_BRO_NORMAL)){
         ui->comboBox_spn3923->setCurrentIndex(0);
     }
-    if(BEM_BRO_TIMEOUT == (thiz->charger_cem.cem_bro & BEM_BRO_TIMEOUT)){
+    if(CEM_BRO_TIMEOUT == (thiz->charger_cem.cem_bro & CEM_BRO_TIMEOUT)){
          ui->comboBox_spn3923->setCurrentIndex(1);
     }
-    if(BEM_BRO_UNRELIABLE == (thiz->charger_cem.cem_bro & BEM_BRO_UNRELIABLE)){
+    if(CEM_BRO_UNRELIABLE == (thiz->charger_cem.cem_bro & CEM_BRO_UNRELIABLE)){
          ui->comboBox_spn3923->setCurrentIndex(2);
     }
 //====================================================================================//
-    if(BEM_BCS_NORMAL == (thiz->charger_cem.cem_bro & BEM_BCS_NORMAL)){
+    if(CEM_BCS_NORMAL == (thiz->charger_cem.cem_bro & CEM_BCS_NORMAL)){
         ui->comboBox_spn3924->setCurrentIndex(0);
     }
-    if(BEM_BCS_TIMEOUT == (thiz->charger_cem.cem_bro & BEM_BCS_TIMEOUT)){
+    if(CEM_BCS_TIMEOUT == (thiz->charger_cem.cem_bro & CEM_BCS_TIMEOUT)){
          ui->comboBox_spn3924->setCurrentIndex(1);
     }
-    if(BEM_BCS_UNRELIABLE == (thiz->charger_cem.cem_bro & BEM_BCS_UNRELIABLE)){
+    if(CEM_BCS_UNRELIABLE == (thiz->charger_cem.cem_bro & CEM_BCS_UNRELIABLE)){
          ui->comboBox_spn3924->setCurrentIndex(2);
     }
-    if(BEM_BCL_NORMAL == (thiz->charger_cem.cem_bro & BEM_BCL_NORMAL)){
+    if(CEM_BCL_NORMAL == (thiz->charger_cem.cem_bro & CEM_BCL_NORMAL)){
         ui->comboBox_spn3925->setCurrentIndex(0);
     }
-    if(BEM_BCL_TIMEOUT == (thiz->charger_cem.cem_bro & BEM_BCL_TIMEOUT)){
+    if(CEM_BCL_TIMEOUT == (thiz->charger_cem.cem_bro & CEM_BCL_TIMEOUT)){
          ui->comboBox_spn3925->setCurrentIndex(1);
     }
-    if(BEM_BCL_UNRELIABLE == (thiz->charger_cem.cem_bro & BEM_BCL_UNRELIABLE)){
+    if(CEM_BCL_UNRELIABLE == (thiz->charger_cem.cem_bro & CEM_BCL_UNRELIABLE)){
          ui->comboBox_spn3925->setCurrentIndex(2);
     }
-    if(BEM_BST_NORMAL == (thiz->charger_cem.cem_bro & BEM_BST_NORMAL)){
+    if(CEM_BST_NORMAL == (thiz->charger_cem.cem_bro & CEM_BST_NORMAL)){
         ui->comboBox_spn3926->setCurrentIndex(0);
     }
-    if(BEM_BST_TIMEOUT == (thiz->charger_cem.cem_bro & BEM_BST_TIMEOUT)){
+    if(CEM_BST_TIMEOUT == (thiz->charger_cem.cem_bro & CEM_BST_TIMEOUT)){
          ui->comboBox_spn3926->setCurrentIndex(1);
     }
-    if(BEM_BST_UNRELIABLE == (thiz->charger_cem.cem_bro & BEM_BST_UNRELIABLE)){
+    if(CEM_BST_UNRELIABLE == (thiz->charger_cem.cem_bro & CEM_BST_UNRELIABLE)){
          ui->comboBox_spn3926->setCurrentIndex(2);
     }
 //====================================================================================//
-    if(BEM_BSD_NORMAL == (thiz->charger_cem.cem_bro & BEM_BSD_NORMAL)){
+    if(CEM_BSD_NORMAL == (thiz->charger_cem.cem_bro & CEM_BSD_NORMAL)){
         ui->comboBox_spn3927->setCurrentIndex(0);
     }
-    if(BEM_BSD_TIMEOUT == (thiz->charger_cem.cem_bro & BEM_BSD_TIMEOUT)){
+    if(CEM_BSD_TIMEOUT == (thiz->charger_cem.cem_bro & CEM_BSD_TIMEOUT)){
          ui->comboBox_spn3927->setCurrentIndex(1);
     }
-    if(BEM_BSD_UNRELIABLE == (thiz->charger_cem.cem_bro & BEM_BSD_UNRELIABLE)){
+    if(CEM_BSD_UNRELIABLE == (thiz->charger_cem.cem_bro & CEM_BSD_UNRELIABLE)){
          ui->comboBox_spn3927->setCurrentIndex(2);
     }
 }
@@ -1062,4 +1156,31 @@ void MainBMSWindow::slot_statustimer()
 //        oldvalue = CHARGE_STAGE_CONFIGURE;
 //    }
     SetValue(task->bms_stage);
+
+    switch (task->bms_stage) {
+        case CHARGE_STAGE_INVALID:
+            break;
+        case CHARGE_STAGE_HANDSHACKING:
+            ui->groupBox_can->setVisible(true);
+            ui->groupBox_HM->setVisible(true);
+            ui->checkBox->setVisible(true);
+            break;
+        case CHARGE_STAGE_IDENTIFICATION:
+            ui->groupBox_can->setVisible(false);
+            ui->groupBox_HM->setVisible(false);
+            ui->checkBox->setVisible(false);
+            break;
+        case CHARGE_STAGE_CONFIGURE:
+            ui->groupBox_RM->setVisible(false);
+            break;
+        case CHARGE_STAGE_CHARGING:
+            ui->groupBox_CP->setVisible(false);
+            break;
+        case CHARGE_STAGE_DONE:
+            break;
+        default:
+            break;
+    }
+
+
 }

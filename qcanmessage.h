@@ -30,7 +30,7 @@ struct QCanMessage {
 		:	time(0),
 		 	sinceLast(0),
 		 	period(0),
-		 	autoTrigger(false),
+            autoTrigger(true),//false
 		 	count(0) {}
 };
 

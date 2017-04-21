@@ -82,6 +82,7 @@ public:
     int set_charge_mode(int index);
     void set_data_bms_PGN4096(struct charge_task * thiz);
     void set_data_bms_PGN4352(struct charge_task * thiz);
+    int analysis_data_bms_PGN4864(struct charge_task * thiz);
     int get_data_bms_PGN4864(struct charge_task * thiz);
     int set_combobox_data(int index);
     void set_data_bms_PGN4864(struct charge_task * thiz);
@@ -103,6 +104,7 @@ public:
     void show_data_charger_PGN4608(struct charge_task * thiz);//CCS
     void show_data_charger_PGN6656(struct charge_task * thiz);//CST
     void show_data_charger_PGN7424(struct charge_task * thiz);//CSD
+    void show_data_charger_PGN7680(struct charge_task * thiz);//BEM
     void show_data_charger_PGN7936(struct charge_task * thiz);//CEM
     void show_data_pgn();
 

@@ -943,7 +943,7 @@ int about_packet_reciev_done(struct charge_task *thiz,
         if(thiz->charger_ccs.spn3929_charger_status == CHARGER_ALLOW){
             bit_set(thiz,F_CHARGER_CCS);
         }else{
-
+            //bit_clr(thiz,F_CHARGER_CCS);
         }
         break;
     case PGN_CST :// 0x001A00, 充电机中止充电
@@ -1176,7 +1176,7 @@ void *thread_bms_write_service(void *arg) ___THREAD_ENTRY___
             }else{
                 param.evt_param = EVT_RET_OK;
                 can_packet_callback(task, EVENT_TX_DONE, &param);
-                send_frame.ID = frame.ID;
+                send_frame.ID = frame.ID&CAN_EFF_MASK;
                 send_frame.DataLen = frame.DataLen;
                 send_frame.ExternFlag = frame.ExternFlag;
                 send_frame.RemoteFlag = frame.RemoteFlag;

@@ -8,6 +8,7 @@
  */
 
 #include <QByteArray>
+#include <QDateTime>
 #include "canmessagemodel.h"
 
 CanMessageModel::CanMessageModel(Type type, QObject *parent)
@@ -37,7 +38,7 @@ void CanMessageModel::addMessage(const QCanMessage& msg, bool count)
         nmsg.sinceLast = msg.time - mMessages.value(msg.frame.ID).time;
 		if (count)
             nmsg.count = mMessages.value(msg.frame.ID).count + 1;
-	} else {
+    } else {
 		nmsg.sinceLast = 0;
 		if (count)
 			nmsg.count = 1;
@@ -45,7 +46,9 @@ void CanMessageModel::addMessage(const QCanMessage& msg, bool count)
 	}
     mMessages.insert(msg.frame.ID, nmsg);
     int idx = mMessages.keys().indexOf(msg.frame.ID);
-	if (isNew) {
+//    mMessages.insert(msg.time, nmsg);
+//    int idx = mMessages.keys().indexOf(msg.time);
+    if (isNew) {
         //reset();
         beginResetModel();
         endResetModel();
@@ -95,13 +98,14 @@ int CanMessageModel::rowCount(const QModelIndex &) const
 int CanMessageModel::columnCount(const QModelIndex &) const
 {
 	if (mShowTrigger)
-		return 6;
-	return 5;
+        return 6;
+    return 5;
 }
 
 QVariant CanMessageModel::data(const QModelIndex &index, int role) const
 {
 #if 1
+    QDateTime dateTime;
 	if ((role != Qt::DisplayRole) && (role != Qt::UserRole))
         return QVariant();
 
@@ -140,8 +144,9 @@ QVariant CanMessageModel::data(const QModelIndex &index, int role) const
 	case 4:
 		return msg.count;
 	case 5:
-		return ( msg.autoTrigger ? tr("Auto") : tr("Manual"));
-
+        //return ( msg.autoTrigger ? tr("Auto") : tr("Manual"));
+        return dateTime.fromMSecsSinceEpoch(msg.time).toString("hh:mm:ss:zzz");
+        //return msg.sinceLast;
 	}
 #endif
 	return QVariant();
@@ -165,7 +170,8 @@ QVariant CanMessageModel::headerData(int section, Qt::Orientation orientation, i
     	case 4:
     		return tr("Count");
     	case 5:
-    		return tr("Trigger");
+            //return tr("Trigger");
+            return tr("Time");
     	}
     }
     return QVariant();
