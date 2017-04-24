@@ -8,15 +8,15 @@ MainBMSWindow::MainBMSWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->pushButton_discon->setVisible(false);
 
-    ui->groupBox_warning->setVisible(false);
-    ui->toolBox->setVisible(false);
-#if 1
-    ui->groupBox_Charging_2->setVisible(false);
-    ui->groupBox_Charging_3->setVisible(false);
-#else
+    //ui->groupBox_warning->setVisible(false);
+    //ui->toolBox_stage->setVisible(false);
+#if 0
     ui->groupBox_send->setVisible(false);
     ui->groupBox_receive->setVisible(false);
 #endif
+    ui->label_12->setVisible(false);
+    ui->lineEdit_spn2829->setVisible(false);
+
     ui->lineEdit_spn2560->setVisible(false);
     ui->label_9->setVisible(false);
     ui->lineEdit_spn2830->setVisible(false);
@@ -1157,6 +1157,7 @@ void MainBMSWindow::slot_statustimer()
 //    }
     SetValue(task->bms_stage);
 
+#if 0
     switch (task->bms_stage) {
         case CHARGE_STAGE_INVALID:
             break;
@@ -1181,6 +1182,5 @@ void MainBMSWindow::slot_statustimer()
         default:
             break;
     }
-
-
+#endif
 }
