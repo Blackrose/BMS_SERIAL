@@ -78,17 +78,7 @@
      <string extracomment="test"/>
     </property>
     <property name="styleSheet">
-     <string notr="true">QToolBox::tab {
-background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
-stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
-border-radius: 5px;
-color: darkgray;
-}
-QToolBox::tab:selected {
-font: italic;
-color: white;
-}</string>
+     <string notr="true"/>
     </property>
     <property name="currentIndex">
      <number>0</number>
@@ -113,6 +103,9 @@ color: white;
         <width>301</width>
         <height>177</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
       </property>
       <property name="title">
        <string>(1)握手阶段</string>
@@ -288,6 +281,9 @@ color: white;
         <bold>false</bold>
        </font>
       </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
       <property name="title">
        <string>CAN通讯</string>
       </property>
@@ -426,9 +422,15 @@ color: white;
       <layout class="QGridLayout" name="gridLayout_23">
        <item row="0" column="0">
         <widget class="QGroupBox" name="groupBox_CRM">
+         <property name="minimumSize">
+          <size>
+           <width>105</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="maximumSize">
           <size>
-           <width>100</width>
+           <width>105</width>
            <height>16777215</height>
           </size>
          </property>
@@ -2105,6 +2107,14 @@ color: white;
      </widget>
     </widget>
     <widget class="QWidget" name="page_4">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>621</width>
+       <height>401</height>
+      </rect>
+     </property>
      <attribute name="label">
       <string>4、充电阶段停止报文</string>
      </attribute>
@@ -3119,10 +3129,32 @@ color: white;
          </layout>
         </widget>
        </item>
+       <item row="1" column="0">
+        <widget class="QPushButton" name="pushButton_set_BST">
+         <property name="text">
+          <string>设置参数</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="pushButton_BST">
+         <property name="text">
+          <string>更新</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </widget>
     <widget class="QWidget" name="page_5">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>621</width>
+       <height>401</height>
+      </rect>
+     </property>
      <attribute name="label">
       <string>5、充电结束阶段</string>
      </attribute>
@@ -4066,11 +4098,6 @@ color: white;
      </attribute>
     </widget>
    </widget>
-   <zorder>groupBox_send</zorder>
-   <zorder>groupBox_warning</zorder>
-   <zorder>toolBox_stage</zorder>
-   <zorder>tableViewReceive</zorder>
-   <zorder>groupBox_receive</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

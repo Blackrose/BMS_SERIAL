@@ -1,0 +1,63 @@
+
+QToolBox::tab {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+    stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
+    stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
+    border-radius: 5px;
+    color: darkgray;
+}
+QToolBox::tab:selected {
+    font: italic;
+    color: white;
+}
+
+
+QGroupBox{
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+    stop:0#E0E0E0, stop: 1 #FFFFFF);
+    border:2px solid gray;
+    border-radius:5px;
+    margin-top:1ex;/* leave space at the top for the title */
+}
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top center;/* position at the top center */
+    padding:03px;
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+    stop:0#FFOECE, stop: 1 #FFFFFF);
+}
+
+/* === QToolTip === */
+QToolTip{
+    border:2px solid darkkhaki;
+    padding:5px;
+    border-radius:3px;
+    opacity:200;
+}
+
+
+
+StatusBar {
+     style: StatusBarStyle {
+         padding {
+             left: 8
+             right: 8
+             top: 3
+             bottom: 3
+         }
+         background: Rectangle {
+             implicitHeight: 16
+             implicitWidth: 200
+             gradient: Gradient{
+                 GradientStop{color: "#eee" ; position: 0}
+                 GradientStop{color: "#ccc" ; position: 1}
+             }
+             Rectangle {
+                 anchors.top: parent.top
+                 width: parent.width
+                 height: 1
+                 color: "#999"
+             }
+         }
+     }
+ }

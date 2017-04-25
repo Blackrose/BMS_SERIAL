@@ -65,6 +65,8 @@ MainBMSWindow::MainBMSWindow(QWidget *parent) :
     connect(&bst_timer,SIGNAL(timeout()),this,SLOT(slot_statustimer()));//充电状态
     //bst_timer.start(100);
     oldvalue = 255;
+
+    ui->statusBar->showMessage(tr("BMS 模拟软件!!!"));
 }
 
 MainBMSWindow::~MainBMSWindow()
@@ -1157,27 +1159,25 @@ void MainBMSWindow::slot_statustimer()
 //    }
     SetValue(task->bms_stage);
 
-#if 0
+#if 1
     switch (task->bms_stage) {
         case CHARGE_STAGE_INVALID:
+            ui->toolBox_stage->setCurrentIndex(0);
             break;
         case CHARGE_STAGE_HANDSHACKING:
-            ui->groupBox_can->setVisible(true);
-            ui->groupBox_HM->setVisible(true);
-            ui->checkBox->setVisible(true);
+            ui->toolBox_stage->setCurrentIndex(0);
             break;
         case CHARGE_STAGE_IDENTIFICATION:
-            ui->groupBox_can->setVisible(false);
-            ui->groupBox_HM->setVisible(false);
-            ui->checkBox->setVisible(false);
+            ui->toolBox_stage->setCurrentIndex(0);
             break;
         case CHARGE_STAGE_CONFIGURE:
-            ui->groupBox_RM->setVisible(false);
+            ui->toolBox_stage->setCurrentIndex(1);
             break;
         case CHARGE_STAGE_CHARGING:
-            ui->groupBox_CP->setVisible(false);
+            ui->toolBox_stage->setCurrentIndex(2);
             break;
         case CHARGE_STAGE_DONE:
+            ui->toolBox_stage->setCurrentIndex(5);
             break;
         default:
             break;
