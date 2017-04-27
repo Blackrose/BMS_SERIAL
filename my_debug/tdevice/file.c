@@ -30,12 +30,13 @@ TDPString  TDGetNetworkInfo(TDPCHAR info)
 	 TDCHAR *s;
 	 TDCHAR buffer[10000];
 
-	 fp = fopen("/etc/network","r");
+     fp = fopen("network","r");
 	 if(!fp)
 	 {
-		TDDebug(" /etc/network open error in info\n");
+        TDDebug("network open error in info\n");
+        printf("network open error in info\n");
 		return TDNULL;
-	 }
+     }printf("network open in info\n");
  	 reStr = TDString_Create();
   	 tmpStr=TDString_Create();
 
@@ -84,8 +85,14 @@ TDVOID TDDebugFunction(char * file,int  line,char * message)
 	struct 	timeval tim;
 	char 		tmp[100];
 	char		czSvrItem[32] = "SERVER";
-    static char	czBroadcastIP[32] = "192.168.122.121";
+    static char	czBroadcastIP[32] = "192.168.121.239";
 	char		czSvrIP[32] = "";
+
+     // Initialize Winsock.
+    WSADATA wsaData;
+    int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+    if (iResult != NO_ERROR)
+        printf("Error at WSAStartup()\n");
 
 	if(!gDebugEnable)
 	{
@@ -105,20 +112,22 @@ TDVOID TDDebugFunction(char * file,int  line,char * message)
 	pthread_mutex_lock(&gSingleEvent);
     tddebug_socket = socket(AF_INET,SOCK_DGRAM,IPPROTO_IP);
 
-	if(tddebug_socket == -1)
+    if(tddebug_socket == INVALID_SOCKET)
 	{
-		pthread_mutex_unlock(&gSingleEvent);
+        pthread_mutex_unlock(&gSingleEvent);
+        DWORD dwError = WSAGetLastError();
+        printf("socket dwError ==%d !\n",dwError);
 		return;
 	}
 
 	sinSocket.sin_addr.s_addr = htonl(INADDR_ANY);
 	sinSocket.sin_family=AF_INET;
 	sinSocket.sin_port = htons(0);
-    	if ( -1 == bind ( tddebug_socket, (struct sockaddr_in  *)&sinSocket, sizeof ( struct sockaddr_in ) ) )
-    	{
-		close(tddebug_socket);
-		pthread_mutex_unlock(&gSingleEvent);
-		return ;
+    if ( -1 == bind ( tddebug_socket, (struct sockaddr_in  *)&sinSocket, sizeof ( struct sockaddr_in ) ) )
+    {
+        close(tddebug_socket);
+        pthread_mutex_unlock(&gSingleEvent);
+        return ;
 	}
 
 	if(strlen(czBroadcastIP) <= 0)
@@ -179,11 +188,11 @@ TDVOID TDDebugFunction(char * file,int  line,char * message)
 		}
 	}
 	sinServer.sin_addr.s_addr = inet_addr(czBroadcastIP);
-    sinServer.sin_addr.s_addr = inet_addr("192.168.122.121");
+    sinServer.sin_addr.s_addr = inet_addr("192.168.121.239");
 	sinServer.sin_family=AF_INET;
 	sinServer.sin_port = htons(usEndPoint+1);
 	optlen = sizeof(opt);
-//printf("DEBUGIP++++++++++++  %s\n",czBroadcastIP);
+    printf("DEBUGIP++++++++++++  %s\n",czBroadcastIP);
 
 	setsockopt(tddebug_socket,SOL_SOCKET,SO_BROADCAST,(char*)&opt,optlen);
 	str=TDString_Create();

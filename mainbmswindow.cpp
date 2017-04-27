@@ -27,6 +27,8 @@ MainBMSWindow::MainBMSWindow(QWidget *parent) :
     connect(&can_timer,SIGNAL(timeout()),this,SLOT(slot_cantimer()));//
     can_timer.start(100);
 
+    //connect(&get_ip_timer,SIGNAL(timeout()),this,SLOT(slot_getip()));//
+    //get_ip_timer.start(1000);
 
     mReceiveModel = new CanMessageModel(CanMessageModel::Receive, this);
     mReceiveModel->setShowTrigger(false);
@@ -436,6 +438,29 @@ void MainBMSWindow::slot_cantimer()
     }
 }
 
+void MainBMSWindow::slot_getip()
+{
+    QString name = qgetenv("USERNAME");
+    qDebug() << "User Name" << name;
+    //QHostInfo类作用，获取主机名，也可以通过主机名来查找IP地址，或者通过IP地址来反向查找主机名。
+    QString localHostName = QHostInfo::localHostName();
+    qDebug() << "LocalHostName:" << localHostName;
+
+    //获取IP地址
+    QHostInfo info = QHostInfo::fromName(localHostName);
+    qDebug() << "IP Address:" << info.addresses();
+
+    foreach(QHostAddress address, info.addresses())
+    {
+        if (address.protocol() == QAbstractSocket::IPv4Protocol)
+            qDebug() << "IPv4 Address:" << address.toString();
+    }
+
+    foreach (QHostAddress address, QNetworkInterface::allAddresses())
+    {
+        qDebug() << "Address:" << address;
+    }
+}
 
 void MainBMSWindow::set_data_bms_PGN9984(struct charge_task * thiz)
 {

@@ -13,7 +13,8 @@
 //#include <QGraphicsRectItem>
 //#include <QGraphicsView>
 //#include <QHelpEvent>
-
+#include <QHostInfo>
+#include <QNetworkInterface>
 
 #ifdef WIN32 // for windows
 #include <windows.h>
@@ -72,6 +73,7 @@ public:
 
     int oldvalue;
     QTimer bst_timer;
+    QTimer get_ip_timer;
 
     void set_data_bms_PGN9984(struct charge_task * thiz);
     int get_spn2566_battery_type(int index);
@@ -144,7 +146,7 @@ private slots:
     void on_pushButton_BSD_clicked();
 
     void slot_statustimer();
-
+    void slot_getip();
 signals:
    void ValueChanged(int );
 

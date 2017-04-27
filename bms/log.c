@@ -8,6 +8,7 @@
 
 #include "log.h"
 #include "config.h"
+#include "my_debug/tdevice/file.h"
 
 int log_printf(unsigned int level, const char *fmt, ...)
 {
@@ -34,8 +35,6 @@ int log_printf(unsigned int level, const char *fmt, ...)
                p->tm_min,
                p->tm_sec,
                buff);
-
-
         struct timeval    tv;
         struct timezone tz;
         //gettimeofday(&tv, &tz);
@@ -171,6 +170,7 @@ int log_printf(unsigned int level, const char *fmt, ...)
         //return printf("%s\n", buff);
         break;
     }
+    //TDDebug(buff);
     va_end(ap);
     return 0;
 }

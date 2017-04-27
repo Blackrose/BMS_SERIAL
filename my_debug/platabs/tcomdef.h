@@ -101,7 +101,7 @@ typedef		unsigned long	        DWORD;
 typedef		signed short		SHORT;
 typedef		signed int		INT;
 typedef		long			LONG;
-typedef		void			VOID;
+//typedef		void			VOID;
 typedef		int			BOOL;
 
 ////////////////////////////
