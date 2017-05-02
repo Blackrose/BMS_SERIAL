@@ -14,7 +14,7 @@
    <string>MainBMSWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background: QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #eef, stop: 1 #ccf);</string>
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QGroupBox" name="groupBox_send">
@@ -84,7 +84,7 @@
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="page">
      <property name="geometry">
@@ -174,12 +174,7 @@
                <item>
                 <widget class="QLineEdit" name="lineEdit_spn2601">
                  <property name="styleSheet">
-                  <string notr="true">QLineEdit {
-padding: 1px;
-border-style: solid;
-border: 2px solid gray;
-border-radius: 8px;
-}</string>
+                  <string notr="true"/>
                  </property>
                  <property name="text">
                   <string>750.0</string>
@@ -262,22 +257,7 @@ border-radius: 8px;
          <item>
           <widget class="QPushButton" name="pushButton_set_BHM">
            <property name="styleSheet">
-            <string notr="true">QPushButton {
-color: white;
-background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #88d, stop: 0.1 #99e, stop: 0.49 #77c, stop: 0.5 #66b, stop: 1 #77c);
-border-width: 1px;
-border-color: #339;
-border-style: solid;
-border-radius: 7;
-padding: 3px;
-font-size: 10px;
-padding-left: 5px;
-padding-right: 5px;
-min-width: 50px;
-max-width: 50px;
-min-height: 13px;
-max-height: 13px;
-}</string>
+            <string notr="true"/>
            </property>
            <property name="text">
             <string>设置参数</string>
@@ -287,18 +267,7 @@ max-height: 13px;
          <item>
           <widget class="QPushButton" name="pushButton_BHM">
            <property name="styleSheet">
-            <string notr="true">QPushButton {
-background-color: red;
-border-style: outset;
-border-width:2px;
-border-radius:10px;
-border-color: beige;
-padding:3px;
-}
-QPushButton:pressed {
-background-color: rgb(224,0,0);
-border-style: inset;
-}</string>
+            <string notr="true"/>
            </property>
            <property name="text">
             <string>更新</string>
@@ -614,20 +583,7 @@ border-style: inset;
                 </size>
                </property>
                <property name="styleSheet">
-                <string notr="true">QComboBox{
-border:1px solid gray;
-border-radius:3px;
-padding:1px18px1px3px;
-min-width:6em;
-}
-QComboBox:editable {
-background: white;
-}
-QComboBox:!editable,QComboBox::drop-down:editable {
-background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-stop:0#E1E1E1, stop: 0.4 #DDDDDD,
-stop:0.5#D8D8D8, stop: 1.0 #D3D3D3);
-}</string>
+                <string notr="true"/>
                </property>
                <property name="currentIndex">
                 <number>0</number>
@@ -1916,13 +1872,16 @@ stop:0.5#D8D8D8, stop: 1.0 #D3D3D3);
             <layout class="QHBoxLayout" name="horizontalLayout_21">
              <item>
               <widget class="QLabel" name="label_23">
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
+               </property>
                <property name="text">
                 <string>状态</string>
                </property>
               </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="lineEdit_spn3929"/>
              </item>
              <item>
               <widget class="QComboBox" name="comboBox_spn3929">
@@ -1951,6 +1910,16 @@ stop:0.5#D8D8D8, stop: 1.0 #D3D3D3);
                  <string>01</string>
                 </property>
                </item>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="lineEdit_spn3929">
+               <property name="maximumSize">
+                <size>
+                 <width>10</width>
+                 <height>16777215</height>
+                </size>
+               </property>
               </widget>
              </item>
             </layout>

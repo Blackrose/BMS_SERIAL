@@ -1,4 +1,8 @@
 
+QMainWindow{
+    background: QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #eef, stop: 1 #ccf);
+}
+
 QToolBox::tab {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
     stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
@@ -14,7 +18,7 @@ QToolBox::tab:selected {
 
 QGroupBox{
     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-    stop:0 # E0E0E0, stop: 1 #FFFFFF);
+    stop:0 #E0E0E0, stop: 1 #FFFFFF);
     border:2px solid gray;
     border-radius:5px;
     margin-top:1ex;/* leave space at the top for the title */
@@ -24,7 +28,7 @@ QGroupBox::title {
     subcontrol-position: top center;/* position at the top center */
     padding:03px;
     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-    stop:0 # FFOECE, stop: 1 #FFFFFF);
+    stop:0 #FF0ECE, stop: 1 #FFFFFF);
 }
 
 /* === QToolTip === */
@@ -35,9 +39,59 @@ QToolTip{
     opacity:200;
 }
 
+QComboBox{
+    border:1px solid gray;
+    border-radius:3px;
+    padding:1px18px1px3px;
+    //min-width:6em;
+}
+QComboBox:editable {
+    background: white;
+}
+QComboBox:!editable,QComboBox::drop-down:editable {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+    stop:0#E1E1E1, stop: 0.4 #DDDDDD,
+    stop:0.5#D8D8D8, stop: 1.0 #D3D3D3);
+}
 
+QLineEdit {
+    padding: 1px;
+    border-style: solid;
+    border: 2px solid gray;
+    border-radius: 8px;
+}
 
-StatusBar {
+QPushButton {
+    background-color: red;
+    border-style: outset;
+    border-width:2px;
+    border-radius:10px;
+    border-color: beige;
+    padding:3px;
+}
+QPushButton:pressed {
+    background-color: rgb(224,0,0);
+    border-style: inset;
+}
+
+/*QPushButton {
+    color: white;
+    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #88d, stop: 0.1 #99e, stop: 0.49 #77c, stop: 0.5 #66b, stop: 1 #77c);
+    border-width: 1px;
+    border-color: #339;
+    border-style: solid;
+    border-radius: 7;
+    padding: 3px;
+    font-size: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    min-width: 50px;
+    max-width: 50px;
+    min-height: 13px;
+    max-height: 13px;
+}*/
+
+/*StatusBar {
      style: StatusBarStyle {
          padding {
              left: 8
@@ -61,3 +115,4 @@ StatusBar {
          }
      }
  }
+*/

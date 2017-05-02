@@ -86,6 +86,7 @@ TDVOID TDDebugFunction(char * file,int  line,char * message)
 	char 		tmp[100];
 	char		czSvrItem[32] = "SERVER";
     static char	czBroadcastIP[32] = "192.168.121.239";
+    //static char	czBroadcastIP[32] = "";
 	char		czSvrIP[32] = "";
 
      // Initialize Winsock.
