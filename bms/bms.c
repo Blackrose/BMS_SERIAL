@@ -817,9 +817,9 @@ int about_packet_reciev_done(struct charge_task *thiz,
             memcpy(&thiz->charger_handshake,
                    param->buff.rx_buff, sizeof(struct pgn9728_CHM));
         }
-        if(thiz->charger_handshake.spn2600_charger_version[0] == 0x00 &&
+        if(thiz->charger_handshake.spn2600_charger_version[0] == 0x01 &&
                 thiz->charger_handshake.spn2600_charger_version[1] == 0x01 &&
-                    thiz->charger_handshake.spn2600_charger_version[2] == 0x01){
+                    thiz->charger_handshake.spn2600_charger_version[2] == 0x00){
             log_printf(INF, "BMS: BMS change stage to "RED("CHARGE_STAGE_HANDSHACKING"));
             thiz->bms_stage = CHARGE_STAGE_HANDSHACKING;
         }else{
@@ -1131,8 +1131,8 @@ void *thread_bms_write_service(void *arg) ___THREAD_ENTRY___
         }
 
         if ( EVT_RET_OK != param.evt_param ) {
-            log_printf(DBG_LV0, "BMS: param.evt_param: %d.",
-                       param.evt_param);
+//            log_printf(DBG_LV0, "BMS: param.evt_param: %d.",
+//                       param.evt_param);
             continue;
         }
 
@@ -1454,7 +1454,7 @@ void on_charge_stage_change(CHARGE_STAGE_CHANGE_EVENT evt,
 // 握手-BHM-BMS握手报文
 int gen_packet_PGN9984(struct charge_task * thiz, struct event_struct* param)
 {
-    struct can_pack_generator *gen = &generator[I_CHM];
+    struct can_pack_generator *gen = &generator[I_BHM];
 
 //    if ( 0 == bit_read(thiz, F_BMS_RECOGNIZED) ) {
 //        param->buff.tx_buff[0] = BMS_NOT_RECOGNIZED;
@@ -1474,7 +1474,7 @@ int gen_packet_PGN9984(struct charge_task * thiz, struct event_struct* param)
 
     param->evt_param = EVT_RET_OK;
 
-    generator[I_CHM].can_counter ++;
+    generator[I_BHM].can_counter ++;
 
     return 0;
 }

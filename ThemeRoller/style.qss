@@ -42,7 +42,7 @@ QToolTip{
 QComboBox{
     border:1px solid gray;
     border-radius:3px;
-    padding:1px18px1px3px;
+    padding:1px;// 18px 1px 3px;
     //min-width:6em;
 }
 QComboBox:editable {
@@ -50,8 +50,8 @@ QComboBox:editable {
 }
 QComboBox:!editable,QComboBox::drop-down:editable {
     background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-    stop:0#E1E1E1, stop: 0.4 #DDDDDD,
-    stop:0.5#D8D8D8, stop: 1.0 #D3D3D3);
+    stop:0 #E1E1E1, stop: 0.4 #DDDDDD,
+    stop:0.5 #D8D8D8, stop: 1.0 #D3D3D3);
 }
 
 QLineEdit {
