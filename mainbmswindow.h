@@ -71,10 +71,37 @@ public:
     QTimer can_timer;
     mythread mythread_can ;
 
-    int oldvalue;
+    static int oldvalue;
     QTimer bst_timer;
     QTimer get_ip_timer;
-
+    int Timing0 = 0x01;
+    int Timing1 = 0x1C;
+//    const QString g_tim0[10]=
+//    {
+//        "00",		//1000Kbps
+//        "00",		// 800Kbps
+//        "00",		// 500Kbps
+//        "01",		// 250Kbps
+//        "03",		// 125Kbps
+//        "04",		// 100Kbps
+//        "09",		// 50Kbps
+//        "18",		// 20Kbps
+//        "31",		// 10Kbps
+//        "BF"		// 5Kbps
+//    };
+//    const QString g_tim1[10]=
+//    {
+//        "14",		//1000Kbps
+//        "16",		// 800Kbps
+//        "1C",		// 500Kbps
+//        "1C",		// 250Kbps
+//        "1C",		// 125Kbps
+//        "1C",		// 100Kbps
+//        "1C",		// 50Kbps
+//        "1C",		// 20Kbps
+//        "1C",		// 10Kbps
+//        "FF"		// 5Kbps
+//    };
     void set_data_bms_PGN9984(struct charge_task * thiz);
     int get_spn2566_battery_type(int index);
     void set_data_bms_PGN512(struct charge_task * thiz);
@@ -111,6 +138,7 @@ public:
     void show_data_pgn();
 
     void SetValue(int );
+    static void ui_exit();
 
 private slots:
     void on_pushButton_connect_clicked();
@@ -129,6 +157,7 @@ private slots:
     void on_actionEdit_triggered();
     void on_actionClearAll_triggered();
     void on_actionClear_triggered();
+    void on_actionExit_triggered();
     void on_tableViewSend_doubleClicked(const QModelIndex& index);
     void on_actionNew_triggered();
     void on_actionAbout_triggered();

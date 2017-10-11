@@ -28,24 +28,38 @@ extern void * thread_hachiko_init(void *) ___THREAD_ENTRY___;
 extern void * thread_bms_write_service(void *) ___THREAD_ENTRY___;
 extern void * thread_bms_read_service(void *) ___THREAD_ENTRY___;
 
+int thread_done[2] = {ENTER_THREAD};
+
 int bms_canbus()
 {
     const char *user_cfg = NULL;
     pthread_t tid = 0;
     pthread_attr_t attr;
     int s;
-    int thread_done[ 2 ] = {0};
+    //int thread_done[ 2 ] = {EXIT_THREAD};
     char buff[32];
     int errcode = 0, ret;
 
+    thread_done[0] = ENTER_THREAD;
+    thread_done[1] = ENTER_THREAD;
+    thread_done[2] = ENTER_THREAD;
+
     printf(
-            "           ___        _       ____\n"
-            "          / _ \\ _ __ | |_   _|  _ \\ _____      _____ _ __\n"
-            "         | | | | '_ \\| | | | | |_) / _ \\ \\ /\\ / / _ \\ '__|\n"
-            "         | |_| | | | | | |_| |  __/ (_) \\ V  V /  __/ |\n"
-            "          \\___/|_| |_|_|\\__, |_|   \\___/ \\_/\\_/ \\___|_|\n"
-            "                        |___/\n"
-           );
+            "+-+-+-+-+-+-+-+-+-+-+-+-+\n"
+            "|S|e|r|i|a|l|S|y|s|t|e|m|\n"
+            "+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+
+    printf(
+            "                  _       _               _ \n"
+            "                 (_)     | |             | | \n"
+            "    ___  ___ _ __ _  __ _| |___ _   _ ___| |_ ___ _ __ ___ \n"
+            "   / __|/ _ \\ '__| |/ _` | / __| | | / __| __/ _ \\ '_ ` _ \\ \n"
+            "   \\__ \\  __/ |  | | (_| | \\__ \\ |_| \\__ \\ ||  __/ | | | | |\n"
+            "   |___/\\___|_|  |_|\\__,_|_|___/\\__, |___/\\__\\___|_| |_| |_|\n"
+            "                                 __/ |\n"
+            "                                |___/ \n"
+          );
+
     printf( "           \nCopyright © Andy zhao for SerialSystem\n");
     printf( "                            %s %s\n\n", __DATE__, __TIME__);
     printf("系统启动中.....\n\n\n\n");
@@ -93,7 +107,7 @@ int bms_canbus()
                        "use system default size.", stack_KB);
         }
     }
-
+    //pthread_attr_setdetachstat(&attr, PTHREAD_CREATE_DETACHED);
 
     // 启动定时器
    //Hachiko_init();
@@ -145,4 +159,12 @@ int bms_canbus()
 die:
     log_printf(ERR, "going to die. system aborted!");
     return errcode;
+}
+
+int bms_canstop()
+{
+    thread_done[0] = EXIT_THREAD;
+    thread_done[1] = EXIT_THREAD;
+    thread_done[2] = EXIT_THREAD;
+    return 0;
 }

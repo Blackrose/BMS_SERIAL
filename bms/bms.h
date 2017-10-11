@@ -56,6 +56,9 @@ struct can_frame {
 #define TEMP_BUFF_SIZE 2048
 #define TEMP_BUFFER_SIZE 100
 
+#define EXIT_THREAD   1
+#define ENTER_THREAD  0
+
 //add end====================================================================
 
 
@@ -860,5 +863,7 @@ int set_data_bms_PGN7680(struct charge_task * thiz);
 #endif
 
 EXTERNC int bms_canbus();
+EXTERNC int bms_canstop();
+EXTERNC int bms_exit();
 
 #endif /*_BMS_PACKAGE_INCLUDED_H_*/

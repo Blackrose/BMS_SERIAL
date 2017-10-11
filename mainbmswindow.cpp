@@ -1,6 +1,9 @@
 #include "mainbmswindow.h"
 #include "ui_mainbmswindow.h"
 
+int MainBMSWindow::oldvalue = 255;
+
+
 MainBMSWindow::MainBMSWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainBMSWindow)
@@ -66,7 +69,7 @@ MainBMSWindow::MainBMSWindow(QWidget *parent) :
 
     connect(&bst_timer,SIGNAL(timeout()),this,SLOT(slot_statustimer()));//充电状态
     //bst_timer.start(100);
-    oldvalue = 255;
+    MainBMSWindow::oldvalue = 255;
 
     ui->statusBar->showMessage(tr("BMS 模拟软件!!!"));
 }
@@ -187,8 +190,9 @@ void MainBMSWindow::on_pushButton_connect_clicked()
     init_config.AccMask=0xffffffff;
     init_config.Filter=0x00;
     init_config.Mode=0x00;
-    init_config.Timing0=0x01;
-    init_config.Timing1=0x1c;
+    init_config.Timing0=Timing0;//0x01
+    init_config.Timing1=Timing1;
+
 #if 1
     if(VCI_OpenDevice(m_devtype,m_devind,0)!=STATUS_OK)
     {
@@ -219,12 +223,58 @@ void MainBMSWindow::on_pushButton_connect_clicked()
 
 void MainBMSWindow::on_comboBox_bps_currentIndexChanged(int index)
 {
+    switch (index) {
+    case 0:
+        Timing0 = 0x00;
+        Timing1 = 0x14;
+        break;
+    case 1:
+        Timing0 = 0x00;
+        Timing1 = 0x16;
+        break;
+    case 2:
+        Timing0 = 0x00;
+        Timing1 = 0x1C;
+        break;
+    case 3:
+        Timing0 = 0x01;
+        Timing1 = 0x1C;
+        break;
+    case 4:
+        Timing0 = 0x03;
+        Timing1 = 0x1C;
+        break;
+    case 5:
+        Timing0 = 0x04;
+        Timing1 = 0x1C;
+        break;
+    case 6:
+        Timing0 = 0x09;
+        Timing1 = 0x1C;
+        break;
+    case 7:
+        Timing0 = 0x18;
+        Timing1 = 0x1C;
+        break;
+    case 8:
+        Timing0 = 0x31;
+        Timing1 = 0x1C;
+        break;
+    case 9:
+        Timing0 = 0xBF;
+        Timing1 = 0xFF;
+        break;
+    default:
+        break;
+    }
 
 }
 
 void MainBMSWindow::on_pushButton_discon_clicked()
 {
     VCI_CloseDevice(m_devtype,m_devind);
+    mythread_can.stop(); //bms_canbus();
+    bst_timer.stop();
     ui->pushButton_connect->setVisible(true);
     ui->pushButton_discon->setVisible(false);
 }
@@ -345,6 +395,10 @@ void MainBMSWindow::on_actionEdit_triggered()
 void MainBMSWindow::on_actionClear_triggered()
 {
     mReceiveModel->deleteAll();
+}
+void MainBMSWindow::on_actionExit_triggered()
+{
+
 }
 
 void MainBMSWindow::onCanbusError(quint32 error)
@@ -1101,12 +1155,16 @@ void MainBMSWindow::on_pushButton_BSD_clicked()
     set_data_bms_PGN7168(task);
 }
 
+void MainBMSWindow::ui_exit()
+{
+    MainBMSWindow::oldvalue = 255;
+}
 
 void MainBMSWindow::SetValue(int value)
 {
-    if(value!=oldvalue)
+    if(value!=MainBMSWindow::oldvalue)
     {
-        oldvalue=value;
+        MainBMSWindow::oldvalue=value;
         emit ValueChanged(value);
     }//注意这里的if判断,这是避免递归的方式!如果没有if,当出现了循环连接的时候就会产生无限递归
 }
@@ -1174,10 +1232,10 @@ void MainBMSWindow::slot_statustimer()
 //    if(task->bms_stage == CHARGE_STAGE_HANDSHACKING){
 //    }
     if(bit_read(task,F_CHARGER_CML) && (task->bms_stage == CHARGE_STAGE_CONFIGURE)){
-        oldvalue = 255;
+        MainBMSWindow::oldvalue = 255;
     }
     if(bit_read(task,F_CHARGER_CCS) && (task->bms_stage == CHARGE_STAGE_CHARGING)){
-        oldvalue = 255;
+        MainBMSWindow::oldvalue = 255;
     }
 //    if(bit_read(task,F_CHARGER_CTS)){
 //        oldvalue = CHARGE_STAGE_CONFIGURE;

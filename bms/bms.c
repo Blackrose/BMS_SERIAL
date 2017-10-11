@@ -817,7 +817,8 @@ int about_packet_reciev_done(struct charge_task *thiz,
             memcpy(&thiz->charger_handshake,
                    param->buff.rx_buff, sizeof(struct pgn9728_CHM));
         }
-        if(thiz->charger_handshake.spn2600_charger_version[0] == 0x01 &&
+        if(/*thiz->bms_stage == CHARGE_STAGE_INVALID &&*/
+                thiz->charger_handshake.spn2600_charger_version[0] == 0x01 &&
                 thiz->charger_handshake.spn2600_charger_version[1] == 0x01 &&
                     thiz->charger_handshake.spn2600_charger_version[2] == 0x00){
             log_printf(INF, "BMS: BMS change stage to "RED("CHARGE_STAGE_HANDSHACKING"));
@@ -1669,7 +1670,7 @@ int set_data_bms_PGN4352(struct charge_task * thiz)
 {
     memset(&thiz->bms_bcs, INIT, sizeof(struct pgn4352_BCS));
     thiz->bms_bcs.spn3075_charge_voltage = 5000;
-    thiz->bms_bcs.spn3076_charge_current = 1200;
+    thiz->bms_bcs.spn3076_charge_current = -1200;
     thiz->bms_bcs.spn3077_max_v_g_number = 2000;
     thiz->bms_bcs.spn3078_soc = 50;
     thiz->bms_bcs.spn3079_need_time = 20;
@@ -1800,5 +1801,11 @@ int set_data_bms_PGN7680(struct charge_task * thiz)
     thiz->bms_bem.bem_ccp = 0;
     thiz->bms_bem.bem_csd = 0;
     thiz->bms_bem.bem_cst = 0;
+    return 0;
+}
+
+int bms_exit()
+{
+    memset(task,0,sizeof(struct charge_task));
     return 0;
 }

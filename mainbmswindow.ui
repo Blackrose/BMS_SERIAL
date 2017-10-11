@@ -84,7 +84,7 @@
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="page">
      <property name="geometry">
@@ -339,11 +339,51 @@
             </size>
            </property>
            <property name="currentIndex">
-            <number>0</number>
+            <number>3</number>
            </property>
            <item>
             <property name="text">
+             <string>1000Kbps</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>800Kbps</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>500Kbps</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
              <string>250Kbps</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>100Kbps</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>50Kbps</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>20Kbps</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>10Kbps</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>5Kbps</string>
             </property>
            </item>
           </widget>
@@ -648,6 +688,12 @@
               <layout class="QHBoxLayout" name="horizontalLayout_5">
                <item>
                 <widget class="QLineEdit" name="lineEdit_spn2567">
+                 <property name="minimumSize">
+                  <size>
+                   <width>36</width>
+                   <height>0</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>320.1</string>
                  </property>
@@ -662,6 +708,12 @@
                </item>
                <item>
                 <widget class="QLineEdit" name="lineEdit_spn2568">
+                 <property name="minimumSize">
+                  <size>
+                   <width>36</width>
+                   <height>0</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>420.1</string>
                  </property>
@@ -1636,7 +1688,7 @@
              <item>
               <widget class="QLineEdit" name="lineEdit_spn3076">
                <property name="text">
-                <string>56.3</string>
+                <string>-56.3</string>
                </property>
               </widget>
              </item>
