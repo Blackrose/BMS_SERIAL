@@ -290,6 +290,9 @@ void MainBMSWindow::on_checkBox_clicked(bool checked)
 
 void MainBMSWindow::on_actionConnect_triggered()
 {
+    on_pushButton_connect_clicked();
+    ui->actionDisconnect->setEnabled(true);
+    ui->actionConnect->setEnabled(false);
 #if 0
     ConnectDlg	dlg;
 
@@ -338,7 +341,9 @@ void MainBMSWindow::on_actionDisconnect_triggered()
 {
     //mSocket.close();
     //ui.labelBusError->setText("offline");
+    on_pushButton_discon_clicked();
     ui->actionDisconnect->setEnabled(false);
+    ui->actionConnect->setEnabled(true);
 }
 
 void MainBMSWindow::sendMessage(QCanMessage& msg)
@@ -398,7 +403,7 @@ void MainBMSWindow::on_actionClear_triggered()
 }
 void MainBMSWindow::on_actionExit_triggered()
 {
-
+    exit(0);
 }
 
 void MainBMSWindow::onCanbusError(quint32 error)

@@ -152,9 +152,10 @@ int bms_canbus()
     config_print();
 #endif
     // 主循环中放置看门狗代码
-    for ( ;; ) {
-        sleep(1);
-    }
+//    for ( ;; ) {
+//        sleep(1);
+//    }
+//去掉这个循环
     return 0;
 die:
     log_printf(ERR, "going to die. system aborted!");

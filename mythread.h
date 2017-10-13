@@ -8,9 +8,11 @@ class mythread : public QThread
     Q_OBJECT
 public:
     explicit mythread(QObject *parent = 0);
-    //bool stop ;
+    //bool stopped ;
     void stop();
     void run();
+private:
+    volatile bool stopped;
 signals:
 
 public slots:

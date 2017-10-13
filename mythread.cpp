@@ -4,15 +4,19 @@
 #include "mainbmswindow.h"
 mythread::mythread(QObject *parent) : QThread(parent)
 {
-    //stop = false;
+    stopped = false;
 }
 
 void mythread::run()
-{    
-    bms_canbus();
+{
+    /*while(!stopped)*/{
+        bms_canbus();//函数中包含循环，so去得在此的循环
+    }
+    stopped = false;
 }
 void mythread::stop()
 {
+    stopped = true;
     bms_canstop();
     bms_exit();
     MainBMSWindow::ui_exit();
