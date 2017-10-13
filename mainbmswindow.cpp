@@ -197,11 +197,15 @@ void MainBMSWindow::on_pushButton_connect_clicked()
     if(VCI_OpenDevice(m_devtype,m_devind,0)!=STATUS_OK)
     {
         QMessageBox::warning(this,"打开设备失败!","警告",QMessageBox::Ok);
+        ui->actionDisconnect->setEnabled(false);
+        ui->actionConnect->setEnabled(true);
         return;
     }
     if(VCI_InitCAN(m_devtype,m_devind,m_cannum,&init_config)!=STATUS_OK)
     {
         QMessageBox::warning(this,"初始化CAN失败!","警告",QMessageBox::Ok);
+        ui->actionDisconnect->setEnabled(false);
+        ui->actionConnect->setEnabled(true);
         VCI_CloseDevice(m_devtype,m_devind);
         return;
     }
@@ -211,12 +215,16 @@ void MainBMSWindow::on_pushButton_connect_clicked()
         QMessageBox::information(this,"connect","启动成功",QMessageBox::Ok);
         ui->pushButton_connect->setVisible(false);
         ui->pushButton_discon->setVisible(true);
+        ui->actionDisconnect->setEnabled(true);
+        ui->actionConnect->setEnabled(false);
         mythread_can.start(); //bms_canbus();
         bst_timer.start(100);
     }
     else
     {
         QMessageBox::information(this,"connect","启动失败",QMessageBox::Ok);
+        ui->actionDisconnect->setEnabled(false);
+        ui->actionConnect->setEnabled(true);
     }
 #endif
 }
@@ -275,6 +283,8 @@ void MainBMSWindow::on_pushButton_discon_clicked()
     VCI_CloseDevice(m_devtype,m_devind);
     mythread_can.stop(); //bms_canbus();
     bst_timer.stop();
+    ui->actionDisconnect->setEnabled(false);
+    ui->actionConnect->setEnabled(true);
     ui->pushButton_connect->setVisible(true);
     ui->pushButton_discon->setVisible(false);
 }
@@ -291,8 +301,8 @@ void MainBMSWindow::on_checkBox_clicked(bool checked)
 void MainBMSWindow::on_actionConnect_triggered()
 {
     on_pushButton_connect_clicked();
-    ui->actionDisconnect->setEnabled(true);
-    ui->actionConnect->setEnabled(false);
+//    ui->actionDisconnect->setEnabled(true);
+//    ui->actionConnect->setEnabled(false);
 #if 0
     ConnectDlg	dlg;
 
@@ -342,8 +352,8 @@ void MainBMSWindow::on_actionDisconnect_triggered()
     //mSocket.close();
     //ui.labelBusError->setText("offline");
     on_pushButton_discon_clicked();
-    ui->actionDisconnect->setEnabled(false);
-    ui->actionConnect->setEnabled(true);
+//    ui->actionDisconnect->setEnabled(false);
+//    ui->actionConnect->setEnabled(true);
 }
 
 void MainBMSWindow::sendMessage(QCanMessage& msg)
