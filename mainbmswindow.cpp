@@ -1257,7 +1257,7 @@ void MainBMSWindow::slot_statustimer()
 //    }
     SetValue(task->bms_stage);
 
-#if 1
+#if 0
     switch (task->bms_stage) {
         case CHARGE_STAGE_INVALID:
             ui->toolBox_stage->setCurrentIndex(0);

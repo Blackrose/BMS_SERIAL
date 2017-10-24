@@ -644,6 +644,31 @@ typedef enum {
     PGN_CEM = 0x001F00
 }CAN_PGN;
 
+typedef enum {
+    PGN_CHM_TIME = 250,
+    PGN_BHM_TIME = 250,
+    PGN_CRM_TIME = 250,
+    PGN_BRM_TIME = 250,
+    PGN_BCP_TIME = 500,
+    PGN_CTS_TIME = 500,
+    PGN_CML_TIME = 250,
+    PGN_BRO_TIME = 250,
+    PGN_CRO_TIME = 250,
+    PGN_BCL_TIME = 50,
+    PGN_BCS_TIME = 250,
+    PGN_CCS_TIME = 50,
+    PGN_BSM_TIME = 250,
+    PGN_BMV_TIME = 10000,//10S
+    PGN_BMT_TIME = 10000,//10S
+    PGN_BSP_TIME = 10000,//10S
+    PGN_BST_TIME = 10,
+    PGN_CST_TIME = 10,
+    PGN_BSD_TIME = 250,
+    PGN_CSD_TIME = 250,
+    PGN_BEM_TIME = 250,
+    PGN_CEM_TIME = 250
+}CAN_PGN_TIME;
+
 #include "Hachiko.h"
 
 /*

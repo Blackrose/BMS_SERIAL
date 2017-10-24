@@ -52,7 +52,7 @@ struct can_pack_generator generator[] = {
     .pgn        =  PGN_CHM,//0x002600,
     .prioriy    =  6,
     .datalen    =  3,
-    .period     =  250,
+    .period     =  PGN_CHM_TIME,
     .heartbeat   =  0,
     .mnemonic   =  "CHM",
     .can_silence = 0,
@@ -64,7 +64,7 @@ struct can_pack_generator generator[] = {
     .pgn        =  PGN_BHM,//0x002700,
     .prioriy    =  6,
     .datalen    =  2,
-    .period     =  250,
+    .period     =  PGN_BHM_TIME,
     .heartbeat   =  0,
     .mnemonic   =  "BHM",
     .can_silence = 0,
@@ -76,7 +76,7 @@ struct can_pack_generator generator[] = {
     .pgn        =  PGN_CRM,//0x000100,
     .prioriy    =  6,
     .datalen    =  8,
-    .period     =  250,
+    .period     =  PGN_CRM_TIME,
     .heartbeat   =  0,
     .mnemonic   =  "CRM",
     .can_silence = 0,
@@ -88,7 +88,7 @@ struct can_pack_generator generator[] = {
     .pgn        =  PGN_BRM,//0x000200,
     .prioriy    =  6,
     .datalen    =  41,
-    .period     =  250,
+    .period     =  PGN_BRM_TIME,
     .heartbeat   =  0,
     .mnemonic   =  "BRM",
     .can_silence = 0,
@@ -100,7 +100,7 @@ struct can_pack_generator generator[] = {
     .pgn        =  PGN_BCP,//0x000600,
     .prioriy    =  6,
     .datalen    =  13,
-    .period     =  500,
+    .period     =  PGN_BCP_TIME,
     .heartbeat   =  0,
     .mnemonic   =  "BCP",
     .can_silence = 0,
@@ -112,7 +112,7 @@ struct can_pack_generator generator[] = {
     .pgn        =  PGN_CTS,//0x000700,
     .prioriy    =  6,
     .datalen    =  7,
-    .period     =  500,
+    .period     =  PGN_CTS_TIME,
     .heartbeat   =  0,
     .mnemonic   =  "CTS",
     .can_silence = 0,
@@ -124,7 +124,7 @@ struct can_pack_generator generator[] = {
     .pgn        =  PGN_CML,//0x000800,
     .prioriy    =  6,
     .datalen    =  8,//6
-    .period     =  250,
+    .period     =  PGN_CML_TIME,
     .heartbeat   =  0,
     .mnemonic   =  "CML",
     .can_silence = 0,
@@ -136,7 +136,7 @@ struct can_pack_generator generator[] = {
     .pgn        =  PGN_BRO,//0x00900,
     .prioriy    =  4,
     .datalen    =  1,
-    .period     =  250,
+    .period     =  PGN_BRO_TIME,
     .heartbeat   =  0,
     .mnemonic   =  "BRO",
     .can_silence = 0,
@@ -148,7 +148,7 @@ struct can_pack_generator generator[] = {
     .pgn        =  PGN_CRO,//0x00A00,
     .prioriy    =  4,
     .datalen    =  1,
-    .period     =  250,
+    .period     =  PGN_CRO_TIME,
     .heartbeat   =  0,
     .mnemonic   =  "CRO",
     .can_silence = 0,
@@ -160,7 +160,7 @@ struct can_pack_generator generator[] = {
     .pgn        =  PGN_BCL,//0x001000,
     .prioriy    =  6,
     .datalen    =  5,
-    .period     =  50,
+    .period     =  PGN_BCL_TIME,
     .heartbeat   =  0,
     .mnemonic   =  "BCL",
     .can_silence = 0,
@@ -172,7 +172,7 @@ struct can_pack_generator generator[] = {
     .pgn        =  PGN_BCS,//0x001100,
     .prioriy    =  7,
     .datalen    =  9,
-    .period     =  250,
+    .period     =  PGN_BCS_TIME,
     .heartbeat   =  0,
     .mnemonic   =  "BCS",
     .can_silence = 0,
@@ -184,7 +184,7 @@ struct can_pack_generator generator[] = {
     .pgn        =  PGN_CCS,//0x001200,
     .prioriy    =  6,
     .datalen    =  8,//6
-    .period     =  50,
+    .period     =  PGN_CCS_TIME,
     .heartbeat   =  0,
     .mnemonic   =  "CCS",
     .can_silence = 0,
@@ -196,7 +196,7 @@ struct can_pack_generator generator[] = {
     .pgn        =  PGN_BSM,//0x001300,
     .prioriy    =  6,
     .datalen    =  7,
-    .period     =  250,
+    .period     =  PGN_BSM_TIME,
     .heartbeat   =  0,
     .mnemonic   =  "BSM",
     .can_silence = 0,
@@ -208,7 +208,7 @@ struct can_pack_generator generator[] = {
     .pgn        =  PGN_BMV,//0x001500,
     .prioriy    =  7,
     .datalen    =  8,
-    .period     =  10,
+    .period     =  PGN_BMV_TIME,
     .heartbeat   =  0,
     .mnemonic   =  "BMV",
     .can_silence = 0,
@@ -220,7 +220,7 @@ struct can_pack_generator generator[] = {
     .pgn        =  PGN_BMT,//0x001600,
     .prioriy    =  7,
     .datalen    =  8,
-    .period     =  10,
+    .period     =  PGN_BMT_TIME,
     .heartbeat   =  0,
     .mnemonic   =  "BMT",
     .can_silence = 0,
@@ -232,7 +232,7 @@ struct can_pack_generator generator[] = {
     .pgn        =  PGN_BSP,//0x001700,
     .prioriy    =  7,
     .datalen    =  8,
-    .period     =  10,
+    .period     =  PGN_BSP_TIME,
     .heartbeat   =  0,
     .mnemonic   =  "BSP",
     .can_silence = 0,
@@ -244,7 +244,7 @@ struct can_pack_generator generator[] = {
     .pgn        =  PGN_BST,//0x001900,
     .prioriy    =  4,
     .datalen    =  4,
-    .period     =  10,
+    .period     =  PGN_BST_TIME,
     .heartbeat   =  0,
     .mnemonic   =  "BST",
     .can_silence = 0,
@@ -256,7 +256,7 @@ struct can_pack_generator generator[] = {
     .pgn        =  PGN_CST,//0x001A00,
     .prioriy    =  4,
     .datalen    =  4,
-    .period     =  10,
+    .period     =  PGN_CST_TIME,
     .heartbeat   =  0,
     .mnemonic   =  "CST",
     .can_silence = 0,
@@ -268,7 +268,7 @@ struct can_pack_generator generator[] = {
     .pgn        =  PGN_BSD,//0x001C00,
     .prioriy    =  6,
     .datalen    =  7,
-    .period     =  250,
+    .period     =  PGN_BSD_TIME,
     .heartbeat   =  0,
     .mnemonic   =  "BSD",
     .can_silence = 0,
@@ -280,7 +280,7 @@ struct can_pack_generator generator[] = {
     .pgn        =  PGN_CSD,//0x001D00,
     .prioriy    =  6,
     .datalen    =  8,//5,
-    .period     =  250,
+    .period     =  PGN_CSD_TIME,
     .heartbeat   =  0,
     .mnemonic   =  "CSD",
     .can_silence = 0,
@@ -292,7 +292,7 @@ struct can_pack_generator generator[] = {
     .pgn        =  PGN_BEM,//0x001E00,
     .prioriy    =  2,
     .datalen    =  4,
-    .period     =  250,
+    .period     =  PGN_BEM_TIME,
     .heartbeat   =  0,
     .mnemonic   =  "BEM",
     .can_silence = 0,
@@ -304,7 +304,7 @@ struct can_pack_generator generator[] = {
     .pgn        =  PGN_CEM,//0x001F00,
     .prioriy    =  2,
     .datalen    =  4,
-    .period     =  250,
+    .period     =  PGN_CEM_TIME,
     .heartbeat   =  0,
     .mnemonic   =  "CEM",
     .can_silence = 0,
@@ -640,7 +640,7 @@ static int can_packet_callback(
                 param->evt_param = EVT_RET_ERR;
                 break;
             case CHARGE_STAGE_IDENTIFICATION:
-                if ( generator[I_BRM].heartbeat >= generator[I_BRM].period ) {
+                if ( generator[I_BRM].heartbeat >= generator[I_BRM].period/250 ) {
                     gen_packet_PGN512(thiz, param);
                     set_packet_TP_CM_RTS(I_BRM,param);
                     generator[I_BRM].heartbeat = 0;
@@ -651,7 +651,7 @@ static int can_packet_callback(
                 }
                 break;
             case CHARGE_STAGE_CONFIGURE:
-                if ( generator[I_BCP].heartbeat >= generator[I_BCP].period ) {
+                if ( generator[I_BCP].heartbeat >= generator[I_BCP].period/500 ) {
                     gen_packet_PGN1536(thiz, param);
                     set_packet_TP_CM_RTS(I_BCP,param);
                     generator[I_BCP].heartbeat = 0;
@@ -662,7 +662,7 @@ static int can_packet_callback(
                 }
                 break;
         case CHARGE_STAGE_CHARGING:
-            if ( generator[I_BCS].heartbeat >= generator[I_BCS].period ) {
+            if ( generator[I_BCS].heartbeat >= generator[I_BCS].period/250 ) {
                 gen_packet_PGN4352(thiz, param);
                 set_packet_TP_CM_RTS(I_BCS,param);
                 generator[I_BCS].heartbeat = 0;
@@ -713,20 +713,20 @@ static int can_packet_callback(
                 param->evt_param = EVT_RET_ERR;
                 break;
             case CHARGE_STAGE_IDENTIFICATION:
-                if ( generator[I_BRM].heartbeat >= generator[I_BRM].period/25/*10ms*/ ) {
+                if ( generator[I_BRM].heartbeat >= generator[I_BRM].period/250/*10ms*/ ) {
                     set_packet_TP_DT(I_BRM,param);
                     generator[I_BRM].heartbeat = 0;
                 }
                 //set_packet_TP_DT(I_BRM,param);
                 break;
             case CHARGE_STAGE_CONFIGURE:
-                if ( generator[I_BCP].heartbeat >= generator[I_BCP].period/50/*10ms*/ ) {
+                if ( generator[I_BCP].heartbeat >= generator[I_BCP].period/500/*10ms*/ ) {
                     set_packet_TP_DT(I_BCP,param);
                     generator[I_BCP].heartbeat = 0;
                 }
                 break;
             case CHARGE_STAGE_CHARGING:
-                if ( generator[I_BCS].heartbeat >= generator[I_BCS].period/25/*10ms*/ ) {
+                if ( generator[I_BCS].heartbeat >= generator[I_BCS].period/250/*10ms*/ ) {
                     gen_packet_PGN4352(thiz, param);
                     set_packet_TP_DT(I_BCS,param);
                     generator[I_BCS].heartbeat = 0;
@@ -963,7 +963,7 @@ int about_packet_reciev_done(struct charge_task *thiz,
                    param->buff.rx_buff, sizeof(struct pgn6656_CST));
         }
         bit_set(thiz,F_CHARGER_CST);
-        if(bit_read(thiz,F_BMS_BST)) {//收到充电机中止报文，且已经发送过中止报文
+        if(bit_read(thiz,F_BMS_BST) || bit_read(thiz,F_CHARGER_CST)) {//收到充电机中止报文，且已经发送过中止报文
             log_printf(INF, "BMS: BMS change stage to "RED("CHARGE_STAGE_DONE"));
             thiz->bms_stage = CHARGE_STAGE_DONE;
         }
