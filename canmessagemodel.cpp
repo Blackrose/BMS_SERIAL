@@ -10,6 +10,7 @@
 #include <QByteArray>
 #include <QDateTime>
 #include "canmessagemodel.h"
+#include <QLabel>
 
 CanMessageModel::CanMessageModel(Type type, QObject *parent)
 	: QAbstractTableModel(parent),
@@ -149,6 +150,11 @@ QVariant CanMessageModel::data(const QModelIndex &index, int role) const
         //return msg.sinceLast;
 	}
 #endif
+#if 0
+    QLabel *my_label= new QLabel;
+    my_label->setText(dateTime.fromMSecsSinceEpoch(msg.time).toString("hh:mm:ss:zzz"));
+#endif
+
 	return QVariant();
 }
 

@@ -137,7 +137,7 @@ void *thread_hachiko_init(void *arg) ___THREAD_ENTRY___
 
     log_printf(INF, "%s running...s=%d", __FUNCTION__, s);
 
-    HANDLE hTime = CreateWaitableTimer(NULL, FALSE, NULL );
+    HANDLE hTime = CreateWaitableTimer(NULL, FALSE, NULL );//参数用于指明你要设置的定时器
     if ( NULL == hTime )
     {
         log_printf(INF, "hTime is NULL");
@@ -145,8 +145,8 @@ void *thread_hachiko_init(void *arg) ___THREAD_ENTRY___
     }
 
     LARGE_INTEGER liDueTime;
-    liDueTime.QuadPart=-10000000;
-    if ( !SetWaitableTimer(hTime, &liDueTime, 1, TimerAPCProc, NULL, FALSE))//1ms 超时
+    liDueTime.QuadPart=-10000000;//10ms  参数用于指明定时器何时应该第一次报时
+    if ( !SetWaitableTimer(hTime, &liDueTime, 1, TimerAPCProc, NULL, FALSE))//1ms 超时 参数则用于指明此后定时器应该间隔多长时间报时一次
     {
         log_printf(INF, "SetWaitableTimer error");
         return -1;

@@ -645,28 +645,28 @@ typedef enum {
 }CAN_PGN;
 
 typedef enum {
-    PGN_CHM_TIME = 250,
-    PGN_BHM_TIME = 250,
-    PGN_CRM_TIME = 250,
-    PGN_BRM_TIME = 250,
-    PGN_BCP_TIME = 500,
-    PGN_CTS_TIME = 500,
-    PGN_CML_TIME = 250,
-    PGN_BRO_TIME = 250,
-    PGN_CRO_TIME = 250,
-    PGN_BCL_TIME = 50,
-    PGN_BCS_TIME = 250,
-    PGN_CCS_TIME = 50,
-    PGN_BSM_TIME = 250,
-    PGN_BMV_TIME = 10000,//10S
-    PGN_BMT_TIME = 10000,//10S
-    PGN_BSP_TIME = 10000,//10S
-    PGN_BST_TIME = 10,
-    PGN_CST_TIME = 10,
-    PGN_BSD_TIME = 250,
-    PGN_CSD_TIME = 250,
-    PGN_BEM_TIME = 250,
-    PGN_CEM_TIME = 250
+    PGN_CHM_TIME = 47,//250,//每次发送单帧耗时 5.3ms
+    PGN_BHM_TIME = 47,
+    PGN_CRM_TIME = 38,
+    PGN_BRM_TIME = 38,//250 多帧  6.5ms
+    PGN_BCP_TIME = 91,//500,多帧 //每次发送单帧耗时 5.4ms
+    PGN_CTS_TIME = 71,//500
+    PGN_CML_TIME = 47,
+    PGN_BRO_TIME = 47,
+    PGN_CRO_TIME = 47,
+    PGN_BCL_TIME = 9,//50,//每次发送单帧耗时 5.6ms
+    PGN_BCS_TIME = 38,//250 多帧
+    PGN_CCS_TIME = 9,
+    PGN_BSM_TIME = 47,
+    PGN_BMV_TIME = 1428,//10000,//10S //每次发送单帧耗时 7ms*1428=9996
+    PGN_BMT_TIME = 1428,//10000,//10S
+    PGN_BSP_TIME = 1428,//10000,//10S
+    PGN_BST_TIME = 1,//10,//每次发送单帧耗时 7ms*1=7
+    PGN_CST_TIME = 1,
+    PGN_BSD_TIME = 47,
+    PGN_CSD_TIME = 47,
+    PGN_BEM_TIME = 47,
+    PGN_CEM_TIME = 47
 }CAN_PGN_TIME;
 
 #include "Hachiko.h"

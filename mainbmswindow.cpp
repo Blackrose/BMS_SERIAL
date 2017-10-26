@@ -71,7 +71,16 @@ MainBMSWindow::MainBMSWindow(QWidget *parent) :
     //bst_timer.start(100);
     MainBMSWindow::oldvalue = 255;
 
-    ui->statusBar->showMessage(tr("BMS 模拟软件!!!"));
+    //ui->statusBar->showMessage(tr("BMS 模拟软件!!!"));
+    my_progressbar = new QProgressBar;
+    my_name_label = new QLabel;
+    my_label = new QLabel;
+    my_name_label->setText("BMS 模拟软件!!!");
+    ui->statusBar->addPermanentWidget(my_name_label);
+    ui->statusBar->addWidget(my_label);
+    ui->statusBar->addWidget(my_progressbar);
+    my_label->setText(tr("BMS 准备充电握手!!!"));
+    my_progressbar->setValue(5);
 }
 
 MainBMSWindow::~MainBMSWindow()
@@ -226,6 +235,14 @@ void MainBMSWindow::on_pushButton_connect_clicked()
         ui->actionDisconnect->setEnabled(false);
         ui->actionConnect->setEnabled(true);
     }
+#else //debug
+    QMessageBox::information(this,"connect","启动成功",QMessageBox::Ok);
+    ui->pushButton_connect->setVisible(false);
+    ui->pushButton_discon->setVisible(true);
+    ui->actionDisconnect->setEnabled(true);
+    ui->actionConnect->setEnabled(false);
+    mythread_can.start(); //bms_canbus();
+    bst_timer.start(100);
 #endif
 }
 
@@ -1170,6 +1187,19 @@ void MainBMSWindow::on_pushButton_BSD_clicked()
     set_data_bms_PGN7168(task);
 }
 
+
+void MainBMSWindow::on_pushButton_BST_clicked()
+{
+    set_data_bms_PGN6400(task);
+    bit_set(task,F_BMS_STOP) ;
+    //task->bms_stage = CHARGE_STAGE_CHARGING;
+}
+
+void MainBMSWindow::on_pushButton_set_BST_clicked()
+{
+
+}
+
 void MainBMSWindow::ui_exit()
 {
     MainBMSWindow::oldvalue = 255;
@@ -1189,18 +1219,28 @@ void MainBMSWindow::ChangeValue(int value)
     switch (value) {
     case CHARGE_STAGE_INVALID:
         QMessageBox::about(NULL, "Connect", "准备充电握手");
+        //ui->statusBar->showMessage(tr("BMS 准备充电握手!!!"));
+        my_label->setText(tr("BMS 准备充电握手!!!"));
+        my_progressbar->setValue(10);
         break;
     case CHARGE_STAGE_HANDSHACKING:
         QMessageBox::about(NULL, "Connect", "充电握手完成");
+        //ui->statusBar->showMessage(tr("BMS 充电握手完成!!!"));
+        my_label->setText(tr("BMS 充电握手完成!!!"));
+        my_progressbar->setValue(30);
         break;
     case CHARGE_STAGE_IDENTIFICATION:
 #ifdef SET_DATA
         set_data_bms_PGN512(task);
 #endif
         QMessageBox::about(NULL, "Connect", "充电辨识开始");
+        my_progressbar->setValue(50);
         show_data_charger_PGN256(task);
         break;
     case CHARGE_STAGE_CONFIGURE:
+        //ui->statusBar->showMessage(tr("BMS 充电辨识完成，充电配置!!!"));
+        my_label->setText(tr("BMS 充电辨识完成，充电配置!!!"));
+        my_progressbar->setValue(70);
         show_data_charger_PGN256(task);
         //QMessageBox::about(NULL, "Connect", "充电辨识完成，充电配置");
 #ifdef SET_DATA
@@ -1216,6 +1256,9 @@ void MainBMSWindow::ChangeValue(int value)
         break;
     case CHARGE_STAGE_CHARGING:
         show_data_charger_PGN2560(task);
+        //ui->statusBar->showMessage(tr("BMS 充电配置完成，开始充电!!!"));
+        my_label->setText(tr("BMS 充电配置完成，开始充电!!!"));
+        my_progressbar->setValue(60);
         //QMessageBox::about(NULL, "Connect", "充电配置完成，开始充电");
 #ifdef SET_DATA
         set_data_bms_PGN4096(task);
@@ -1230,6 +1273,9 @@ void MainBMSWindow::ChangeValue(int value)
         break;
     case CHARGE_STAGE_DONE:
         show_data_charger_PGN6656(task);
+        //ui->statusBar->showMessage(tr("BMS 充电完成，结束充电!!!"));
+        my_label->setText(tr("BMS 充电完成，结束充电!!!"));
+        my_progressbar->setValue(90);
         //QMessageBox::about(NULL, "Connect", "充电完成，结束充电");
 #ifdef SET_DATA
         set_data_bms_PGN7168(task);

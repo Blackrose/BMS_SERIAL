@@ -12,6 +12,7 @@
 
 int log_printf(unsigned int level, const char *fmt, ...)
 {
+    return 1;
     char buff[512]={0};
 	va_list ap;
     //char *lvlstr[] = {"INF", "WRN", "ERR", "DBG"};
@@ -39,7 +40,7 @@ int log_printf(unsigned int level, const char *fmt, ...)
         struct timezone tz;
         //gettimeofday(&tv, &tz);
         gettimeofday(&tv, NULL);
-        printf("tv_sec:%ld tv_usec:%ld tv_msec:%ld\n",tv.tv_sec,tv.tv_usec,tv.tv_usec/1000);
+        //printf("tv_sec:%ld tv_usec:%ld tv_msec:%ld\n",tv.tv_sec,tv.tv_usec,tv.tv_usec/1000);
         //printf("tz_minuteswest:%d\n",tz.tz_minuteswest);
         //printf("tz_dsttime:%d\n",tz.tz_dsttime);
         printf("ms===%d\n",p->tm_sec*1000 + tv.tv_usec/1000);

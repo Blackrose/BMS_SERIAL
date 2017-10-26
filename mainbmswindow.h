@@ -8,6 +8,7 @@
 #include <QDateTime>
 #include <QToolTip>
 #include <QItemSelectionModel>
+#include <QProgressBar>
 //#include <QGraphicsItem>
 //#include <QGraphicsScene>
 //#include <QGraphicsRectItem>
@@ -174,8 +175,13 @@ private slots:
 
     void on_pushButton_BSD_clicked();
 
+    void on_pushButton_BST_clicked();
+    void on_pushButton_set_BST_clicked();
+
     void slot_statustimer();
     void slot_getip();
+
+
 signals:
    void ValueChanged(int );
 
@@ -190,6 +196,10 @@ private:
     CanMessageModel		*mReceiveModel;
     CanMessageModel 	*mSendModel;
     CanSendScheduler	*mScheduler;
+
+    QLabel              *my_name_label;
+    QLabel              *my_label;
+    QProgressBar        *my_progressbar;
 };
 
 #endif // MAINBMSWINDOW_H

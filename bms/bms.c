@@ -408,7 +408,7 @@ void set_packet_TP_CM_RTS(int png_num,struct event_struct* param){
      * byte[5]: 0xFF
      * byte[6:8]: PGN
      */
-    log_printf(INF, "BMS: "RED("TP_CM_RTS"));
+    log_printf(WRN, "BMS: "RED("TP_CM_RTS"));
     param->buff.tx_buff[0] = CAN_TP_CM_RTS_CONTROL;
     param->buff.tx_buff[1] = generator[png_num].datalen%256;//0x29;//
     param->buff.tx_buff[2] = generator[png_num].datalen/256;//0x00;//
@@ -429,7 +429,7 @@ void set_packet_TP_DT(int png_num,struct event_struct* param){
      * byte[1]: 序列号（1、2、3、4...）
      * byte[2:8]: 数据（7字节），不足为FF
      */
-    log_printf(INF, "BMS: "RED("TP_DT"));
+    log_printf(WRN, "BMS: "RED("TP_DT"));
 //    param->buff.tx_buff[0] = 0x01;
 //    param->buff.tx_buff[1] = 0x00;
 //    param->buff.tx_buff[2] = 0x01;
@@ -438,8 +438,8 @@ void set_packet_TP_DT(int png_num,struct event_struct* param){
 //    param->buff.tx_buff[5] = 0x80;
 //    param->buff.tx_buff[6] = 0x0C;
 //    param->buff.tx_buff[7] = 0x04;
-    log_printf(INF, "BMS: tp_pack_num==%d",task->can_tp_param.tp_pack_num);
-    log_printf(INF, "BMS: tp_size==%d",task->can_tp_param.tp_size);
+    log_printf(WRN, "BMS: tp_pack_num==%d",task->can_tp_param.tp_pack_num);
+    log_printf(WRN, "BMS: tp_size==%d",task->can_tp_param.tp_size);
 
     if(task->can_tp_param.tp_pack_nr == ((task->can_tp_param.tp_size -1)/7+1)){//一次传输完成
         if(task->can_tp_param.tp_pack_num <= ((task->can_tp_param.tp_size-1)/7+1)){
@@ -452,7 +452,7 @@ void set_packet_TP_DT(int png_num,struct event_struct* param){
             task->can_tp_param.tp_pack_num ++;
             param->evt_param = EVT_RET_OK;
         }else{
-            log_printf(INF, "BMS: 111tp_pack_num==%d",task->can_tp_param.tp_pack_num);
+            log_printf(WRN, "BMS: 111tp_pack_num==%d",task->can_tp_param.tp_pack_num);
         }
     }else if(task->can_tp_param.tp_pack_nr == 0){
         //等待 不能马上接收数据包
@@ -489,7 +489,7 @@ static int can_packet_callback(
         thiz->can_heart_beat.Hachiko_notify_proc=
                 Hachiko_packet_heart_beart_notify_proc;
         Hachiko_new(&thiz->can_heart_beat, HACHIKO_AUTO_FEED, 4, NULL);
-        log_printf(INF, "BMS: CHARGER now stage to "RED("CHARGE_STAGE_INVALID"));
+        log_printf(DBG_LV3, "BMS: CHARGER now stage to "RED("CHARGE_STAGE_INVALID"));
         thiz->bms_stage = CHARGE_STAGE_INVALID;
         break;
     case EVENT_CAN_RESET:
@@ -632,7 +632,7 @@ static int can_packet_callback(
     case EVENT_TX_TP_RTS:
     {
         //串口处于连接管理状态时，将会收到该传输数据报请求。
-        log_printf(INF, "BMS: EVENT_TX_TP_RTS.");
+        log_printf(WRN, "BMS: EVENT_TX_TP_RTS.");
 
 #if 1
         switch ( thiz->bms_stage ) {
@@ -640,7 +640,7 @@ static int can_packet_callback(
                 param->evt_param = EVT_RET_ERR;
                 break;
             case CHARGE_STAGE_IDENTIFICATION:
-                if ( generator[I_BRM].heartbeat >= generator[I_BRM].period/250 ) {
+                if ( generator[I_BRM].heartbeat >= generator[I_BRM].period/1 ) {
                     gen_packet_PGN512(thiz, param);
                     set_packet_TP_CM_RTS(I_BRM,param);
                     generator[I_BRM].heartbeat = 0;
@@ -651,7 +651,7 @@ static int can_packet_callback(
                 }
                 break;
             case CHARGE_STAGE_CONFIGURE:
-                if ( generator[I_BCP].heartbeat >= generator[I_BCP].period/500 ) {
+                if ( generator[I_BCP].heartbeat >= generator[I_BCP].period/1 ) {
                     gen_packet_PGN1536(thiz, param);
                     set_packet_TP_CM_RTS(I_BCP,param);
                     generator[I_BCP].heartbeat = 0;
@@ -662,7 +662,7 @@ static int can_packet_callback(
                 }
                 break;
         case CHARGE_STAGE_CHARGING:
-            if ( generator[I_BCS].heartbeat >= generator[I_BCS].period/250 ) {
+            if ( generator[I_BCS].heartbeat >= generator[I_BCS].period/1 ) {
                 gen_packet_PGN4352(thiz, param);
                 set_packet_TP_CM_RTS(I_BCS,param);
                 generator[I_BCS].heartbeat = 0;
@@ -706,27 +706,27 @@ static int can_packet_callback(
         break;
     case EVENT_TX_TP_DT:
     {
-        log_printf(INF, "BMS: EVENT_TX_TP_DT.");
+        log_printf(WRN, "BMS: EVENT_TX_TP_DT.");
 #if 1
         switch ( thiz->bms_stage ) {
             case CHARGE_STAGE_INVALID:
                 param->evt_param = EVT_RET_ERR;
                 break;
             case CHARGE_STAGE_IDENTIFICATION:
-                if ( generator[I_BRM].heartbeat >= generator[I_BRM].period/250/*10ms*/ ) {
+                if ( generator[I_BRM].heartbeat >= generator[I_BRM].period/PGN_BRM_TIME/*10ms*/ ) {
                     set_packet_TP_DT(I_BRM,param);
                     generator[I_BRM].heartbeat = 0;
                 }
                 //set_packet_TP_DT(I_BRM,param);
                 break;
             case CHARGE_STAGE_CONFIGURE:
-                if ( generator[I_BCP].heartbeat >= generator[I_BCP].period/500/*10ms*/ ) {
+                if ( generator[I_BCP].heartbeat >= generator[I_BCP].period/PGN_BCP_TIME/*10ms*/ ) {
                     set_packet_TP_DT(I_BCP,param);
                     generator[I_BCP].heartbeat = 0;
                 }
                 break;
             case CHARGE_STAGE_CHARGING:
-                if ( generator[I_BCS].heartbeat >= generator[I_BCS].period/250/*10ms*/ ) {
+                if ( generator[I_BCS].heartbeat >= generator[I_BCS].period/PGN_BCS_TIME/*10ms*/ ) {
                     gen_packet_PGN4352(thiz, param);
                     set_packet_TP_DT(I_BCS,param);
                     generator[I_BCS].heartbeat = 0;
@@ -783,15 +783,15 @@ int about_packet_transfer_done(struct charge_task *thiz,
         case PGN_BHM:
             break;
         case PGN_BRO:// 0x000900, BMS 准备就绪报文
-            log_printf(INF, "BMS: PGN_BRO ");
+            log_printf(DBG_LV3, "BMS: PGN_BRO ");
             break;
         case PGN_BCL:// 0x001000, BMS 电池充电需求报文
-            log_printf(INF, "BMS: PGN_BCL ");
+            log_printf(DBG_LV3, "BMS: PGN_BCL ");
             //thiz->can_bms_status = (CAN_TP_WR | CAN_TP_RTS);//准备发送BCS
             bit_set(thiz, F_BMS_BCL);
             break;
         case PGN_BST:
-            log_printf(INF, "BMS: PGN_BST ");
+            log_printf(DBG_LV3, "BMS: PGN_BST ");
             bit_set(thiz,F_BMS_BST);//发送中止报文
             break;
     }
@@ -807,7 +807,7 @@ int about_packet_reciev_done(struct charge_task *thiz,
         generator[I_CHM].can_counter ++;
         generator[I_CHM].can_silence = 0;
         if ( bit_read(task, S_BMS_COMM_DOWN) ) {
-            log_printf(INF, "BMS: BMS 通信"GRN("恢复"));
+            log_printf(DBG_LV3, "BMS: BMS 通信"GRN("恢复"));
         }
         bit_clr(task, S_BMS_COMM_DOWN);
 
@@ -821,7 +821,7 @@ int about_packet_reciev_done(struct charge_task *thiz,
                 thiz->charger_handshake.spn2600_charger_version[0] == 0x01 &&
                 thiz->charger_handshake.spn2600_charger_version[1] == 0x01 &&
                     thiz->charger_handshake.spn2600_charger_version[2] == 0x00){
-            log_printf(INF, "BMS: BMS change stage to "RED("CHARGE_STAGE_HANDSHACKING"));
+            log_printf(DBG_LV3, "BMS: BMS change stage to "RED("CHARGE_STAGE_HANDSHACKING"));
             thiz->bms_stage = CHARGE_STAGE_HANDSHACKING;
         }else{
             log_printf(ERR, "BMS: BMS handshake err "RED("PGN_CHM"));
@@ -833,7 +833,7 @@ int about_packet_reciev_done(struct charge_task *thiz,
         generator[I_CRM].can_counter ++;
         generator[I_CRM].can_silence = 0;
         if ( bit_read(task, S_BMS_COMM_DOWN) ) {
-            log_printf(INF, "BMS: BMS 通信"GRN("恢复"));
+            log_printf(DBG_LV3, "BMS: BMS 通信"GRN("恢复"));
         }
         bit_clr(task, S_BMS_COMM_DOWN);
 
@@ -847,13 +847,13 @@ int about_packet_reciev_done(struct charge_task *thiz,
             log_printf(WRN,
                   "BMS not recognized .");
             bit_clr(thiz, F_BMS_RECOGNIZED);
-            log_printf(INF, "BMS: BMS change stage to "RED("CHARGE_STAGE_IDENTIFICATION"));
+            log_printf(DBG_LV3, "BMS: BMS change stage to "RED("CHARGE_STAGE_IDENTIFICATION"));
             thiz->bms_stage = CHARGE_STAGE_IDENTIFICATION;
             thiz->can_bms_status = (CAN_TP_WR | CAN_TP_RTS);
             break;
         }else if( thiz->charger_info.spn2560_recognize == BMS_RECOGNIZED ){
             bit_set(thiz, F_VEHICLE_RECOGNIZED);
-            log_printf(INF, "BMS: BMS change stage to "RED("CHARGE_STAGE_CONFIGURE"));
+            log_printf(DBG_LV3, "BMS: BMS change stage to "RED("CHARGE_STAGE_CONFIGURE"));
             thiz->bms_stage = CHARGE_STAGE_CONFIGURE;
             thiz->can_bms_status = (CAN_TP_WR | CAN_TP_RTS);
         }else{
@@ -862,11 +862,11 @@ int about_packet_reciev_done(struct charge_task *thiz,
         break;
     //==============================================参数阶段=================//
     case PGN_CTS :// 0x000700, 时间同步
-        log_printf(INF, "BMS: PGN_CTS 0x000700");
+        log_printf(DBG_LV3, "BMS: PGN_CTS 0x000700");
         generator[I_CTS].can_counter ++;
         generator[I_CTS].can_silence = 0;
         if ( bit_read(task, S_BMS_COMM_DOWN) ) {
-            log_printf(INF, "BMS: BMS 通信"GRN("恢复"));
+            log_printf(DBG_LV3, "BMS: BMS 通信"GRN("恢复"));
         }
         bit_clr(task, S_BMS_COMM_DOWN);
 
@@ -879,11 +879,11 @@ int about_packet_reciev_done(struct charge_task *thiz,
         bit_set(thiz,F_CHARGER_CTS);
         break;
     case PGN_CML :// 0x000800, 充电机最大输出能力
-        log_printf(INF, "BMS: PGN_CML 0x000800");
+        log_printf(DBG_LV3, "BMS: PGN_CML 0x000800");
         generator[I_CML].can_counter ++;
         generator[I_CML].can_silence = 0;
         if ( bit_read(task, S_BMS_COMM_DOWN) ) {
-            log_printf(INF, "BMS: BMS 通信"GRN("恢复"));
+            log_printf(DBG_LV3, "BMS: BMS 通信"GRN("恢复"));
         }
         bit_clr(task, S_BMS_COMM_DOWN);
 
@@ -896,11 +896,11 @@ int about_packet_reciev_done(struct charge_task *thiz,
         bit_set(thiz,F_CHARGER_CML);
         break;
     case PGN_CRO :// 0x000A00, 充电机准备就绪
-        log_printf(INF, "BMS: PGN_CRO 0x000A00");
+        log_printf(DBG_LV3, "BMS: PGN_CRO 0x000A00");
         generator[I_CRO].can_counter ++;
         generator[I_CRO].can_silence = 0;
         if ( bit_read(task, S_BMS_COMM_DOWN) ) {
-            log_printf(INF, "BMS: BMS 通信"GRN("恢复"));
+            log_printf(DBG_LV3, "BMS: BMS 通信"GRN("恢复"));
         }
         bit_clr(task, S_BMS_COMM_DOWN);
 
@@ -916,7 +916,7 @@ int about_packet_reciev_done(struct charge_task *thiz,
                 bit_clr(thiz,F_CHARGER_READY);
             }else if(thiz->charger_cro.spn2830_charger_ready_for_charge == CHARGER_READY_FOR_CHARGE){
                 bit_set(thiz,F_CHARGER_READY);
-                log_printf(INF, "BMS: BMS change stage to "RED("CHARGE_STAGE_CHARGING"));
+                log_printf(DBG_LV3, "BMS: BMS change stage to "RED("CHARGE_STAGE_CHARGING"));
                 thiz->bms_stage = CHARGE_STAGE_CHARGING;
                 thiz->can_bms_status = (CAN_TP_WR | CAN_TP_RTS);//准备发送BCS
             }else{
@@ -926,11 +926,11 @@ int about_packet_reciev_done(struct charge_task *thiz,
         break;
     //==============================================充电阶段=================//
     case PGN_CCS :// 0x001200, 充电机充电状态
-        log_printf(INF, "BMS: PGN_CCS 0x001200");
+        log_printf(DBG_LV3, "BMS: PGN_CCS 0x001200");
         generator[I_CCS].can_counter ++;
         generator[I_CCS].can_silence = 0;
         if ( bit_read(task, S_BMS_COMM_DOWN) ) {
-            log_printf(INF, "BMS: BMS 通信"GRN("恢复"));
+            log_printf(DBG_LV3, "BMS: BMS 通信"GRN("恢复"));
         }
         bit_clr(task, S_BMS_COMM_DOWN);
 
@@ -948,11 +948,11 @@ int about_packet_reciev_done(struct charge_task *thiz,
         }
         break;
     case PGN_CST :// 0x001A00, 充电机中止充电
-        log_printf(INF, "BMS: PGN_CST 0x001A00");
+        log_printf(DBG_LV3, "BMS: PGN_CST 0x001A00");
         generator[I_CST].can_counter ++;
         generator[I_CST].can_silence = 0;
         if ( bit_read(task, S_BMS_COMM_DOWN) ) {
-            log_printf(INF, "BMS: BMS 通信"GRN("恢复"));
+            log_printf(DBG_LV3, "BMS: BMS 通信"GRN("恢复"));
         }
         bit_clr(task, S_BMS_COMM_DOWN);
 
@@ -964,17 +964,17 @@ int about_packet_reciev_done(struct charge_task *thiz,
         }
         bit_set(thiz,F_CHARGER_CST);
         if(bit_read(thiz,F_BMS_BST) || bit_read(thiz,F_CHARGER_CST)) {//收到充电机中止报文，且已经发送过中止报文
-            log_printf(INF, "BMS: BMS change stage to "RED("CHARGE_STAGE_DONE"));
+            log_printf(DBG_LV3, "BMS: BMS change stage to "RED("CHARGE_STAGE_DONE"));
             thiz->bms_stage = CHARGE_STAGE_DONE;
         }
         break;
     //==============================================结束阶段=================//
     case PGN_CSD :// 0x001D00, 充电机统计数据
-        log_printf(INF, "BMS: PGN_CSD 0x001D00");
+        log_printf(DBG_LV3, "BMS: PGN_CSD 0x001D00");
         generator[I_CSD].can_counter ++;
         generator[I_CSD].can_silence = 0;
         if ( bit_read(task, S_BMS_COMM_DOWN) ) {
-            log_printf(INF, "BMS: BMS 通信"GRN("恢复"));
+            log_printf(DBG_LV3, "BMS: BMS 通信"GRN("恢复"));
         }
         bit_clr(task, S_BMS_COMM_DOWN);
 
@@ -984,15 +984,15 @@ int about_packet_reciev_done(struct charge_task *thiz,
             memcpy(&thiz->charger_cst,
                    param->buff.rx_buff, sizeof(struct pgn7424_CSD));
         }
-        log_printf(INF, "BMS: BMS change stage to "RED("CHARGE_STAGE_ANY"));
+        log_printf(DBG_LV3, "BMS: BMS change stage to "RED("CHARGE_STAGE_ANY"));
         thiz->bms_stage = CHARGE_STAGE_ANY;
         break;
     case PGN_CEM :// 0x001F00, 充电机错误报文
-        log_printf(INF, "BMS: PGN_CEM 0x001F00");
+        log_printf(DBG_LV3, "BMS: PGN_CEM 0x001F00");
         generator[I_CEM].can_counter ++;
         generator[I_CEM].can_silence = 0;
         if ( bit_read(task, S_BMS_COMM_DOWN) ) {
-            log_printf(INF, "BMS: BMS 通信"GRN("恢复"));
+            log_printf(DBG_LV3, "BMS: BMS 通信"GRN("恢复"));
         }
         bit_clr(task, S_BMS_COMM_DOWN);
 
@@ -1009,17 +1009,17 @@ int about_packet_reciev_done(struct charge_task *thiz,
     case PGN_BHM :// 0x002700, BMS 握手报文
         break;
     case PGN_BRM :// 0x000200, BMS 车辆辨识报文
-        log_printf(INF, "BMS: PGN_BRM 0x000200");
+        log_printf(DBG_LV3, "BMS: PGN_BRM 0x000200");
         break;
     case PGN_BCP :// 0x000600, BMS 配置报文
-        log_printf(INF, "BMS: PGN_BCP 0x000600");
+        log_printf(DBG_LV3, "BMS: PGN_BCP 0x000600");
         break;
     case PGN_BRO :// 0x000900, BMS 充电准备就绪报文
         break;
     case PGN_BCL :// 0x001000, BMS 电池充电需求报文
         break;
     case PGN_BCS :// 0x001100, BMS 电池充电总状态报文
-        log_printf(INF, "BMS: PGN_BCS 0x001100");
+        log_printf(DBG_LV3, "BMS: PGN_BCS 0x001100");
         if(thiz->can_bms_status == (CAN_TP_WR | CAN_TP_ACK)){
             bit_set(thiz,F_BMS_BCS);
         }
@@ -1027,22 +1027,22 @@ int about_packet_reciev_done(struct charge_task *thiz,
     case PGN_BSM :// 0x001300, 动力蓄电池状态信息报文
         break;
     case PGN_BMV :// 0x001500, 单体动力蓄电池电压报文
-        log_printf(INF, "BMS: PGN_BMV fetched.");
+        log_printf(DBG_LV3, "BMS: PGN_BMV fetched.");
         break;
     case PGN_BMT :// 0x001600, 单体动力蓄电池温度报文
-        log_printf(INF, "BMS: PGN_BMT fetched.");
+        log_printf(DBG_LV3, "BMS: PGN_BMT fetched.");
         break;
     case PGN_BSP :// 0x001700, 动力蓄电池预留报文
-        log_printf(INF, "BMS: PGN_BSP fetched.");
+        log_printf(DBG_LV3, "BMS: PGN_BSP fetched.");
         break;
     case PGN_BST :// 0x001900, BMS 中止充电报文
-        log_printf(INF, "BMS: PGN_BST fetched.");
+        log_printf(DBG_LV3, "BMS: PGN_BST fetched.");
         break;
     case PGN_BSD :// 0x001C00, BMS 统计数据报文
-        log_printf(INF, "BMS: PGN_BSD fetched.");
+        log_printf(DBG_LV3, "BMS: PGN_BSD fetched.");
         break;
     case PGN_BEM :// 0x001E00, BMS 错误报文
-        log_printf(INF, "BMS: PGN_BEM fetched.");
+        log_printf(DBG_LV3, "BMS: PGN_BEM fetched.");
         break;
     default:
         log_printf(WRN, "BMS: un-recognized PGN %08X",
@@ -1081,7 +1081,10 @@ void *thread_bms_write_service(void *arg) ___THREAD_ENTRY___
 
     if ( done == NULL ) done = &mydone;
 
-    log_printf(INF, "%s running...s=%d", __FUNCTION__, s);
+    log_printf(DBG_LV3, "%s running...s=%d", __FUNCTION__, s);
+
+    struct timeval    tv;
+    struct timezone tz;
 
     param.buff_payload = 0;
     param.evt_param = EVT_RET_INVALID;
@@ -1091,7 +1094,7 @@ void *thread_bms_write_service(void *arg) ___THREAD_ENTRY___
 
     while ( ! *done ) {
         usleep(5000);
-        //log_printf(INF, "BMS: %s ...*done=%d", __FUNCTION__, *done);
+        //log_printf(DBG_LV3, "BMS: %s ...*done=%d", __FUNCTION__, *done);
         /*
          * 写线程同时负责写数据和进行连接管理时的控制数据写出，这里需要对当前CAN的
          * 状态进行判定，当CAN处于CAN_NORMAL时进行普通的写操作，采用EVENT_TX_REQUEST,
@@ -1104,7 +1107,7 @@ void *thread_bms_write_service(void *arg) ___THREAD_ENTRY___
         if ( task->can_bms_status & CAN_NORMAL ) {
             can_packet_callback(task, EVENT_TX_REQUEST, &param);
         } else if ( task->can_bms_status & CAN_TP_WR ) {//增加多数据包写
-            log_printf(WRN, "BMS: CAN_TP_WRITE.");
+            log_printf(DBG_LV0, "BMS: CAN_TP_WRITE.");
             switch ( task->can_bms_status & 0xF0 ) {
             case CAN_TP_RTS:
                 can_packet_callback(task, EVENT_TX_TP_RTS, &param);//请求发送数据包
@@ -1183,10 +1186,13 @@ void *thread_bms_write_service(void *arg) ___THREAD_ENTRY___
                 send_frame.RemoteFlag = frame.RemoteFlag;
                 send_frame.SendType = frame.SendType;
                 memcpy(send_frame.Data,frame.Data,frame.DataLen);
+
+                gettimeofday(&tv, NULL);
+                printf("send_frame time= %d ms %08x\n",tv.tv_usec/1000,send_frame.ID);
             }
         } else if ( param.buff_payload > 8 ) {
             // 大于8字节的数据包在这里处理，程序向后兼容
-            log_printf(INF,"param.buff_payload > 8.");
+            log_printf(DBG_LV0,"param.buff_payload > 8.");
         } else {
         }
 
@@ -1271,14 +1277,14 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
 
     if ( done == NULL ) done = &mydone;
 
-    log_printf(INF, "BMS: %s running...s=%d", __FUNCTION__, s);
+    log_printf(DBG_LV3, "BMS: %s running...s=%d", __FUNCTION__, s);
 
     param.buff.rx_buff = tp_buff;
     param.buff_size = sizeof(tp_buff);
     param.buff_payload = 0;
     while ( ! *done ) {
         usleep(5000);
-        //log_printf(INF, "BMS: %s ...*done=%d", __FUNCTION__, *done);
+        //log_printf(DBG_LV3, "BMS: %s ...*done=%d", __FUNCTION__, *done);
         if ( task->can_bms_status  == CAN_INVALID ) {
             continue;
         }
@@ -1313,6 +1319,9 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
             receive_frame.RemoteFlag = frame.RemoteFlag;
             receive_frame.SendType = frame.SendType;
             memcpy(receive_frame.Data,frame.Data,frame.DataLen);
+            if(receive_frame.TimeFlag != 0x00){
+                receive_frame.TimeStamp = frame.TimeStamp;
+            }
         }
 
 #if 1
@@ -1494,7 +1503,7 @@ int set_data_bms_PGN9984(struct charge_task * thiz)
 // 握手-BRM-BMS辨识报文
 int gen_packet_PGN512(struct charge_task * thiz, struct event_struct* param)
 {
-    log_printf(INF, "BMS: "RED("gen_packet_PGN512"));
+    log_printf(DBG_LV3, "BMS: "RED("gen_packet_PGN512"));
     struct can_pack_generator *gen = &generator[I_BRM];
 
     memset(param->buff.tx_buff, INIT, sizeof(struct pgn512_BRM));
@@ -1515,7 +1524,7 @@ int gen_packet_PGN512(struct charge_task * thiz, struct event_struct* param)
     memcpy(task->can_tp_param.tx_buff, &thiz->vehicle_info, sizeof(struct pgn512_BRM));//copy 到临时数据结构中
 
     memset(param->buff.tx_buff, INIT, sizeof(struct pgn512_BRM));
-    log_printf(INF, "BMS: "RED("gen_packet_PGN512 end"));
+    log_printf(DBG_LV3, "BMS: "RED("gen_packet_PGN512 end"));
     return 0;
 }
 int set_data_bms_PGN512(struct charge_task * thiz)
@@ -1533,7 +1542,7 @@ int set_data_bms_PGN512(struct charge_task * thiz)
 //配置-BCP-动力蓄电池充电参数
 int gen_packet_PGN1536(struct charge_task * thiz, struct event_struct* param)
 {
-    log_printf(INF, "BMS: "RED("gen_packet_PGN1536"));
+    log_printf(DBG_LV3, "BMS: "RED("gen_packet_PGN1536"));
     struct can_pack_generator *gen = &generator[I_BCP];
 
     memset(param->buff.tx_buff, INIT, sizeof(struct pgn1536_BCP));
@@ -1554,7 +1563,7 @@ int gen_packet_PGN1536(struct charge_task * thiz, struct event_struct* param)
     memcpy(task->can_tp_param.tx_buff, &thiz->bms_config_info, sizeof(struct pgn1536_BCP));//copy 到临时数据结构中
 
     memset(param->buff.tx_buff, INIT, sizeof(struct pgn1536_BCP));
-    log_printf(INF, "BMS: "RED("gen_packet_PGN1536 end"));
+    log_printf(DBG_LV3, "BMS: "RED("gen_packet_PGN1536 end"));
     return 0;
 }
 int set_data_bms_PGN1536(struct charge_task * thiz)
@@ -1575,7 +1584,7 @@ int set_data_bms_PGN1536(struct charge_task * thiz)
 // 配置-BRO-BMS输出准备就绪状态
 int gen_packet_PGN2304(struct charge_task * thiz, struct event_struct* param)
 {
-    log_printf(INF, "BMS: "RED("gen_packet_PGN2304"));
+    log_printf(DBG_LV3, "BMS: "RED("gen_packet_PGN2304"));
     struct can_pack_generator *gen = &generator[I_BRO];
 
     memset(param->buff.tx_buff, INIT,  gen->datalen);
@@ -1615,7 +1624,7 @@ int set_data_bms_PGN2304(struct charge_task * thiz)
 // 充电-BCL-电池充电需求
 int gen_packet_PGN4096(struct charge_task * thiz, struct event_struct* param)
 {
-    log_printf(INF, "BMS: "RED("gen_packet_PGN4096"));
+    log_printf(DBG_LV3, "BMS: "RED("gen_packet_PGN4096"));
     struct can_pack_generator *gen = &generator[I_BCL];
     memset(param->buff.tx_buff, INIT,  gen->datalen);
 #ifdef SET_DATA
@@ -1642,7 +1651,7 @@ int set_data_bms_PGN4096(struct charge_task * thiz)
 // 充电-BCS-电池充电总状态
 int gen_packet_PGN4352(struct charge_task * thiz, struct event_struct* param)
 {
-    log_printf(INF, "BMS: "RED("gen_packet_PGN4352"));
+    log_printf(DBG_LV3, "BMS: "RED("gen_packet_PGN4352"));
     struct can_pack_generator *gen = &generator[I_BCS];
 
     memset(param->buff.tx_buff, INIT, sizeof(struct pgn4352_BCS));
@@ -1663,7 +1672,7 @@ int gen_packet_PGN4352(struct charge_task * thiz, struct event_struct* param)
     memcpy(task->can_tp_param.tx_buff, &thiz->bms_bcs, sizeof(struct pgn4352_BCS));//copy 到临时数据结构中
 
     memset(param->buff.tx_buff, INIT, sizeof(struct pgn4352_BCS));
-    log_printf(INF, "BMS: "RED("gen_packet_PGN4352 end"));
+    log_printf(DBG_LV3, "BMS: "RED("gen_packet_PGN4352 end"));
     return 0;
 }
 int set_data_bms_PGN4352(struct charge_task * thiz)
@@ -1680,7 +1689,7 @@ int set_data_bms_PGN4352(struct charge_task * thiz)
 // 充电-BSM-动力蓄电池状态信息
 int gen_packet_PGN4864(struct charge_task * thiz, struct event_struct* param)
 {
-    log_printf(INF, "BMS: "RED("gen_packet_PGN4864"));
+    log_printf(DBG_LV3, "BMS: "RED("gen_packet_PGN4864"));
     struct can_pack_generator *gen = &generator[I_BSM];
     memset(param->buff.tx_buff, INIT,  gen->datalen);
 #ifdef SET_DATA
@@ -1721,7 +1730,7 @@ int gen_packet_PGN5632(struct charge_task * thiz, struct event_struct* param)
 // 充电-BST-BMS中止充电
 int gen_packet_PGN6400(struct charge_task * thiz, struct event_struct* param)
 {
-    log_printf(INF, "BMS: "RED("gen_packet_PGN6400"));
+    log_printf(DBG_LV3, "BMS: "RED("gen_packet_PGN6400"));
     struct can_pack_generator *gen = &generator[I_BST];
     memset(param->buff.tx_buff, INIT,  gen->datalen);
 #ifdef SET_DATA
@@ -1749,7 +1758,7 @@ int set_data_bms_PGN6400(struct charge_task * thiz)
 // 结束-BSD-BMS统计数据
 int gen_packet_PGN7168(struct charge_task * thiz, struct event_struct* param)
 {
-    log_printf(INF, "BMS: "RED("gen_packet_PGN7168"));
+    log_printf(DBG_LV3, "BMS: "RED("gen_packet_PGN7168"));
     struct can_pack_generator *gen = &generator[I_BSD];
     memset(param->buff.tx_buff, INIT,  gen->datalen);
 #ifdef SET_DATA
@@ -1780,7 +1789,7 @@ int set_data_bms_PGN7168(struct charge_task * thiz)
 // 错误-BEM-充电机错误报文
 int gen_packet_PGN7680(struct charge_task * thiz, struct event_struct* param)
 {
-    log_printf(INF, "BMS: "RED("gen_packet_PGN7680"));
+    log_printf(DBG_LV3, "BMS: "RED("gen_packet_PGN7680"));
     struct can_pack_generator *gen = &generator[I_BEM];
     memset(param->buff.tx_buff, INIT,  gen->datalen);
 #ifdef SET_DATA
