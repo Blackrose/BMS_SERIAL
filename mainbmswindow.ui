@@ -456,6 +456,9 @@
            <property name="text">
             <string>物理连接完成</string>
            </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
           </widget>
          </item>
         </layout>
@@ -2262,6 +2265,27 @@
        <string>(4)充电阶段</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_46">
+       <item row="1" column="0">
+        <widget class="QPushButton" name="pushButton_set_BST">
+         <property name="text">
+          <string>设置参数</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QPushButton" name="pushButton_BST">
+         <property name="text">
+          <string>更新</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="pushButton_sendBST">
+         <property name="text">
+          <string>停止充电</string>
+         </property>
+        </widget>
+       </item>
        <item row="0" column="0">
         <widget class="QGroupBox" name="groupBox_BST">
          <property name="title">
@@ -2783,7 +2807,7 @@
          </layout>
         </widget>
        </item>
-       <item row="0" column="1">
+       <item row="0" column="1" colspan="2">
         <widget class="QGroupBox" name="groupBox_CST">
          <property name="title">
           <string>充电机_CST</string>
@@ -3258,20 +3282,6 @@
            </widget>
           </item>
          </layout>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QPushButton" name="pushButton_set_BST">
-         <property name="text">
-          <string>设置参数</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QPushButton" name="pushButton_BST">
-         <property name="text">
-          <string>更新</string>
-         </property>
         </widget>
        </item>
       </layout>

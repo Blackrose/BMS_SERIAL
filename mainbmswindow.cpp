@@ -221,7 +221,7 @@ void MainBMSWindow::on_pushButton_connect_clicked()
 
     if(VCI_StartCAN(m_devtype,m_devind,m_cannum)==STATUS_OK)
     {
-        QMessageBox::information(this,"connect","启动成功",QMessageBox::Ok);
+        //QMessageBox::information(this,"connect","启动成功",QMessageBox::Ok);
         ui->pushButton_connect->setVisible(false);
         ui->pushButton_discon->setVisible(true);
         ui->actionDisconnect->setEnabled(true);
@@ -877,7 +877,7 @@ void MainBMSWindow::show_data_charger_PGN6656(struct charge_task * thiz)//CST
         ui->comboBox_spn3521_1->setCurrentIndex(2);
     }
 
-    if(REASON_CHARGER_MANUAL_NORMAL == (thiz->charger_cst.spn3521_reason & REASON_CHARGER_MANUAL_NORMAL)){
+    if(REASON_CHARGER_MANUAL_NORMAL == ((thiz->charger_cst.spn3521_reason >>2) & REASON_CHARGER_MANUAL_NORMAL)){
         ui->comboBox_spn3521_2->setCurrentIndex(0);
     }
     if(REASON_CHARGER_MANUAL_STOP == (thiz->charger_cst.spn3521_reason & REASON_CHARGER_MANUAL_STOP)){
@@ -887,7 +887,7 @@ void MainBMSWindow::show_data_charger_PGN6656(struct charge_task * thiz)//CST
         ui->comboBox_spn3521_2->setCurrentIndex(2);
     }
 
-    if(REASON_CHARGER_NO_ERROR == (thiz->charger_cst.spn3521_reason & REASON_CHARGER_NO_ERROR)){
+    if(REASON_CHARGER_NO_ERROR == ((thiz->charger_cst.spn3521_reason >> 4) & REASON_CHARGER_NO_ERROR)){
         ui->comboBox_spn3521_3->setCurrentIndex(0);
     }
     if(REASON_CHARGER_ERROR_STOP == (thiz->charger_cst.spn3521_reason & REASON_CHARGER_ERROR_STOP)){
@@ -897,7 +897,7 @@ void MainBMSWindow::show_data_charger_PGN6656(struct charge_task * thiz)//CST
         ui->comboBox_spn3521_3->setCurrentIndex(2);
     }
 
-    if(REASON_BMS_NORMAL == (thiz->charger_cst.spn3521_reason & REASON_BMS_NORMAL)){
+    if(REASON_BMS_NORMAL == ((thiz->charger_cst.spn3521_reason >> 6) & REASON_BMS_NORMAL)){
         ui->comboBox_spn3521_4->setCurrentIndex(0);
     }
     if(REASON_BMS_STOP == (thiz->charger_cst.spn3521_reason & REASON_BMS_STOP)){
@@ -918,7 +918,7 @@ void MainBMSWindow::show_data_charger_PGN6656(struct charge_task * thiz)//CST
         ui->comboBox_spn3522_1->setCurrentIndex(2);
     }
 
-    if(ERROR_CHARGINGCONNECTOR_TEMP_NORMAL == (thiz->charger_cst.spn3522_error & ERROR_CHARGINGCONNECTOR_TEMP_NORMAL)){
+    if(ERROR_CHARGINGCONNECTOR_TEMP_NORMAL == ((thiz->charger_cst.spn3522_error >> 2) & ERROR_CHARGINGCONNECTOR_TEMP_NORMAL)){
         ui->comboBox_spn3522_2->setCurrentIndex(0);
     }
     if(ERROR_CHARGINGCONNECTOR_TEMP == (thiz->charger_cst.spn3522_error & ERROR_CHARGINGCONNECTOR_TEMP)){
@@ -928,7 +928,7 @@ void MainBMSWindow::show_data_charger_PGN6656(struct charge_task * thiz)//CST
         ui->comboBox_spn3522_2->setCurrentIndex(2);
     }
 
-    if(ERROR_CHARGER_INTEMP_NORMAL == (thiz->charger_cst.spn3522_error & ERROR_CHARGER_INTEMP_NORMAL)){
+    if(ERROR_CHARGER_INTEMP_NORMAL == ((thiz->charger_cst.spn3522_error >> 4) & ERROR_CHARGER_INTEMP_NORMAL)){
         ui->comboBox_spn3522_3->setCurrentIndex(0);
     }
     if(ERROR_CHARGER_INTEMP == (thiz->charger_cst.spn3522_error & ERROR_CHARGER_INTEMP)){
@@ -938,7 +938,7 @@ void MainBMSWindow::show_data_charger_PGN6656(struct charge_task * thiz)//CST
         ui->comboBox_spn3522_3->setCurrentIndex(2);
     }
 
-    if(ERROR_POWER_TRANSFER_NORMAL == (thiz->charger_cst.spn3522_error & ERROR_POWER_TRANSFER_NORMAL)){
+    if(ERROR_POWER_TRANSFER_NORMAL == ((thiz->charger_cst.spn3522_error >> 6) & ERROR_POWER_TRANSFER_NORMAL)){
         ui->comboBox_spn3522_4->setCurrentIndex(0);
     }
     if(ERROR_POWER_TRANSFER == (thiz->charger_cst.spn3522_error & ERROR_POWER_TRANSFER)){
@@ -948,7 +948,7 @@ void MainBMSWindow::show_data_charger_PGN6656(struct charge_task * thiz)//CST
         ui->comboBox_spn3522_4->setCurrentIndex(2);
     }
 
-    if(ERROR_CHARGER_EMERGENCY_STOP_NORMAL == (thiz->charger_cst.spn3522_error & ERROR_CHARGER_EMERGENCY_STOP_NORMAL)){
+    if(ERROR_CHARGER_EMERGENCY_STOP_NORMAL == ((thiz->charger_cst.spn3522_error >> 8) & ERROR_CHARGER_EMERGENCY_STOP_NORMAL)){
         ui->comboBox_spn3522_5->setCurrentIndex(0);
     }
     if(ERROR_CHARGER_EMERGENCY_STOP == (thiz->charger_cst.spn3522_error & ERROR_CHARGER_EMERGENCY_STOP)){
@@ -958,7 +958,7 @@ void MainBMSWindow::show_data_charger_PGN6656(struct charge_task * thiz)//CST
         ui->comboBox_spn3522_5->setCurrentIndex(2);
     }
 
-    if(ERROR_OTHERPGN6656_NORMAL == (thiz->charger_cst.spn3522_error & ERROR_OTHERPGN6656_NORMAL)){
+    if(ERROR_OTHERPGN6656_NORMAL == ((thiz->charger_cst.spn3522_error >> 10) & ERROR_OTHERPGN6656_NORMAL)){
         ui->comboBox_spn3522_6->setCurrentIndex(0);
     }
     if(ERROR_OTHERPGN6656 == (thiz->charger_cst.spn3522_error & ERROR_OTHERPGN6656)){
@@ -979,7 +979,7 @@ void MainBMSWindow::show_data_charger_PGN6656(struct charge_task * thiz)//CST
         ui->comboBox_spn3523_1->setCurrentIndex(2);
     }
 
-    if(FAULT_VOL_PGN6656_NORMAL == (thiz->charger_cst.spn3523_fault & FAULT_VOL_PGN6656_NORMAL)){
+    if(FAULT_VOL_PGN6656_NORMAL == ((thiz->charger_cst.spn3523_fault >> 2) & FAULT_VOL_PGN6656_NORMAL)){
         ui->comboBox_spn3523_2->setCurrentIndex(0);
     }
     if(FAULT_VOL_PGN6656_UN_NORMAL == (thiz->charger_cst.spn3523_fault & FAULT_VOL_PGN6656_UN_NORMAL)){
@@ -1012,7 +1012,7 @@ void MainBMSWindow::show_data_charger_PGN7680(struct charge_task * thiz)//BEM
         ui->comboBox_spn3901->setCurrentIndex(2);
     }
 
-    if(BEM_AA_NORMAL == (thiz->bms_bem.bem_crm & BEM_AA_NORMAL)){
+    if(BEM_AA_NORMAL == ((thiz->bms_bem.bem_crm >> 2) & BEM_AA_NORMAL)){
         ui->comboBox_spn3902->setCurrentIndex(0);
     }
     if(BEM_AA_TIMEOUT == (thiz->bms_bem.bem_crm & BEM_AA_TIMEOUT)){
@@ -1032,7 +1032,7 @@ void MainBMSWindow::show_data_charger_PGN7680(struct charge_task * thiz)//BEM
         ui->comboBox_spn3903->setCurrentIndex(2);
     }
 
-    if(BEM_CRO_NORMAL == (thiz->bms_bem.bem_ccp & BEM_CRO_NORMAL)){
+    if(BEM_CRO_NORMAL == ((thiz->bms_bem.bem_ccp >> 2) & BEM_CRO_NORMAL)){
         ui->comboBox_spn3904->setCurrentIndex(0);
     }
     if(BEM_CRO_TIMEOUT == (thiz->bms_bem.bem_ccp & BEM_CRO_TIMEOUT)){
@@ -1052,7 +1052,7 @@ void MainBMSWindow::show_data_charger_PGN7680(struct charge_task * thiz)//BEM
         ui->comboBox_spn3905->setCurrentIndex(2);
     }
 
-    if(BEM_CST_NORMAL == (thiz->bms_bem.bem_cst & BEM_CST_NORMAL)){
+    if(BEM_CST_NORMAL == ((thiz->bms_bem.bem_cst >> 2) & BEM_CST_NORMAL)){
         ui->comboBox_spn3906->setCurrentIndex(0);
     }
     if(BEM_CST_TIMEOUT == (thiz->bms_bem.bem_cst & BEM_CST_TIMEOUT)){
@@ -1093,7 +1093,8 @@ void MainBMSWindow::show_data_charger_PGN7936(struct charge_task * thiz)//CEM
     if(CEM_BCP_UNRELIABLE == (thiz->charger_cem.cem_bro & CEM_BCP_UNRELIABLE)){
          ui->comboBox_spn3922->setCurrentIndex(2);
     }
-    if(CEM_BRO_NORMAL == (thiz->charger_cem.cem_bro & CEM_BRO_NORMAL)){
+
+    if(CEM_BRO_NORMAL == ((thiz->charger_cem.cem_bro >> 2) & CEM_BRO_NORMAL)){
         ui->comboBox_spn3923->setCurrentIndex(0);
     }
     if(CEM_BRO_TIMEOUT == (thiz->charger_cem.cem_bro & CEM_BRO_TIMEOUT)){
@@ -1103,41 +1104,43 @@ void MainBMSWindow::show_data_charger_PGN7936(struct charge_task * thiz)//CEM
          ui->comboBox_spn3923->setCurrentIndex(2);
     }
 //====================================================================================//
-    if(CEM_BCS_NORMAL == (thiz->charger_cem.cem_bro & CEM_BCS_NORMAL)){
+    if(CEM_BCS_NORMAL == (thiz->charger_cem.cem_bst & CEM_BCS_NORMAL)){
         ui->comboBox_spn3924->setCurrentIndex(0);
     }
-    if(CEM_BCS_TIMEOUT == (thiz->charger_cem.cem_bro & CEM_BCS_TIMEOUT)){
+    if(CEM_BCS_TIMEOUT == (thiz->charger_cem.cem_bst & CEM_BCS_TIMEOUT)){
          ui->comboBox_spn3924->setCurrentIndex(1);
     }
-    if(CEM_BCS_UNRELIABLE == (thiz->charger_cem.cem_bro & CEM_BCS_UNRELIABLE)){
+    if(CEM_BCS_UNRELIABLE == (thiz->charger_cem.cem_bst & CEM_BCS_UNRELIABLE)){
          ui->comboBox_spn3924->setCurrentIndex(2);
     }
-    if(CEM_BCL_NORMAL == (thiz->charger_cem.cem_bro & CEM_BCL_NORMAL)){
+
+    if(CEM_BCL_NORMAL == ((thiz->charger_cem.cem_bst >> 2) & CEM_BCL_NORMAL)){
         ui->comboBox_spn3925->setCurrentIndex(0);
     }
-    if(CEM_BCL_TIMEOUT == (thiz->charger_cem.cem_bro & CEM_BCL_TIMEOUT)){
+    if(CEM_BCL_TIMEOUT == (thiz->charger_cem.cem_bst & CEM_BCL_TIMEOUT)){
          ui->comboBox_spn3925->setCurrentIndex(1);
     }
-    if(CEM_BCL_UNRELIABLE == (thiz->charger_cem.cem_bro & CEM_BCL_UNRELIABLE)){
+    if(CEM_BCL_UNRELIABLE == (thiz->charger_cem.cem_bst & CEM_BCL_UNRELIABLE)){
          ui->comboBox_spn3925->setCurrentIndex(2);
     }
-    if(CEM_BST_NORMAL == (thiz->charger_cem.cem_bro & CEM_BST_NORMAL)){
+
+    if(CEM_BST_NORMAL == ((thiz->charger_cem.cem_bst >> 4) & CEM_BST_NORMAL)){
         ui->comboBox_spn3926->setCurrentIndex(0);
     }
-    if(CEM_BST_TIMEOUT == (thiz->charger_cem.cem_bro & CEM_BST_TIMEOUT)){
+    if(CEM_BST_TIMEOUT == (thiz->charger_cem.cem_bst & CEM_BST_TIMEOUT)){
          ui->comboBox_spn3926->setCurrentIndex(1);
     }
-    if(CEM_BST_UNRELIABLE == (thiz->charger_cem.cem_bro & CEM_BST_UNRELIABLE)){
+    if(CEM_BST_UNRELIABLE == (thiz->charger_cem.cem_bst & CEM_BST_UNRELIABLE)){
          ui->comboBox_spn3926->setCurrentIndex(2);
     }
 //====================================================================================//
-    if(CEM_BSD_NORMAL == (thiz->charger_cem.cem_bro & CEM_BSD_NORMAL)){
+    if(CEM_BSD_NORMAL == (thiz->charger_cem.cem_bsd & CEM_BSD_NORMAL)){
         ui->comboBox_spn3927->setCurrentIndex(0);
     }
-    if(CEM_BSD_TIMEOUT == (thiz->charger_cem.cem_bro & CEM_BSD_TIMEOUT)){
+    if(CEM_BSD_TIMEOUT == (thiz->charger_cem.cem_bsd & CEM_BSD_TIMEOUT)){
          ui->comboBox_spn3927->setCurrentIndex(1);
     }
-    if(CEM_BSD_UNRELIABLE == (thiz->charger_cem.cem_bro & CEM_BSD_UNRELIABLE)){
+    if(CEM_BSD_UNRELIABLE == (thiz->charger_cem.cem_bsd & CEM_BSD_UNRELIABLE)){
          ui->comboBox_spn3927->setCurrentIndex(2);
     }
 }
@@ -1197,8 +1200,17 @@ void MainBMSWindow::on_pushButton_BST_clicked()
 
 void MainBMSWindow::on_pushButton_set_BST_clicked()
 {
-
+    set_data_bms_PGN6400(task);
+    bit_set(task,F_BMS_STOP) ;
 }
+
+
+void MainBMSWindow::on_pushButton_sendBST_clicked()
+{
+    set_data_bms_PGN6400(task);
+    bit_set(task,F_BMS_STOP) ;
+}
+
 
 void MainBMSWindow::ui_exit()
 {
@@ -1218,13 +1230,13 @@ void MainBMSWindow::ChangeValue(int value)
 {
     switch (value) {
     case CHARGE_STAGE_INVALID:
-        QMessageBox::about(NULL, "Connect", "准备充电握手");
+        //QMessageBox::about(NULL, "Connect", "准备充电握手");
         //ui->statusBar->showMessage(tr("BMS 准备充电握手!!!"));
         my_label->setText(tr("BMS 准备充电握手!!!"));
         my_progressbar->setValue(10);
         break;
     case CHARGE_STAGE_HANDSHACKING:
-        QMessageBox::about(NULL, "Connect", "充电握手完成");
+        //QMessageBox::about(NULL, "Connect", "充电握手完成");
         //ui->statusBar->showMessage(tr("BMS 充电握手完成!!!"));
         my_label->setText(tr("BMS 充电握手完成!!!"));
         my_progressbar->setValue(30);
@@ -1233,7 +1245,7 @@ void MainBMSWindow::ChangeValue(int value)
 #ifdef SET_DATA
         set_data_bms_PGN512(task);
 #endif
-        QMessageBox::about(NULL, "Connect", "充电辨识开始");
+        //QMessageBox::about(NULL, "Connect", "充电辨识开始");
         my_progressbar->setValue(50);
         show_data_charger_PGN256(task);
         break;
@@ -1281,6 +1293,12 @@ void MainBMSWindow::ChangeValue(int value)
         set_data_bms_PGN7168(task);
 #endif
         show_data_charger_PGN7424(task);
+        show_data_charger_PGN7680(task);
+
+        ui->pushButton_discon->setVisible(false);
+        ui->pushButton_connect->setVisible(true);
+        ui->actionDisconnect->setVisible(false);
+        ui->actionConnect->setVisible(true);
         break;
     default:
         //QMessageBox::about(NULL, "Connect", "电动汽车");

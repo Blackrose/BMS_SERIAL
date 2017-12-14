@@ -182,6 +182,8 @@ private slots:
     void slot_getip();
 
 
+    void on_pushButton_sendBST_clicked();
+
 signals:
    void ValueChanged(int );
 

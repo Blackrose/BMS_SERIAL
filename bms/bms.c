@@ -440,6 +440,7 @@ void set_packet_TP_DT(int png_num,struct event_struct* param){
 //    param->buff.tx_buff[7] = 0x04;
     log_printf(WRN, "BMS: tp_pack_num==%d",task->can_tp_param.tp_pack_num);
     log_printf(WRN, "BMS: tp_size==%d",task->can_tp_param.tp_size);
+    log_printf(WRN, "BMS: tp_pack_nr==%d",task->can_tp_param.tp_pack_nr);
 
     if(task->can_tp_param.tp_pack_nr == ((task->can_tp_param.tp_size -1)/7+1)){//一次传输完成
         if(task->can_tp_param.tp_pack_num <= ((task->can_tp_param.tp_size-1)/7+1)){
@@ -453,6 +454,11 @@ void set_packet_TP_DT(int png_num,struct event_struct* param){
             param->evt_param = EVT_RET_OK;
         }else{
             log_printf(WRN, "BMS: 111tp_pack_num==%d",task->can_tp_param.tp_pack_num);
+            //task->can_tp_param.tp_pack_num = 0;
+        }
+        if(task->can_tp_param.tp_pack_nr == task->can_tp_param.tp_pack_num - 1){
+            log_printf(WRN, "BMS: 333tp_pack_num==%d",task->can_tp_param.tp_pack_num);
+            task->can_bms_status = (CAN_TP_WR | CAN_TP_ACK);//数据发送完成，准备接收ack
         }
     }else if(task->can_tp_param.tp_pack_nr == 0){
         //等待 不能马上接收数据包
@@ -466,10 +472,9 @@ void set_packet_TP_DT(int png_num,struct event_struct* param){
             task->can_tp_param.tp_pack_num ++;
             param->evt_param = EVT_RET_OK;
             task->can_tp_param.tp_pack_nr --;//传送一个自减一个
+            log_printf(WRN, "BMS: 222tp_pack_num==%d",task->can_tp_param.tp_pack_num);
         }
     }
-
-
 }
 
 /*
@@ -604,7 +609,8 @@ static int can_packet_callback(
             }else if ( generator[I_BMT].heartbeat >= generator[I_BMT].period ) {
                 gen_packet_PGN5632(thiz, param);
                 generator[I_BMT].heartbeat = 0;
-            }*/else if ( generator[I_BST].heartbeat >= generator[I_BST].period ) {
+            }*/
+            if ( generator[I_BST].heartbeat >= generator[I_BST].period ) {
                 if(bit_read(thiz,F_BMS_STOP) || bit_read(thiz,F_CHARGER_CST)){//充电主动结束，或接受充电机充电中止报文
                     gen_packet_PGN6400(thiz, param);
                 }
@@ -616,6 +622,12 @@ static int can_packet_callback(
             }
             break;
         case CHARGE_STAGE_DONE:
+            if ( generator[I_BST].heartbeat >= generator[I_BST].period ) {
+                if(bit_read(thiz,F_CHARGER_CST)){//接受充电机充电中止报文
+                    gen_packet_PGN6400(thiz, param);
+                }
+                generator[I_BST].heartbeat = 0;
+            }
             if ( generator[I_BSD].heartbeat >= generator[I_BSD].period ) {
                 gen_packet_PGN7168(thiz, param);
                 generator[I_BSD].heartbeat = 0;
@@ -790,9 +802,14 @@ int about_packet_transfer_done(struct charge_task *thiz,
             //thiz->can_bms_status = (CAN_TP_WR | CAN_TP_RTS);//准备发送BCS
             bit_set(thiz, F_BMS_BCL);
             break;
+//        case PGN_BCS:
+//            log_printf(DBG_LV3, "BMS: PGN_BCS 数据发送完成 ");
+//            thiz->can_bms_status = (CAN_TP_WR | CAN_TP_ACK);//数据发送完成，准备接收ack
+//            break;
         case PGN_BST:
             log_printf(DBG_LV3, "BMS: PGN_BST ");
             bit_set(thiz,F_BMS_BST);//发送中止报文
+            thiz->can_bms_status = CAN_NORMAL;
             break;
     }
     return ERR_OK;
@@ -967,6 +984,7 @@ int about_packet_reciev_done(struct charge_task *thiz,
             log_printf(DBG_LV3, "BMS: BMS change stage to "RED("CHARGE_STAGE_DONE"));
             thiz->bms_stage = CHARGE_STAGE_DONE;
         }
+        thiz->can_bms_status = CAN_NORMAL;//add 20171110 退出多帧发送
         break;
     //==============================================结束阶段=================//
     case PGN_CSD :// 0x001D00, 充电机统计数据
@@ -1364,6 +1382,7 @@ void *thread_bms_read_service(void *arg) ___THREAD_ENTRY___
                         (frame.Data[6] << 8) + (frame.Data[7] << 16);
                 task->can_tp_param.tp_pack_nr = tp_packets_nr;
                 task->can_tp_param.tp_pack_num = tp_packets_num;
+                //log_printf(WRN, "BMS: 333tp_pack_num==%d",tp_packets_num);
                 //task->can_tp_param.tp_size = tp_packets_size;
                 task->can_tp_param.tp_pgn = tp_packet_PGN;
                 task->can_tp_param.tp_rcv_bytes = 0;

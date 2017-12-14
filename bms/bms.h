@@ -384,10 +384,14 @@ enum REASON_PGN6400 {
     REASON_UN_REACH_VOL_VAL  = 0x00,
     REASON_REACH_VOL_VAL     = 0x04,
     REASON_VOL_UNRELIABLE        = 0x08,
-    // 充电机主动中止 bit[4:5]
+    // 达到单体电压的设定值 bit[4:5]
     REASON_UN_REACH_SINGLE_BAT_VOL = 0x00,
     REASON_REACH_SINGLE_BAT_VOL    = 0x10,
-    REASON_SINGLE_VOL_UNRELIABLE   = 0x20
+    REASON_SINGLE_VOL_UNRELIABLE   = 0x20,
+    // 充电机主动中止 bit[6:7]
+    REASON_CHARGER_6400_NORMAL   = 0x00,
+    REASON_CHARGER_6400_STOP     = 0x40,
+    REASON_CHARGER_6400_UNRELIABLE     = 0x80
 };
 enum ERROR_PGN6400 {
     // 绝缘故障 bit[0:1]
