@@ -12,6 +12,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = BMS_SERIAL
 TEMPLATE = app
 
+TRANSLATIONS   +=  bms_serial.ts
 
 SOURCES += main.cpp\
         mainbmswindow.cpp \

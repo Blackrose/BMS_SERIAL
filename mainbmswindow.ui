@@ -67,6 +67,61 @@
     <property name="title">
      <string>警示信息</string>
     </property>
+    <widget class="QTableWidget" name="table_warning_msg">
+     <property name="geometry">
+      <rect>
+       <x>15</x>
+       <y>30</y>
+       <width>601</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+     <attribute name="horizontalHeaderCascadingSectionResizes">
+      <bool>false</bool>
+     </attribute>
+     <attribute name="verticalHeaderVisible">
+      <bool>false</bool>
+     </attribute>
+     <attribute name="verticalHeaderCascadingSectionResizes">
+      <bool>false</bool>
+     </attribute>
+     <row>
+      <property name="text">
+       <string>1</string>
+      </property>
+     </row>
+     <row>
+      <property name="text">
+       <string>2</string>
+      </property>
+     </row>
+     <row>
+      <property name="text">
+       <string>3</string>
+      </property>
+     </row>
+     <row>
+      <property name="text">
+       <string>4</string>
+      </property>
+     </row>
+    </widget>
+    <widget class="QLabel" name="warning_msg">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>70</y>
+       <width>101</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>警示信息</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QToolBox" name="toolBox_stage">
     <property name="enabled">
@@ -548,7 +603,11 @@
             </property>
             <layout class="QGridLayout" name="gridLayout_16">
              <item row="0" column="0">
-              <widget class="QLineEdit" name="lineEdit_spn2561"/>
+              <widget class="QLineEdit" name="lineEdit_spn2561">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -931,7 +990,7 @@
              <item row="1" column="1">
               <widget class="QLineEdit" name="lineEdit_spn2817">
                <property name="text">
-                <string>120</string>
+                <string>-120</string>
                </property>
               </widget>
              </item>
@@ -973,7 +1032,7 @@
              <item row="4" column="1">
               <widget class="QLineEdit" name="lineEdit_spn2820">
                <property name="text">
-                <string>50</string>
+                <string>150</string>
                </property>
               </widget>
              </item>
@@ -1363,7 +1422,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <item>
            <property name="text">
@@ -1404,7 +1463,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <item>
            <property name="text">
@@ -1445,7 +1504,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>2</number>
+           <number>0</number>
           </property>
           <item>
            <property name="text">
@@ -1486,7 +1545,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <item>
            <property name="text">
@@ -1527,7 +1586,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>2</number>
+           <number>0</number>
           </property>
           <item>
            <property name="text">
@@ -1572,12 +1631,12 @@
           </property>
           <item>
            <property name="text">
-            <string>01:允许</string>
+            <string>00:禁止</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>00:禁止</string>
+            <string>01:允许</string>
            </property>
           </item>
          </widget>
@@ -2105,7 +2164,7 @@
                 </size>
                </property>
                <property name="text">
-                <string>120</string>
+                <string>-120</string>
                </property>
               </widget>
              </item>
@@ -3424,7 +3483,7 @@
                <item>
                 <widget class="QLineEdit" name="lineEdit_spn3604">
                  <property name="text">
-                  <string>27</string>
+                  <string>-27</string>
                  </property>
                 </widget>
                </item>
@@ -3438,7 +3497,7 @@
                <item>
                 <widget class="QLineEdit" name="lineEdit_spn3605">
                  <property name="text">
-                  <string>25</string>
+                  <string>150</string>
                  </property>
                 </widget>
                </item>

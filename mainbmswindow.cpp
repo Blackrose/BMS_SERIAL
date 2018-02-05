@@ -1,6 +1,10 @@
 #include "mainbmswindow.h"
 #include "ui_mainbmswindow.h"
 
+
+#define  TIMEOUT_ON
+#undef TIMEOUT_ON
+
 int MainBMSWindow::oldvalue = 255;
 
 
@@ -65,7 +69,7 @@ MainBMSWindow::MainBMSWindow(QWidget *parent) :
 
 
     connect(this,SIGNAL(ValueChanged(int)),this,SLOT(ChangeValue(int)));
-
+    connect(this,SIGNAL(ErrValueChanged(int)),this,SLOT(ErrChangeValue(int)));
 
     connect(&bst_timer,SIGNAL(timeout()),this,SLOT(slot_statustimer()));//充电状态
     //bst_timer.start(100);
@@ -80,6 +84,14 @@ MainBMSWindow::MainBMSWindow(QWidget *parent) :
     ui->statusBar->addWidget(my_label);
     ui->statusBar->addWidget(my_progressbar);
     my_label->setText(tr("BMS 准备充电握手!!!"));
+    my_progressbar->setValue(5);
+
+    bool ok;
+   QByteArray x("ffffffff");
+    //QString s = x;
+    //s.prepend(x);
+    int j = x.toUInt(&ok,16);
+    QString s = QString::number(x.toUInt(&ok,16));
     my_progressbar->setValue(5);
 }
 
@@ -304,6 +316,8 @@ void MainBMSWindow::on_pushButton_discon_clicked()
     ui->actionConnect->setEnabled(true);
     ui->pushButton_connect->setVisible(true);
     ui->pushButton_discon->setVisible(false);
+
+    ui->warning_msg->setText("警示信息");
 }
 
 void MainBMSWindow::on_checkBox_clicked(bool checked)
@@ -604,10 +618,10 @@ void MainBMSWindow::set_data_bms_PGN1536(struct charge_task *thiz)
 {
     memset(&thiz->bms_config_info, INIT, sizeof(struct pgn1536_BCP));
     thiz->bms_config_info.spn2816_max_charge_volatage_single_battery = ui->lineEdit_spn2816->text().toFloat()*100;
-    thiz->bms_config_info.spn2817_max_charge_current = ui->lineEdit_spn2817->text().toFloat()*10;
+    thiz->bms_config_info.spn2817_max_charge_current = ui->lineEdit_spn2817->text().toFloat()*10 + OFFSET_CUR;
     thiz->bms_config_info.spn2818_total_energy = ui->lineEdit_spn2818->text().toFloat()*10;
     thiz->bms_config_info.spn2819_max_charge_voltage = ui->lineEdit_spn2819->text().toFloat()*10;
-    thiz->bms_config_info.spn2820_max_temprature = ui->lineEdit_spn2820->text().toInt();
+    thiz->bms_config_info.spn2820_max_temprature = ui->lineEdit_spn2820->text().toInt() + OFFSET_TEMP;
     thiz->bms_config_info.spn2821_soc = ui->lineEdit_spn2821->text().toFloat()*10;
     thiz->bms_config_info.spn2822_total_voltage = ui->lineEdit_spn2822->text().toFloat()*10;
 }
@@ -661,7 +675,7 @@ void MainBMSWindow::set_data_bms_PGN4096(struct charge_task * thiz)
 {
     memset(&thiz->bms_bcl, INIT, sizeof(struct pgn4096_BCL));
     thiz->bms_bcl.spn3072_need_voltage = ui->lineEdit_spn3072->text().toFloat()*10;
-    thiz->bms_bcl.spn3073_need_current = ui->lineEdit_spn3073->text().toFloat()*10;
+    thiz->bms_bcl.spn3073_need_current = ui->lineEdit_spn3073->text().toFloat()*10 + OFFSET_CUR;
     thiz->bms_bcl.spn3074_charge_mode = set_charge_mode(ui->comboBox_spn3074->currentIndex());
 
 }
@@ -669,7 +683,7 @@ void MainBMSWindow::set_data_bms_PGN4352(struct charge_task * thiz)
 {
     memset(&thiz->bms_bcs, INIT, sizeof(struct pgn4352_BCS));
     thiz->bms_bcs.spn3075_charge_voltage = ui->lineEdit_spn3075->text().toFloat()*10;
-    thiz->bms_bcs.spn3076_charge_current = ui->lineEdit_spn3076->text().toFloat()*10;
+    thiz->bms_bcs.spn3076_charge_current = ui->lineEdit_spn3076->text().toFloat()*10 + OFFSET_CUR;
     thiz->bms_bcs.spn3077_max_v_g_number = (int)(ui->lineEdit_spn3077_1->text().toFloat()*100) | (ui->lineEdit_spn3077_2->text().toUShort() << 12);
     thiz->bms_bcs.spn3078_soc = ui->lineEdit_spn3078->text().toInt();
     thiz->bms_bcs.spn3079_need_time = ui->lineEdit_spn3079->text().toUShort();
@@ -722,9 +736,9 @@ void MainBMSWindow::set_data_bms_PGN4864(struct charge_task * thiz)
 {
     memset(&thiz->bms_bsm, INIT, sizeof(struct pgn4864_BSM));
     thiz->bms_bsm.sn_of_max_voltage_battery = ui->lineEdit_spn3085->text().toInt();
-    thiz->bms_bsm.max_temperature_of_battery = ui->lineEdit_spn3086->text().toInt();
+    thiz->bms_bsm.max_temperature_of_battery = ui->lineEdit_spn3086->text().toInt() + OFFSET_TEMP;
     thiz->bms_bsm.sn_of_max_temperature_point = ui->lineEdit_spn3087->text().toInt();
-    thiz->bms_bsm.min_temperature_of_battery = ui->lineEdit_spn3088->text().toInt();
+    thiz->bms_bsm.min_temperature_of_battery = ui->lineEdit_spn3088->text().toInt() + OFFSET_TEMP;
     thiz->bms_bsm.sn_of_min_temperature_point = ui->lineEdit_spn3089->text().toInt();
     thiz->bms_bsm.remote_single = get_data_bms_PGN4864(thiz);
 }
@@ -784,8 +798,8 @@ void MainBMSWindow::set_data_bms_PGN7168(struct charge_task * thiz)
     thiz->bms_bsd.spn3601_stop_soc_status = ui->lineEdit_spn3601->text().toInt();
     thiz->bms_bsd.spn3602_singal_battery_min_vol = ui->lineEdit_spn3602->text().toFloat()*100;
     thiz->bms_bsd.spn3603_singal_battery_max_vol = ui->lineEdit_spn3603->text().toFloat()*100;
-    thiz->bms_bsd.spn3604_battery_min_temp = ui->lineEdit_spn3604->text().toInt();
-    thiz->bms_bsd.spn3605_battery_max_temp = ui->lineEdit_spn3605->text().toInt();
+    thiz->bms_bsd.spn3604_battery_min_temp = ui->lineEdit_spn3604->text().toInt() + OFFSET_TEMP;
+    thiz->bms_bsd.spn3605_battery_max_temp = ui->lineEdit_spn3605->text().toInt() + OFFSET_TEMP;
 }
 
 
@@ -1217,6 +1231,58 @@ void MainBMSWindow::ui_exit()
     MainBMSWindow::oldvalue = 255;
 }
 
+void MainBMSWindow::timeout_frame()
+{
+    QString warning_msg = ui->warning_msg->text();
+    switch(task->bms_err_stage){
+    case (CHARGE_STAGE_ERR_TIMEOUT | CHARGE_STAGE_ERR_INVALID):
+        warning_msg += "： 握手超时\n";
+        if(msgBox.warning(NULL, "Error", "握手超时",QMessageBox::Retry | QMessageBox::Cancel, QMessageBox::Retry) == QMessageBox::Retry){
+            task->bms_err_stage = CHARGE_STAGE_ERR_TIMEOUT;
+            task->bms_stage = CHARGE_STAGE_INVALID;
+        }
+        break;
+    case (CHARGE_STAGE_ERR_TIMEOUT | CHARGE_STAGE_ERR_HANDSHACKING):
+        warning_msg += "： 接收0x00辨识超时\n";
+        if(msgBox.warning(NULL, "Error", "接收0x00辨识超时",QMessageBox::Retry | QMessageBox::Cancel, QMessageBox::Retry) == QMessageBox::Retry){
+            task->bms_err_stage = CHARGE_STAGE_ERR_TIMEOUT;
+            task->bms_stage = CHARGE_STAGE_HANDSHACKING;
+        }
+        break;
+    case (CHARGE_STAGE_ERR_TIMEOUT | CHARGE_STAGE_ERR_IDENTIFICATION):
+        warning_msg += "： 接收0xAA辨识超时\n";
+        if(msgBox.warning(NULL, "Error", "接收0xAA辨识超时",QMessageBox::Retry | QMessageBox::Cancel, QMessageBox::Retry) == QMessageBox::Retry){
+            task->bms_err_stage = CHARGE_STAGE_ERR_TIMEOUT;
+            task->bms_stage = CHARGE_STAGE_IDENTIFICATION;
+        }
+        break;
+    case (CHARGE_STAGE_ERR_TIMEOUT | CHARGE_STAGE_ERR_CONFIGURE):
+        warning_msg += "： 接收CTS CML CRO超时\n";
+        if(msgBox.warning(NULL, "Error", "接收CTS CML CRO超时",QMessageBox::Retry | QMessageBox::Cancel, QMessageBox::Retry) == QMessageBox::Retry){
+            task->bms_err_stage = CHARGE_STAGE_ERR_TIMEOUT;
+            task->bms_stage = CHARGE_STAGE_CONFIGURE;
+        }
+        break;
+    case (CHARGE_STAGE_ERR_TIMEOUT | CHARGE_STAGE_ERR_CHARGING):
+        warning_msg += "： 接收CCS CST超时\n";
+        if(msgBox.warning(NULL, "Error", "接收CCS CST超时",QMessageBox::Retry | QMessageBox::Cancel, QMessageBox::Retry) == QMessageBox::Retry){
+            task->bms_err_stage = CHARGE_STAGE_ERR_TIMEOUT;
+            task->bms_stage = CHARGE_STAGE_CHARGING;
+        }
+        break;
+    case (CHARGE_STAGE_ERR_TIMEOUT | CHARGE_STAGE_ERR_DONE):
+        warning_msg += "： 接收CSD超时\n";
+        if(msgBox.warning(NULL, "Error", "接收CSD超时",QMessageBox::Retry | QMessageBox::Cancel, QMessageBox::Retry) == QMessageBox::Retry){
+            task->bms_err_stage = CHARGE_STAGE_ERR_TIMEOUT;
+            task->bms_stage = CHARGE_STAGE_DONE;
+        }
+        break;
+    default:
+        break;
+    }
+    ui->warning_msg->setText(warning_msg);
+}
+
 void MainBMSWindow::SetValue(int value)
 {
     if(value!=MainBMSWindow::oldvalue)
@@ -1230,6 +1296,9 @@ void MainBMSWindow::ChangeValue(int value)
 {
     switch (value) {
     case CHARGE_STAGE_INVALID:
+#ifdef SET_DATA
+        set_data_bms_PGN9984(task);
+#endif
         //QMessageBox::about(NULL, "Connect", "准备充电握手");
         //ui->statusBar->showMessage(tr("BMS 准备充电握手!!!"));
         my_label->setText(tr("BMS 准备充电握手!!!"));
@@ -1246,6 +1315,7 @@ void MainBMSWindow::ChangeValue(int value)
         set_data_bms_PGN512(task);
 #endif
         //QMessageBox::about(NULL, "Connect", "充电辨识开始");
+        my_label->setText(tr("BMS 充电辨识开始!!!"));
         my_progressbar->setValue(50);
         show_data_charger_PGN256(task);
         break;
@@ -1270,7 +1340,7 @@ void MainBMSWindow::ChangeValue(int value)
         show_data_charger_PGN2560(task);
         //ui->statusBar->showMessage(tr("BMS 充电配置完成，开始充电!!!"));
         my_label->setText(tr("BMS 充电配置完成，开始充电!!!"));
-        my_progressbar->setValue(60);
+        my_progressbar->setValue(80);
         //QMessageBox::about(NULL, "Connect", "充电配置完成，开始充电");
 #ifdef SET_DATA
         set_data_bms_PGN4096(task);
@@ -1292,19 +1362,55 @@ void MainBMSWindow::ChangeValue(int value)
 #ifdef SET_DATA
         set_data_bms_PGN7168(task);
 #endif
-        show_data_charger_PGN7424(task);
+        show_data_charger_PGN6656(task);
         show_data_charger_PGN7680(task);
+        break;
+    case CHARGE_STAGE_ANY:
+        my_label->setText(tr("BMS 充电完成，结束充电!!!"));
+        my_progressbar->setValue(100);
 
-        ui->pushButton_discon->setVisible(false);
-        ui->pushButton_connect->setVisible(true);
-        ui->actionDisconnect->setVisible(false);
-        ui->actionConnect->setVisible(true);
+        show_data_charger_PGN7424(task);
+        on_pushButton_discon_clicked();
+        break;
+    case CHARGE_STAGE_TIMEOUT:
+        #ifdef TIMEOUT_ON
+        timeout_frame();
+        #endif
+        break;    
+    default:
+        //QMessageBox::about(NULL, "Connect", "电动汽车");
+        break;
+    }
+}
+
+void MainBMSWindow::SetErrValue(int value)
+{
+    if(value!=MainBMSWindow::oldvalue)
+    {
+        MainBMSWindow::oldvalue=value;
+        emit ErrValueChanged(value);
+    }//注意这里的if判断,这是避免递归的方式!如果没有if,当出现了循环连接的时候就会产生无限递归
+}
+
+void MainBMSWindow::ErrChangeValue(int value)
+{
+    switch (value) {
+    case CHARGE_STAGE_ERR_INVALID:
+        break;
+    case CHARGE_STAGE_ERR_HANDSHACKING:
+        ui->warning_msg->setText("握手失败");
+        task->bms_stage = CHARGE_STAGE_INVALID;
+        break;
+    case CHARGE_STAGE_ERR_IDENTIFICATION:
+        ui->warning_msg->setText("辨识失败");
+        task->bms_stage = CHARGE_STAGE_INVALID;
         break;
     default:
         //QMessageBox::about(NULL, "Connect", "电动汽车");
         break;
     }
 }
+
 
 void MainBMSWindow::slot_statustimer()
 {
@@ -1320,7 +1426,7 @@ void MainBMSWindow::slot_statustimer()
 //        oldvalue = CHARGE_STAGE_CONFIGURE;
 //    }
     SetValue(task->bms_stage);
-
+    SetErrValue(task->bms_err_stage);
 #if 0
     switch (task->bms_stage) {
         case CHARGE_STAGE_INVALID:

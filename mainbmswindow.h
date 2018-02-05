@@ -1,6 +1,7 @@
 #ifndef MAINBMSWINDOW_H
 #define MAINBMSWINDOW_H
 
+#include <QByteArray>
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QTimer>
@@ -49,7 +50,8 @@
 #define INIT 0xFF
 #define SET_DATA
 //#undef SET_DATA
-
+#define  OFFSET_CUR 4000
+#define  OFFSET_TEMP 50
 namespace Ui {
 class MainBMSWindow;
 }
@@ -139,7 +141,10 @@ public:
     void show_data_pgn();
 
     void SetValue(int );
+    void SetErrValue(int );
+
     static void ui_exit();
+    void timeout_frame();
 
 private slots:
     void on_pushButton_connect_clicked();
@@ -176,6 +181,7 @@ private slots:
     void on_pushButton_BSD_clicked();
 
     void on_pushButton_BST_clicked();
+
     void on_pushButton_set_BST_clicked();
 
     void slot_statustimer();
@@ -186,11 +192,13 @@ private slots:
 
 signals:
    void ValueChanged(int );
+   void ErrValueChanged(int );
 
 public slots:
     void slot_cantimer();
     void sendMessage(QCanMessage& msg);
     void ChangeValue(int );
+    void ErrChangeValue(int );
 
 private:
     Ui::MainBMSWindow *ui;
@@ -202,6 +210,12 @@ private:
     QLabel              *my_name_label;
     QLabel              *my_label;
     QProgressBar        *my_progressbar;
+
+    QMessageBox         msgBox;
+
+    //QByteArray TempInfo;
+    //QByteArray TempInfo("ffffff");
+    //int temp;
 };
 
 #endif // MAINBMSWINDOW_H

@@ -116,7 +116,9 @@ typedef enum {
     // 充电结束
     CHARGE_STAGE_DONE         =0x05,
     // 任意阶段
-    CHARGE_STAGE_ANY          =0x06
+    CHARGE_STAGE_ANY          =0x06,
+    // 超时
+    CHARGE_STAGE_TIMEOUT      =0x08
 }CHARGE_STAGE;
 
 // 充电阶段定义
@@ -134,7 +136,9 @@ typedef enum {
     // 充电结束
     CHARGE_STAGE_ERR_DONE         =0x50,
     // 任意阶段
-    CHARGE_STAGE_ERR_ANY          =0x60
+    CHARGE_STAGE_ERR_ANY          =0x60,
+    // 超时
+    CHARGE_STAGE_ERR_TIMEOUT      =0x08
 }CHARGE_ERR_STAGE;
 
 // 充电阶段变更事件

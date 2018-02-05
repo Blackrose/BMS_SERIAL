@@ -38,8 +38,8 @@
 #undef SET_DATA
 
 #define  TIMEOUT_ON
-//#undef TIMEOUT_ON
-#define TIMEOUT 5000
+#undef TIMEOUT_ON
+#define TIMEOUT 1000  //5000/5
 
 #define INIT 0xFF
 
@@ -48,7 +48,7 @@
 // 数据包生成器信息
 struct can_pack_generator generator[] = {
     {
-    .stage      =  CHARGE_STAGE_HANDSHACKING,
+    .stage      =  CHARGE_STAGE_INVALID,
     .pgn        =  PGN_CHM,//0x002600,
     .prioriy    =  6,
     .datalen    =  3,
@@ -318,6 +318,9 @@ struct can_pack_generator generator[] = {
 void Hachiko_packet_heart_beart_notify_proc(Hachiko_EVT evt, void *_private,
                             const struct Hachiko_food *self)
 {
+    struct timeval    tv;
+    gettimeofday(&tv, NULL);
+
     if (evt == HACHIKO_TIMEOUT ) {
         int i = 0;
         struct can_pack_generator *thiz;
@@ -344,6 +347,104 @@ void Hachiko_packet_heart_beart_notify_proc(Hachiko_EVT evt, void *_private,
          *
          * BEM和CEM不在超时统计范围内
          */
+#ifdef  TIMEOUT_ON
+        for ( i = 0;
+                     (unsigned int)i < (sizeof(generator) / sizeof(struct can_pack_generator) ); i++ ) {
+           me = &generator[i];
+           if ( generator[i].stage == task->bms_stage ){
+               if(me->can_silence == 0){
+                   printf("time=%d %d ms\n",tv.tv_sec,tv.tv_usec/1000);
+               }
+               me->can_silence += 1;//generator[i].can_silence += 1;
+           }
+
+           if(generator[i].stage == task->bms_stage){
+               switch (task->bms_err_stage) {
+                   case CHARGE_STAGE_ERR_TIMEOUT:
+                       printf("bms_err_stage   generator[I_TCV].can_silence==%d  i ===%d\n",me->can_silence,i);
+                       me->can_silence = 0;
+                       task->bms_err_stage = CHARGE_STAGE_ERR_INVALID;
+                       break;
+                   default :
+                       break;
+               }
+           }
+           if ( me->can_tolerate_silence < me->can_silence ) {
+               switch (task->bms_stage) {
+               case CHARGE_STAGE_INVALID://握手超时
+                   log_printf(WRN, "BMS:  "RED("握手超时"));
+                   printf("me->can_tolerate_silence==%d    me->can_silence==%d     i ==%d\n",me->can_tolerate_silence,me->can_silence,i);
+                   me->can_silence = 0;
+                   printf("1111me->can_tolerate_silence==%d    me->can_silence==%d\n",me->can_tolerate_silence,me->can_silence);
+                   printf("2222time= %d %d ms\n",tv.tv_sec,tv.tv_usec/1000);
+                   task->bms_stage = CHARGE_STAGE_TIMEOUT;
+                   task->bms_err_stage = (CHARGE_STAGE_ERR_TIMEOUT | CHARGE_STAGE_ERR_INVALID) ;
+                   generator[I_CHM].can_silence = 0;//重新计时
+                   break;
+               case CHARGE_STAGE_HANDSHACKING:
+                    log_printf(WRN, "BMS:  "RED("辨识0x00超时"));
+                    me->can_silence = 0;
+                    task->bms_stage = CHARGE_STAGE_TIMEOUT;
+                    task->bms_err_stage = (CHARGE_STAGE_ERR_TIMEOUT | CHARGE_STAGE_ERR_HANDSHACKING) ;
+                    generator[I_CRM].can_silence = 0;//重新计时
+                   break;
+               case CHARGE_STAGE_IDENTIFICATION:
+                   log_printf(WRN, "BMS:  "RED("辨识0xAA超时"));
+                   me->can_silence = 0;
+                   task->bms_stage = CHARGE_STAGE_TIMEOUT;
+                   task->bms_err_stage = (CHARGE_STAGE_ERR_TIMEOUT | CHARGE_STAGE_ERR_IDENTIFICATION) ;
+                   generator[I_CRM].can_silence = 0;//重新计时
+                   break;
+               case CHARGE_STAGE_CONFIGURE:
+                   if(!bit_read(task,F_CHARGER_CTS)){
+                       log_printf(WRN, "BMS:  "RED("时间同步超时"));
+                       me->can_silence = 0;
+                       task->bms_stage = CHARGE_STAGE_TIMEOUT;
+                       task->bms_err_stage = (CHARGE_STAGE_ERR_TIMEOUT | CHARGE_STAGE_ERR_CONFIGURE) ;
+                       generator[I_CTS].can_silence = 0;//重新计时
+                   }else if(!bit_read(task,F_CHARGER_CML)){
+                       log_printf(WRN, "BMS:  "RED("CML同步超时"));
+                       me->can_silence = 0;
+                       task->bms_stage = CHARGE_STAGE_TIMEOUT;
+                       task->bms_err_stage = (CHARGE_STAGE_ERR_TIMEOUT | CHARGE_STAGE_ERR_CONFIGURE) ;
+                       generator[I_CML].can_silence = 0;//重新计时
+                   }else{
+                       log_printf(WRN, "BMS:  "RED("CRO同步超时"));
+                       me->can_silence = 0;
+                       task->bms_stage = CHARGE_STAGE_TIMEOUT;
+                       task->bms_err_stage = (CHARGE_STAGE_ERR_TIMEOUT | CHARGE_STAGE_ERR_CONFIGURE) ;
+                       generator[I_CRO].can_silence = 0;//重新计时
+                   }
+                   break;
+               case CHARGE_STAGE_CHARGING:
+                   if(!bit_read(thiz,F_CHARGER_CCS)){
+                       log_printf(WRN, "BMS:  "RED("接收充电状态报文超时"));
+                       me->can_silence = 0;
+                       task->bms_stage = CHARGE_STAGE_TIMEOUT;
+                       task->bms_err_stage = (CHARGE_STAGE_ERR_TIMEOUT | CHARGE_STAGE_ERR_CHARGING) ;
+                       generator[I_CCS].can_silence = 0;//重新计时
+                   }else if(!bit_read(thiz,F_CHARGER_CST)){
+                       log_printf(WRN, "BMS:  "RED("接收中止充电报文超时"));
+                       me->can_silence = 0;
+                       task->bms_stage = CHARGE_STAGE_TIMEOUT;
+                       task->bms_err_stage = (CHARGE_STAGE_ERR_TIMEOUT | CHARGE_STAGE_ERR_CHARGING) ;
+                       generator[I_CST].can_silence = 0;//重新计时
+                   }
+                   break;
+               case CHARGE_STAGE_DONE:
+                   log_printf(WRN, "BMS:  "RED("接收充电统计报文超时"));
+                   me->can_silence = 0;
+                   task->bms_stage = CHARGE_STAGE_TIMEOUT;
+                   task->bms_err_stage = (CHARGE_STAGE_ERR_TIMEOUT | CHARGE_STAGE_ERR_DONE) ;
+                   generator[I_CSD].can_silence = 0;//重新计时
+                   break;
+               default:
+                   break;
+                }
+           me->can_silence = 0;//重新计时  不能注释掉
+           }
+        }
+#endif
 #if 0
         for ( i = 0;
               (unsigned int)i < (sizeof(generator) / sizeof(struct can_pack_generator) ) - 2; i++ ) {
